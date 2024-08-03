@@ -1,0 +1,153 @@
+// This is your Prisma schema file for MongoDB
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  chatId        String          @unique
+  taps          Int             @default(0)
+  points        Int             @default(0)
+  profit        Int             @default(0)
+  lastProfitDate  Int?
+  rechargeLimit Int             @default(500)
+  pointPerTap   Int             @default(1)
+  profitPerHour Int             @default(0)
+  refillRate    Int             @default(1)
+  bonus         Int             @default(0)
+  active        Boolean         @default(true)
+  skin          String          @default("/assets/images/space-bg.avif")
+  lastLogin     DateTime        @default(now())
+  referredBy    String?         @default("admin")
+  referralLink  String?
+  league        String?         @default("beginner")
+
+  accounts      Account[]
+  sessions      Session[]
+  authenticators Authenticator[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String @id @map("_id")
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String   @id @map("_id")
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, credentialID])
+}
+
+model Leagues {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  minEntry      Int
+  pointLimit    Int
+  trophy        String
+  entryReward   String
+}
+
+model Points {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  user      String @unique
+  points    Int @default(0)
+  league    String
+  autominer Boolean @default(false)
+  tapLimit  Int
+  lastTap   DateTime
+}
+
+model Bonuster {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  icon          String
+  points        String
+  level         String
+}
+
+model DailyBoosters {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  count     Int
+  icon      String
+}
+
+model TaskCategories {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+}
+
+model Tasks {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  category    String
+  name        String
+  points      Int
+  icon        String
+}
+
+model Skins {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  profitPerHour Int? @default(0)
+  image         String  @default("/assets/images/space-bg.avif")
+  cost          Int
+  league        String @default("pilot")
+}
+
+model TasksCompletion {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  taskId        String
+  userId        String
+  reward        Int
+}
