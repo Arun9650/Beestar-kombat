@@ -43,8 +43,8 @@ const DailyItems = () => {
   return (
     <div className="w-full z-0">
 
-<div className="flex-grow mt-8 border-t-4 border-[#f3ba2f] rounded-t-[48px] relative top-glow z-0">
-<div className="pt-2 pb-0 bg-[#1d2025] rounded-t-[46px]">
+<div className="flex-grow mt-2 border-t-4 border-[#f3ba2f] rounded-t-[48px] relative top-glow z-0">
+<div className=" pb-0 bg-[#1d2025] rounded-t-[46px]">
     <div className="px-4 mt-6 flex justify-between gap-2">
     <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
       <div className="dot"></div>

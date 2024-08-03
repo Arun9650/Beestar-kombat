@@ -20,27 +20,27 @@ const BottomNavigation = () => {
   const NavigationItems: NavigationItem[] = [
     {
       name: "Exchange",
-      icon: <Image src={binanceLogo} width={34} height={34} alt="Exchange" />,
+      icon: <Image src={binanceLogo} width={24} height={24} alt="Exchange" />,
       link: "/",
     },
     {
       name: "Mine",
-      icon: <Mine className="w-8 h-8 mx-auto" />,
+      icon: <Mine className="w-6 h-6 mx-auto" />,
       link: "/tasks",
     },
     {
       name: "Friends",
-      icon: <Friends className="w-8 h-8 mx-auto" />,
+      icon: <Friends className="w-6 h-6 mx-auto" />,
       link: "/referrals",
     },
     {
       name: "Earn",
-      icon: <Coins className="w-8 h-8 mx-auto" />,
+      icon: <Coins className="w-6 h-6 mx-auto" />,
       link: "/market",
     },
     {
       name: "AirDrop",
-      icon: <Image src={BeeCoin} width={34} height={34} alt="AirDrop" />,
+      icon: <Image src={BeeCoin} width={24} height={24} alt="AirDrop" />,
       link: "/bonus",
     },
   ];
@@ -52,7 +52,7 @@ const BottomNavigation = () => {
 
   const route = useRouter();
   return (
-    <div className="fixed bottom-0 p-1  left-1/2 transform -translate-x-1/2 w-full  max-w-xl bg-[#272a2f] flex justify-around items-center z-50  text-xs">
+    <div className="fixed bottom-0  p-1 h-fit left-1/2 transform -translate-x-1/2 w-full  max-w-xl bg-[#272a2f] flex justify-around items-center z-50  text-xs">
       {NavigationItems.map((item, index) => {
         return (
           <div
@@ -61,7 +61,7 @@ const BottomNavigation = () => {
               activeLink === item.link
                 ? "bg-[#1c1f24] text-white"
                 : "bg-[#272a2f]"
-            } p-2  w-full flex items-center justify-center rounded-2xl `}
+            } p-1.5 w-full flex items-center justify-center rounded-2xl `}
           >
             <button
               onClick={() => handleRoute(item.link)}
@@ -75,7 +75,7 @@ const BottomNavigation = () => {
                 {item.icon}
               </div>
               <p
-                className={`${
+                className={` text-[10px] ${
                   activeLink === item.link ? " text-white" : ""
                 }  mt-1`}
               >
