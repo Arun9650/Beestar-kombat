@@ -1,8 +1,9 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { SatelliteDish } from 'lucide-react'
 import { FaCaretRight, FaSatelliteDish, FaTrophy } from 'react-icons/fa'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 import { Button } from '../ui/button'
 import { Progress } from '../ui/progress'
 import LeagueProgress from '@/app/tasks/LeagueProgress'
@@ -10,62 +11,188 @@ import { allLeagues, leagueData } from '@/actions/points.actions'
 import EachLeague from './EachLeague'
 import EachTaskSpecial from './EachTaskSpecial'
 import { tasksList } from '@/actions/tasks.actions'
+import { CEO, dollarCoin, QuestionMark } from '../../../public/newImages'
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from '../ui/drawer'
+import { formatNumber } from '../../../utils/formatNumber'
 
-const TaskList = async () => {
-    const leagues = await allLeagues()
-    const currentLeagueStatus = await leagueData()
+const TaskList =  () => {
+    // const leagues = await allLeagues()
+    // const currentLeagueStatus = await leagueData()
 
-    const tasks = await tasksList()
+    // const tasks = await tasksList()
 
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [selectedTeam, setSelectedTeam] = useState<Team | null>();
+
+
+    const tabs = ["PR&Team", "Markets", "Legal", "Web3", "Specials"];
+    interface Team {
+      name: string;
+      profit: number;
+      cost: number;
+      image: StaticImageData;
+      description?: string;   
+    }
+  
+    interface Teams {
+      [key: string]: Team[];
+    }
+  
+    const teams: Teams = {
+      "PR&Team": [
+        { name: "CEO", profit: 100, cost: 1000, image: CEO, description: "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team" },
+        { name: "Marketing", profit: 200, cost: 1000, image: CEO, 
+          description: "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team" ,
+         },
+         { name: 'IT team', profit: 240, cost: 2000, description: 'Build and maintain your company\'s IT infrastructure with the best team.', image: CEO },
+         { name: 'Support team', profit: 70, cost: 750, description: 'Ensure customer satisfaction with a dedicated support team.', image: CEO },
+      ],
+    };
+
+
+    const handleTeamClick = (team: Team) => {
+        setSelectedTeam(team);
+        setIsDrawerOpen(true);
+      };
+    
+
+    
     return (
         <div className='flex flex-col items-center justify-center w-full'>
-            <Tabs defaultValue='special' className='w-full flex flex-col gap-y-4'>
-                <TabsList className='bg-white/5 backdrop-blur-md border-white/20 border-[1.5px] py-2 text-white/70 w-full justify-between'>
-                    <TabsTrigger className="w-full" value="special">Special</TabsTrigger>
-                    <TabsTrigger className="w-full" value="leagues">Leagues</TabsTrigger>
-                    {/* <TabsTrigger className="w-full" value="ref">Ref Tasks</TabsTrigger> */}
-                </TabsList>
-
-                <div>
-                    <TabsContent value='special' className='w-full flex flex-col gap-y-4'>
-                        {tasks.length > 0 && tasks.map((T, _) =>
-                            <EachTaskSpecial key={_} task={T.name} reward={T.points} image={T.icon} id={T.id} />
-                        )}
-                    </TabsContent>
-
-
-                    <TabsContent value='leagues' className='w-full flex flex-col gap-y-4'>
-
-                        {leagues.length > 0 && leagues.map((league, index) => (
-                            <EachLeague key={index} league={league} currentLeagueStatus={currentLeagueStatus} />
-                        ))}
-                    </TabsContent>
-
-                    <TabsContent value='ref' className='w-full flex flex-col gap-y-4'>
-                        <div className='w-full bg-primary/60 backdrop-blur-sm px-4 py-5 rounded-2xl flex justify-between items-center gap-x-6 hover:bg-black/70 transition duration-200 cursor-pointer hover:border-orange-300 border-black border-[1.5px]'>
-                            <div className='w-full flex items-center gap-x-3'>
-                                <div className='text-5xl'>
-                                    <Image src="/assets/images/friends.png" height={80} width={80} alt="" />
-                                </div>
-                                <div className='flex gap-3 flex-col'>
-                                    <h2 className='font-semibold text-md text-white'>
-                                        Invite 1 Friend
-                                    </h2>
-                                    <div className='flex items-center gap-2'>
-                                        <Image src="/assets/images/planet.png" height={25} width={25} alt="" />
-                                        <p>
-                                            15000
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <Button variant='ghost' className='p-0 hover:bg-transparent hover:text-orange-300 px-3 py-2'>
-                                <FaCaretRight />
-                            </Button>
-                        </div>
-                    </TabsContent>
+               <div className="p-4 flex flex-col items-center">
+                <div className="flex justify-between my-2 py-2 px-4 rounded-xl w-full items-center  bg-[#292d32]">
+                  <h1 className="text-md font-semibold ">Daily Combo</h1>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-yellow-400">+5,000,000</span>
+                    <Image src={dollarCoin} alt="coin" className="w-6 h-6" />
+                  </div>
                 </div>
-            </Tabs>
+                <div className="flex justify-between w-full mb-4">
+                  <div className="grid grid-cols-3 items-center w-full  justify-between  gap-2">
+                    <Image
+                      src={QuestionMark}
+                      alt="?"
+                      className="w-full h-full"
+                    />
+                    <Image
+                      src={QuestionMark}
+                      alt="?"
+                      className="w-full h-full"
+                    />
+                    <Image
+                      src={QuestionMark}
+                      alt="?"
+                      className="w-full h-full"
+                    />
+                  </div>
+                </div>
+                {/* <h2 className="text-4xl font-bold mb-8">{formatNumber(coins)}</h2> */}
+                <div className="flex flex-col items-center w-full">
+                  <Tabs defaultValue="PR&Team" className="w-full">
+                    <TabsList className="flex justify-around w-full bg-[#292d32] rounded-t-lg">
+                      {tabs.map((tab) => (
+                        <TabsTrigger
+                          key={tab}
+                          value={tab}
+                          className=" data-[state=active]:bg-[#1C1F23]  data-[state=active]:text-white text-white"
+                        >
+                          {tab}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                    {tabs.map((tab) => (
+                      <TabsContent
+                        key={tab}
+                        value={tab}
+                        className="w-full   rounded-lg"
+                      >
+                        <div className="grid grid-cols-2 gap-4 ">
+                          {teams[tab] &&
+                            teams[tab].map((team, index) => (
+                              <div
+                                key={index}
+                                className="px-3 py-2 bg-[#272A2F] rounded-3xl"
+                                onClick={() => handleTeamClick(team)}
+                              >
+                                <div className="flex items-center gap-4 border-b pb-2 ">
+                                  <Image
+                                    src={team.image}
+                                    alt={team.name}
+                                    width={50}
+                                    height={50}
+                                    className=" object-cover mb-2 rounded-lg"
+                                  />
+
+                                  <div className="flex flex-col justify-between gap-4">
+                                    <h3 className="text-white font-normal text-[0.7rem]">
+                                      {team.name}
+                                    </h3>
+                                    <p className="text-[#abadb2] text-[0.7rem] font-normal">
+                                      Profit per hour:
+                                      <br />
+                                      <span className="text-[#abadb2]">
+                                        +{team.profit}
+                                      </span>
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center mt-2 ">
+                                  <div className="border-r text-[.7rem]   text-center w-12">lvl0</div>
+                                  <div>
+                                    <p className="text-gray-400 ml-4 text-xs gap-1 flex items-center font-thin">
+                                      <Image
+                                        src={dollarCoin}
+                                        alt="coin"
+                                        className="w-4 h-4"
+                                      />
+                                      <span className="text-white font-semibold">
+                                        {formatNumber(team.cost)}{" "}
+                                      </span>
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </TabsContent>
+                    ))}
+                  </Tabs>
+                  <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+          {/* <DrawerOverlay /> */}
+          <DrawerContent className="bg-[#14161a] border-none">
+            <DrawerHeader className="flex justify-between items-center">
+              {/* <span className="text-white">{selectedTeam?.name}</span> */}
+              {/* <IconButton onClick={() => setIsDrawerOpen(false)} icon={<XIcon />} className="text-white" /> */}
+            </DrawerHeader>
+              {selectedTeam && (
+                <div className="text-center">
+                  <Image src={selectedTeam.image} alt={selectedTeam.name} width={100} height={100} className="mx-auto mb-4" />
+                  <h2 className="text-2xl font-medium text-white mb-2">{selectedTeam.name}</h2>
+                  <p className="text-white mb-4 max-w-96 font-light mx-auto">{selectedTeam.description}</p>
+                  <p className="text-white">Profit per hour:
+                    <br />
+                     <span className="text-white  flex max-w-fit mx-auto gap-2">
+                        <Image src={dollarCoin} alt="coin" width={20} height={20} />
+                        +{selectedTeam.profit}</span></p>
+                  <p className="text-white my-4">
+                    <span className="text-white text-3xl font-semibold flex items-center max-w-fit mx-auto gap-2">
+                    <Image src={dollarCoin} alt="coin" width={40} height={40} />
+                    {(selectedTeam.cost)} </span></p>
+                </div>
+              )}
+
+            <DrawerFooter>
+              <Button  className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700">
+                Go ahead
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+
+                 
+                </div>
+              </div>
         </div>
     )
 }

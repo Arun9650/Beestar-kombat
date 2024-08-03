@@ -1,45 +1,53 @@
-import { Card, CardContent } from '@/components/ui/card'
-import React from 'react'
-import { FaSpeakerDeck } from 'react-icons/fa'
 
-const ReferralsPages = () => {
-    return (
-        <section className='h-full flex flex-col items-center justify-around px-0'>
-            <div className='text-center flex flex-col gap-y-3'>
-                <h4 className='text-xl font-medium'>My</h4>
-                <h2 className='text-5xl font-bold text-white'>
-                    0 Referrals
-                </h2>
-                <div className='mt-5'>
-                    <h3 className='text-3xl font-semibold text-orange-300'>
-                        + 0 users
-                    </h3>
-                </div>
+
+
+import Copy from '../../../public/icons/Copy';
+import {  Gift } from '../../../public/newImages';
+import Image from 'next/image';
+import React from 'react';
+
+const ReferralPage = () => {
+
+
+  
+
+  return (
+    <div className="p-4 bg-black h-screen text-white  shadow-lg max-w-xl mx-auto">
+      <h1 className="text-4xl mt-5 font-bold mx-auto  flex justify-center ">Invite friends!</h1>
+      <p className="mb-4  flex justify-center mt-4">You and your friend will receive bonuses</p>
+      <div className="space-y-4">
+        <div className="p-4 bg-gray-800 rounded-2xl flex items-center justify-between">
+          <div className="flex items-center">
+            <Image src={Gift} alt="Gift" className="w-16 h-16 mr-4" />
+            <div>
+              <p className="font-semibold ">Invite a friend</p>
+              <p className="text-yellow-400">+5,000 for you and your friend</p>
             </div>
-
-            <div className='flex items-center justify-center flex-col gap-y-7'>
-
-                <div className=''>
-                    <h3 className='font-black text-3xl text-center text-white'>
-                        You don&apos;t have any referrals yet
-                    </h3>
-                </div>
-
-                <div className='w-full'>
-                    <Card className='rounded-2xl bg-orange-200 w-full'>
-                        <CardContent className='text-center px-10 py-4'>
-                            <h3 className='text-xl font-bold'>
-                                Invite Friends
-                            </h3>
-                            <p className='text-sm font-medium'>
-                                and get 5,000 up to 40,000 coins each
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
+          </div>
+        </div>
+        <div className="p-4 bg-gray-800 rounded-2xl flex items-center justify-between">
+          <div className="flex items-center">
+            <Image src={Gift} alt="Gift" className="w-16 h-16 mr-4 " />
+            <div>
+              <p className="font-semibold text-xl" >Invite a friend with Telegram Premium</p>
+              <p className="text-yellow-400">+25,000 for you and your friend</p>
             </div>
-        </section>
-    )
-}
+          </div>
+        </div>
+      </div>
+      <a href="#" className="text-blue-400 mt-4 block text-center">More bonuses</a>
+      <h2 className="mt-6 mb-2">List of your friends</h2>
+      <div className="bg-gray-800 p-4 rounded-3xl text-center">
+        <p className="text-gray-400 p-4">You haven&apos;t invited anyone yet</p>
+      </div>
+      <div className="mt-4 flex justify-center space-x-4">
+        <button className="bg-blue-600 py-4 px-4 rounded-2xl w-full semi-bold text-2xl ">Invite a friend</button>
+        <button className="bg-blue-600 py-2 px-4 rounded-2xl">
+          <Copy className='w-6 h-6 text-white' />
+        </button>
+      </div>
+    </div>
+  );
+};
 
-export default ReferralsPages
+export default ReferralPage;

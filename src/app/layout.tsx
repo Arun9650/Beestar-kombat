@@ -3,8 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import LoadingScreenProvider from "@/providers/LoadingScreenProvider";
 import BottomMenus from "@/components/layouts/BottomMenus";
-import AuthProvider from "@/providers/AuthProvider";
-import { ToastContainer } from 'react-toastify'
+ import { ToastContainer } from 'react-toastify'
 import "react-toastify/ReactToastify.css"
 import AuthProviderWithSuspense from "@/providers/AuthProvider";
 
@@ -22,10 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.className} min-h-screen max-h-screen h-screen bg-[#1d2025] `}>
+      <body className={`${montserrat.className} min-h-screen  h-screen bg-[#1d2025] `}>
       <AuthProviderWithSuspense>
           <LoadingScreenProvider>
-            <main className="h-[calc(100vh-80px)] backdrop-blur-[3px] bg-black text-white/80">
+            <main className="pb-[80px] min-h-screen backdrop-blur-[3px]  text-white/80">
               {children}
             </main>
             <BottomMenus />
