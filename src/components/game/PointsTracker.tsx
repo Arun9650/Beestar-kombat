@@ -10,7 +10,7 @@ const PointsTracker = () => {
     return (
         <div className='font-bold text-5xl flex items-center gap-2 text-white'>
             <span className='text-6xl'>
-                <Image src="/assets/images/planet.png" height={50} width={50} alt="" />
+                <Image src="/assets/images/dollar-coin.png" height={50} width={50} alt="" />
             </span>
             {points.toLocaleString()}
         </div>

@@ -21,14 +21,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.className} min-h-screen max-h-screen h-screen`}>
-      
+      <body className={`${montserrat.className} min-h-screen max-h-screen h-screen bg-[#1d2025] `}>
+      <AuthProvider>
           <LoadingScreenProvider>
-            <main className="h-screen  backdrop-blur-[3px] bg-black text-white/80 py-10 px-4">
+            <main className="h-[calc(100vh-80px)] backdrop-blur-[3px] bg-black text-white/80">
               {children}
             </main>
             <BottomMenus />
           </LoadingScreenProvider>
+      </AuthProvider>
         <ToastContainer />
       </body>
     </html>

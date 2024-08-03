@@ -52,7 +52,7 @@ const BottomNavigation = () => {
 
   const route = useRouter();
   return (
-    <div className="p-1  w-full max-w-xl bg-[#272a2f] flex justify-around items-center z-50 text-xs">
+    <div className="fixed bottom-0 p-1  left-1/2 transform -translate-x-1/2 w-full  max-w-xl bg-[#272a2f] flex justify-around items-center z-50  text-xs">
       {NavigationItems.map((item, index) => {
         return (
           <div

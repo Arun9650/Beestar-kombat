@@ -6,8 +6,8 @@ import Settings from '../../public/icons/Settings'
 
 const Header = () => {
   return (
-    <div>
-         <div className="w-full z-10">
+    <div className='w-full px-4 z-10'>
+         <div className="w-full  z-10">
           <div className="flex items-center space-x-2 pt-4">
             <div className="p-1 rounded-lg bg-[#1d2025]">
             </div>
