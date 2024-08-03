@@ -38,13 +38,17 @@ const useUserPointsConfig = () => {
 
   useEffect(() => {
     const user = window.localStorage.getItem("authToken");
+    console.log("🚀 ~ useEffect ~ user:", user)
     const pphReward = async () => {
-      const credited = await creditProfitPerHour(user!);
+      if (user) {
+        const credited = await creditProfitPerHour(user);
 
-      if (credited == "success") {
-        toast.success("Profit Credited");
+        
+        if (credited == "success") {
+          toast.success("Profit Credited");
+        }
       }
-    };
+      };
 
     pphReward();
   }, []);

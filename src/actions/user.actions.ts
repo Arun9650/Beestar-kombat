@@ -7,7 +7,7 @@ export async function getUserConfig(id: string) {
 
 
   
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({ where: { chatId: id } });
 
   //   if (!user) throw new Error("COuld not find user");
   if (!user)
@@ -29,6 +29,7 @@ export async function getUserConfig(id: string) {
 }
 
 export async function creditProfitPerHour(id: string) {
+  console.log("🚀 ~ creditProfitPerHour ~ id:", id)
   const user = await prisma.user.findUnique({ where: { chatId: id } });
   try {
     if (!user?.lastProfitDate) {
