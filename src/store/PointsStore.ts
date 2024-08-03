@@ -24,7 +24,7 @@ export const usePointsStore = create<Points>((set, get) => ({
   currentTapsLeft: useBoostersStore.getState().energyCapacity,
   lastTap: 0,
   skin: "/assets/images/space-bg.avif",
-  tapLimit: 1000,
+  tapLimit: 500,
   
   addPoints: (count) => {
     const { points } = get();

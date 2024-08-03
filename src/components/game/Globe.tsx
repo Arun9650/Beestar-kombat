@@ -80,8 +80,13 @@ const TapGlobe = () => {
     }, [secondsLeft])
 
     return (
-        <div className='relative'>
-            <Image src="/assets/images/planet.png" height={200} width={200} alt="" onClick={handleTap} className='transition duration-300 cursor-pointer' />
+        <>
+        <div className=" flex justify-center">
+              <div
+                className="w-80 h-80  rounded-full circle-outer"
+              >
+                <div className='relative'>
+            <Image src="/assets/images/BeeMain.png" height={200} width={200} alt="" onClick={handleTap} className='transition duration-300 cursor-pointer' />
 
             {clickCoordinate.length > 1 && clickCoordinate.map((click, index) => <div key={index} className={`text-4xl font-bold text-orange-400 absolute tap-count-animation`} style={{
                 left: click.x,
@@ -90,6 +95,10 @@ const TapGlobe = () => {
                 +{(secondsLeft > 0 ? 7 : 1) * multiClickLevel}
             </div>)}
         </div>
+              </div>
+            </div>
+        
+                </>
     )
 }
 
