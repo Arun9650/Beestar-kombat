@@ -71,3 +71,41 @@ export async function checkCompletedTasks({
     return false;
   }
 }
+
+
+// export async function allCards() {
+//   const cards = await prisma.card.findMany();
+//   return cards;
+// }
+
+// export async function UserCards() {
+//   const usercards = await prisma.userCard.findMany();
+//   console.log("🚀 ~ UserCards ~ usercards:", usercards)
+//   return usercards;
+// }
+
+
+// export async function allCards (userId: string) {
+//    // Fetch all cards
+//    const allCards = await prisma.card.findMany();
+//    console.log("🚀 ~ allCards ~ allCards:", allCards)
+
+//    // Fetch user's purchased cards
+//    const userCards = await prisma.userCard.findMany({
+//      where: { userId },
+//      include: { card: true }, // Include card details
+//    });
+//    console.log("🚀 ~ allCards ~ userCards:", userCards)
+ 
+//    // Create a map of user purchased card IDs for easy lookup
+//    const purchasedCardIds = new Set(userCards.map(userCard => userCard.cardId));
+//    console.log("🚀 ~ allCards ~ purchasedCardIds:", purchasedCardIds)
+ 
+//    // Separate the cards into purchased and not purchased
+//    const purchasedCards = userCards.map(userCard => userCard.card);
+//    const notPurchasedCards = allCards.filter(card => !purchasedCardIds.has(card.id));
+ 
+//    return { purchasedCards, notPurchasedCards };
+// }
+
+

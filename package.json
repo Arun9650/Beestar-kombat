@@ -10,16 +10,6 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.424.0",
-    "next": "14.2.5",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-icons": "^5.2.1",
-    "react-toastify": "^10.0.5",
-    "tailwind-merge": "^2.4.0",
-    "tailwindcss-animate": "^1.0.7",
     "@auth/prisma-adapter": "^2.4.1",
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^5.17.0",
@@ -27,12 +17,23 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "framer-motion": "^11.3.8",
     "grammy": "^1.27.0",
+    "lucide-react": "^0.424.0",
+    "next": "14.2.5",
     "next-cookie": "^2.8.0",
+    "react": "^18",
+    "react-dom": "^18",
     "react-hook-form": "^7.52.1",
+    "react-icons": "^5.2.1",
     "react-qr-code": "^2.0.15",
+    "react-toastify": "^10.0.5",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",
     "zod": "^3.23.8",
     "zustand": "^4.5.4"
@@ -44,8 +45,8 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
+    "prisma": "^5.17.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5",
-    "prisma": "^5.17.0"
+    "typescript": "^5"
   }
 }

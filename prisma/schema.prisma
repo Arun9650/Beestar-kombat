@@ -9,33 +9,74 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  chatId        String          @unique
-  taps          Int             @default(0)
-  points        Int             @default(0)
-  profit        Int             @default(0)
-  lastProfitDate  Int?
-  rechargeLimit Int             @default(500)
-  pointPerTap   Int             @default(1)
-  profitPerHour Int             @default(0)
-  refillRate    Int             @default(1)
-  bonus         Int             @default(0)
-  active        Boolean         @default(true)
-  skin          String          @default("/assets/images/space-bg.avif")
-  lastLogin     DateTime        @default(now())
-  referredBy    String?         @default("admin")
-  referralLink  String?
-  league        String?         @default("beginner")
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  chatId         String   @unique
+  taps           Int      @default(0)
+  points         Int      @default(0)
+  profit         Int      @default(0)
+  lastProfitDate Int?
+  rechargeLimit  Int      @default(500)
+  pointPerTap    Int      @default(1)
+  profitPerHour  Int      @default(0)
+  refillRate     Int      @default(1)
+  bonus          Int      @default(0)
+  active         Boolean  @default(true)
+  skin           String   @default("/assets/images/space-bg.avif")
+  lastLogin      DateTime @default(now())
+  referredBy     String?  @default("admin")
+  referralLink   String?
+  league         String?  @default("beginner")
 
-  accounts      Account[]
-  sessions      Session[]
+  accounts       Account[]
+  sessions       Session[]
   authenticators Authenticator[]
+   loginStreak        Int      @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  card2 Card2[]
 }
 
+// model Card {
+//   id                String    @id @default(auto()) @map("_id") @db.ObjectId
+//   title             String
+//   image             String
+//   baseCost          Float
+//   basePPH           Float
+//   baseLevel         Int       @default(0)
+//   requiredCardId    String?   @db.ObjectId // ID of the prerequisite card
+//   requiredCardLevel Int?
+// }
+
+
+model Card2 {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  image             String
+  baseCost          Float
+  basePPH           Float
+  baseLevel         Int       @default(0)
+  userId      String 
+  user        User      @relation(fields: [userId], references: [chatId])
+  cardType  String
+}
+
+
+
+// model UserCard {
+//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+//   userId      String   
+//   cardId      String   @db.ObjectId
+//   purchaseDate DateTime @default(now())
+//   level       Int       @default(1)
+
+//   user        User      @relation(fields: [userId], references: [id])
+//   card        Card      @relation(fields: [cardId], references: [id])
+
+//   @@unique([userId, cardId])
+// }
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String
@@ -67,7 +108,7 @@ model Session {
 }
 
 model VerificationToken {
-  identifier String @id @map("_id")
+  identifier String   @id @map("_id")
   token      String
   expires    DateTime
 
@@ -75,7 +116,7 @@ model VerificationToken {
 }
 
 model Authenticator {
-  credentialID         String   @id @map("_id")
+  credentialID         String  @id @map("_id")
   userId               String
   providerAccountId    String
   credentialPublicKey  String
@@ -90,64 +131,64 @@ model Authenticator {
 }
 
 model Leagues {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  minEntry      Int
-  pointLimit    Int
-  trophy        String
-  entryReward   String
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  minEntry    Int
+  pointLimit  Int
+  trophy      String
+  entryReward String
 }
 
 model Points {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  user      String @unique
-  points    Int @default(0)
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      String   @unique
+  points    Int      @default(0)
   league    String
-  autominer Boolean @default(false)
+  autominer Boolean  @default(false)
   tapLimit  Int
   lastTap   DateTime
 }
 
 model Bonuster {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  icon          String
-  points        String
-  level         String
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  icon   String
+  points String
+  level  String
 }
 
 model DailyBoosters {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  count     Int
-  icon      String
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  count Int
+  icon  String
 }
 
 model TaskCategories {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
 }
 
 model Tasks {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  category    String
-  name        String
-  points      Int
-  icon        String
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  category String
+  name     String
+  points   Int
+  icon     String
 }
 
 model Skins {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  profitPerHour Int? @default(0)
-  image         String  @default("/assets/images/space-bg.avif")
+  profitPerHour Int?   @default(0)
+  image         String @default("/assets/images/space-bg.avif")
   cost          Int
   league        String @default("pilot")
 }
 
 model TasksCompletion {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  taskId        String
-  userId        String
-  reward        Int
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  taskId String
+  userId String
+  reward Int
 }

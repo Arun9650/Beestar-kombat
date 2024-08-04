@@ -18,6 +18,23 @@ import invite from './invitation.png'
 import approved from './approved.png'
 import CEO from './ceo.png'
 import QuestionMark from './question_mark.png'
+import beeAvatar from './bee_image.png'
+import card1 from './card1.png'
+import card2 from './card2.png'
+import card3 from './card3.png'
+import card4 from './card4.png'
+import card5 from './card5.png'
+import shield1 from './shield1.png'
+import shield2 from './shield2.png'
+import shield3 from './shield3.png'
+import shield4 from './shield4.png'
+import shield5 from './shield5.png'
+import collectionCoins1 from './collectionCoin1.png'
+import collectionCoins2 from './collectionCoin2.png'
+import collectionCoins3 from './collectionCoin3.png'
+import collectionCoins4 from './collectionCoin4.png'
+import collectionCoins5 from './collectionCoin5.png'
+import Diamond from './diamond.png' 
 
 
 export {
@@ -40,5 +57,22 @@ export {
     invite,
     approved,
     CEO,
-    QuestionMark
+    QuestionMark,
+    beeAvatar,
+     card1,
+     card2,
+     card3,
+     card4,
+     card5,
+     shield1,
+     shield2,
+     shield3,
+     shield4,
+     shield5,
+     collectionCoins1,
+     collectionCoins2,
+     collectionCoins3,
+     collectionCoins4,
+     collectionCoins5,
+     Diamond
 };

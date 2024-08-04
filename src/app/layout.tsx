@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${montserrat.className} min-h-screen  h-screen bg-[#1d2025] `}>
       <AuthProviderWithSuspense>
           <LoadingScreenProvider>
-            <main className="pb-[80px] min-h-screen backdrop-blur-[3px]  text-white/80">
+            <main className=" min-h-screen backdrop-blur-[3px]  text-white/80">
               {children}
             </main>
             <BottomMenus />
