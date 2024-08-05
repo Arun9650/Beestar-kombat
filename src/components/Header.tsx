@@ -10,7 +10,10 @@ const Header = () => {
   const router = useRouter();
 
   const userName = window.localStorage.getItem('userName');
+  const local = window.localStorage.getItem('point');
+  console.log("🚀 ~ Header ~ userName:", local)
   const {PPH} = usePointsStore();
+  console.log("🚀 ~ Header ~ PPH:", PPH)
   return (
     <div className='w-full px-4 z-10'>
          <div className="w-full  z-10">

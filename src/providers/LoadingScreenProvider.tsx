@@ -10,7 +10,7 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
     const { isLoading } = useLoadingScreenStore()
     const { skin } = usePointsStore()
 
-    useUserPointsConfig()
+ const result =    useUserPointsConfig()
 
     useEffect(() => {
         console.log(isLoading);

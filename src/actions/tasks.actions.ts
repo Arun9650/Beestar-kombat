@@ -72,41 +72,22 @@ export async function checkCompletedTasks({
   }
 }
 
+export async function allCards(userId: string) {
+  // Fetch all cards
+  const allCards = await prisma.card.findMany();
 
-// export async function allCards() {
-//   const cards = await prisma.card.findMany();
-//   return cards;
-// }
+  // Fetch user's purchased cards
+  const userCards = await prisma.userCard.findMany({
+    where: { userId },
+  });
 
-// export async function UserCards() {
-//   const usercards = await prisma.userCard.findMany();
-//   console.log("🚀 ~ UserCards ~ usercards:", usercards)
-//   return usercards;
-// }
-
-
-export async function allCards (userId: string) {
-   // Fetch all cards
-   const allCards = await prisma.card.findMany();
-   console.log("🚀 ~ allCards ~ allCards:", allCards)
-
-   // Fetch user's purchased cards
-   const userCards = await prisma.userCard.findMany({
-     where: { userId },
-   });
-   console.log("🚀 ~ allCards ~ userCards:", userCards);
-
-
-
- 
-   // Create a map of userCards for quick lookup
-  const userCardsMap = new Map(userCards.map(card => [card.cardId, card]));
+  // Create a map of userCards for quick lookup
+  const userCardsMap = new Map(userCards.map((card) => [card.cardId, card]));
 
   // Combine allCards and userCards
-  const combinedCards = allCards.map(card => userCardsMap.get(card.id) || card);
-  console.log("🚀 ~ allCards ~ combinedCards:", combinedCards)
- 
-   return { combinedCards };
+  const combinedCards = allCards.map(
+    (card) => userCardsMap.get(card.id) || card
+  );
+
+  return { combinedCards };
 }
-
-

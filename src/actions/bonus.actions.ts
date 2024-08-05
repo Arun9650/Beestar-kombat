@@ -23,3 +23,27 @@ export async function allDailyBonuses(): Promise<
     return "errorOccurred";
   }
 }
+
+
+// export async function claimDailyBonus(userId, ) {
+//   try {
+
+//     if (!userId) {
+//       return new Response(JSON.stringify({ error: 'Missing userId' }), { status: 400 });
+//     }
+
+//     const today = new Date();
+//     const user = await prisma.user.findUnique({
+//       where: { chatId:userId },
+//     });
+
+//     let nextRewardAvailable = true;
+//     if (lastReward && lastReward.createdAt.toDateString() === today.toDateString()) {
+//       nextRewardAvailable = false;
+//     }
+
+//     return new Response(JSON.stringify({ nextRewardAvailable, lastReward }), { status: 200 });
+// }
+
+
+

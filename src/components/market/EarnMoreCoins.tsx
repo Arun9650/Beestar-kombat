@@ -18,52 +18,14 @@ import {
   Drawer,
   DrawerContent,
   DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
 import { formatNumber } from "../../../utils/formatNumber";
 
-const data = [
-  {
-    goal: 400,
-  },
-  {
-    goal: 300,
-  },
-  {
-    goal: 200,
-  },
-  {
-    goal: 300,
-  },
-  {
-    goal: 200,
-  },
-  {
-    goal: 278,
-  },
-  {
-    goal: 189,
-  },
-  {
-    goal: 239,
-  },
-  {
-    goal: 300,
-  },
-  {
-    goal: 200,
-  },
-  {
-    goal: 278,
-  },
-  {
-    goal: 189,
-  },
-  {
-    goal: 349,
-  },
-];
+
 
 const EarnMoreCoins = () => {
   const dailyRewards = [
@@ -121,9 +83,9 @@ const EarnMoreCoins = () => {
         </div>
         <div>
           <h2 className="text-lg font-semibold mb-2">Daily tasks</h2>
-          <div className="p-4 bg-[#1d2025] rounded-2xl flex items-center justify-between">
+          <div    className="p-4 bg-[#1d2025] rounded-2xl flex items-center justify-between">
             <div>
-              <p className="flex items-center " onClick={() => setIsOpen(true)}>
+              <p className="flex items-center " onClick={() => setIsOpen(true)} >
                 <Image
                   src={Calendar}
                   alt="Daily Reward"
@@ -132,18 +94,19 @@ const EarnMoreCoins = () => {
                 <span className="">
                   Daily reward:{" "}
                   <span className="text-yellow-400 flex items-center justify-between  gap-2">
-                    {/* <image src={Coins} alt="approved icon" className="w-12 h-12" /> */}
                     <Image src={dollarCoin} alt="Coin" className="w-4 h-4 " />
                     +6,649,000{" "}
                   </span>
                 </span>
               </p>
-              <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
-                {/* <DrawerOverlay /> */}
-                <DrawerContent className="bg-[#1d2025] border-none px-2">
-                  {/* <DrawerHeader className="p-0">
-            
-          </DrawerHeader> */}
+              <Drawer open={isOpen} >
+                {/* <DrawerOverlay className=""  /> */}
+                <DrawerContent className="bg-[#14161a]  border-none px-2 ">
+                  <DrawerHeader className="flex items-center justify-end  mt-4 ">
+                  <div onClick={() => setIsOpen(false)}   className="z-[100] absolute p-3 px-5 text-white bg-[#1C1F23] rounded-full">
+                    x
+                  </div>
+          </DrawerHeader>
 
                   <div className="text-center ">
                     <Image
@@ -155,9 +118,7 @@ const EarnMoreCoins = () => {
                       <span className="  mx-auto text-white text-xl font-semibold">
                         Daily reward
                       </span>
-                      {/* <IconButton onClick={() => setIsOpen(false)} icon={<XIcon />} /> */}
                     </div>
-                    {/* <h2 className="text-2xl text-white mb-2 border border-black">Daily reward</h2> */}
                     <p className="text-white text-xs max-w-64 mx-auto my-4">
                       Accrue coins for logging into the game daily without
                       skipping
@@ -177,7 +138,6 @@ const EarnMoreCoins = () => {
                         <Image src={dollarCoin} alt="Coin" className="w-5 h-5"  />
                         <p className="text-xs font-semibold  text-white">
                           {formatNumber(reward.reward)}{" "}
-                          {/* <span className="text-xs">coins</span> */}
                         </p>
                       </div>
                     ))}

@@ -1,5 +1,6 @@
 "use client";
 
+import { getUserConfig } from "@/actions/user.actions";
 import { usePointsStore } from "@/store/PointsStore";
 import { useEffect } from "react";
 
@@ -20,14 +21,20 @@ export const useLocalPointsStorage = () => {
   };
 
   useEffect(() => {
-    const prevStoredPoints = window.localStorage.getItem(`${name}`);
+    const preStorePoints = async () => {
+      const {user} = await getUserConfig(`${authToken}`);
+      const prevStoredPoints = window.localStorage.getItem(`points`);
 
-    if (prevStoredPoints) {
-      console.log(prevStoredPoints);
+    if (Number(prevStoredPoints)> 0) {
+      store(Number(prevStoredPoints));
     } else {
-      window.localStorage.setItem(`${authToken}${name}`, `${points}`);
+      store(user.points);
+      // window.localStorage.setItem(`${authToken}${name}`, `${points}`);
       //   console.log("set");
+
     }
+    }
+    preStorePoints();
   }, []);
 
   useEffect(() => {

@@ -37,7 +37,19 @@ model User {
   updatedAt DateTime @updatedAt
 
   userCard UserCard[]
+  dailyRewards DailyReward[]
 }
+
+
+model DailyReward {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  day       Int      // Day of the reward streak
+  coins     Int
+  user      User     @relation(fields: [userId], references: [chatId])
+  createdAt DateTime @default(now())
+}
+
 
 model Card {
   id                String     @id @default(auto()) @map("_id") @db.ObjectId

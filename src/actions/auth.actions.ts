@@ -75,6 +75,7 @@ export async function authenticateUserOrCreateAccount({
     }
 
     const account = await prisma.user.findUnique({ where: { chatId } });
+    console.log("🚀 ~ account:", account)
     if (!account) return "accountCreationFailed";
     return "success";
   } catch (e) {

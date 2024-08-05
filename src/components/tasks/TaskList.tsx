@@ -11,7 +11,7 @@ import {
   DrawerHeader,
 } from "../ui/drawer";
 import { formatNumber } from "../../../utils/formatNumber";
-import { updateProfitPerHour } from "@/actions/user.actions";
+import { getUserConfig, updateProfitPerHour } from "@/actions/user.actions";
 import { allCards } from "@/actions/tasks.actions";
 import { usePointsStore } from "@/store/PointsStore";
 
@@ -36,7 +36,7 @@ const TaskList = () => {
   const user = window.localStorage.getItem("authToken");
 
 
-  const {points} = usePointsStore();
+  const {points , setPoints} = usePointsStore();
 
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -59,7 +59,10 @@ const TaskList = () => {
 
   const handleTeamClick = (team: Team) => {
     setSelectedTeam(team);
-    setIsDrawerOpen(true);
+    const result =  isEligibleToBuy(team);
+    if(result){
+     setIsDrawerOpen(true);
+    }
   };
 
   const filteredCards = cards.filter(
@@ -87,6 +90,11 @@ const TaskList = () => {
        setCards(combinedCards);
        setIsDrawerOpen(false)
        setButtonLoading(false);
+
+     const {user} =   await getUserConfig(userId!);
+        setPoints(user?.points)
+
+
       }else {
         alert(result.message);
       }
@@ -196,10 +204,15 @@ const TaskList = () => {
               </div>
             </TabsContent>
           </Tabs>
-          <Drawer open={isDrawerOpen}  onClose={() => setIsDrawerOpen(false)}>
+          <Drawer  open={isDrawerOpen}  onClose={() => setIsDrawerOpen(false)}>
               {selectedTeam && (
-            <DrawerContent className="bg-[#14161a] border-none">
-              <DrawerHeader className="flex justify-between items-center"></DrawerHeader>
+            <DrawerContent className="bg-[#14161a] border-none ">
+              
+              <DrawerHeader  onClick={() => setIsDrawerOpen(false)} className="flex text-white rounded-full justify-end  mr-0  w-full  items-center">
+                  <div className="p-3 px-5 bg-[#1C1F23] rounded-full">
+                    x
+                  </div>
+              </DrawerHeader>
                 <div className="text-center">
                   <Image
                     src={selectedTeam.image}

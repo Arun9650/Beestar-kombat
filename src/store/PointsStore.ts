@@ -18,6 +18,7 @@ type Points = {
   initializePPH: (initial: number )=> void;
   tapLimit: number;
   PPH: number;
+  setPoints : (count: number) => void
 };
 
 export const usePointsStore = create<Points>((set, get) => ({
@@ -67,4 +68,8 @@ export const usePointsStore = create<Points>((set, get) => ({
   initializePPH: (initial) => {
     set({ PPH: initial });
   },
+
+  setPoints: (count) => {
+    set({ points: count });
+  }
 }));
