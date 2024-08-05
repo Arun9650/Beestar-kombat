@@ -31,41 +31,43 @@ model User {
   accounts       Account[]
   sessions       Session[]
   authenticators Authenticator[]
-  loginStreak        Int      @default(0)
+  loginStreak    Int             @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  card2 Card2[]
+  userCard UserCard[]
 }
 
 model Card {
-  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
   title             String
   image             String
   baseCost          Float
   basePPH           Float
-  baseLevel         Int       @default(0)
+  baseLevel         Int        @default(0)
   category          String
-  requiredCardId    String?   @db.ObjectId // ID of the prerequisite card
+  discription       String?
+  requiredCardId    String?    @db.ObjectId // ID of the prerequisite card
   requiredCardLevel Int?
   requiredCardTitle String?
+  users             UserCard[]
 }
 
-
-model Card2 {
-  id                String    @id @default(auto()) @map("_id") @db.ObjectId
-  title             String
-  image             String
-  baseCost          Float
-  basePPH           Float
-  baseLevel         Int       @default(0)
-  userId      String 
-  user        User      @relation(fields: [userId], references: [chatId])
-  cardType  String
+model UserCard {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  image       String
+  baseCost    Float
+  basePPH     Float
+  baseLevel   Int    @default(0)
+  userId      String
+  cardId      String @db.ObjectId
+  user        User   @relation(fields: [userId], references: [chatId])
+  card        Card   @relation(fields: [cardId], references: [id])
+  category    String
+  discription String?
 }
-
-
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId

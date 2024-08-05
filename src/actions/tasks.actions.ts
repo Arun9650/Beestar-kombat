@@ -91,7 +91,7 @@ export async function allCards (userId: string) {
    console.log("🚀 ~ allCards ~ allCards:", allCards)
 
    // Fetch user's purchased cards
-   const userCards = await prisma.card2.findMany({
+   const userCards = await prisma.userCard.findMany({
      where: { userId },
    });
    console.log("🚀 ~ allCards ~ userCards:", userCards);
@@ -100,10 +100,11 @@ export async function allCards (userId: string) {
 
  
    // Create a map of userCards for quick lookup
-  const userCardsMap = new Map(userCards.map(card => [card.id, card]));
+  const userCardsMap = new Map(userCards.map(card => [card.cardId, card]));
 
   // Combine allCards and userCards
   const combinedCards = allCards.map(card => userCardsMap.get(card.id) || card);
+  console.log("🚀 ~ allCards ~ combinedCards:", combinedCards)
  
    return { combinedCards };
 }

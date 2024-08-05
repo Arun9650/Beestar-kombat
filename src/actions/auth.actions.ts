@@ -63,8 +63,10 @@ export async function updateProfile(
 
 export async function authenticateUserOrCreateAccount({
   chatId,
+  userName,
 }: {
   chatId: string;
+  userName: string;
 }): Promise<"success" | "unknownError" | "accountCreationFailed"> {
   try {
     const userAuth = await authenticateUser({ chatId });

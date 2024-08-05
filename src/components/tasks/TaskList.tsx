@@ -41,20 +41,12 @@ const TaskList = () => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team>();
-  console.log("🚀 ~ TaskList ~ selectedTeam:", selectedTeam)
   const [selectedCategory, setSelectedCategory] = useState<string>("PR&Team");
-  console.log("🚀 ~ TaskList ~ selectedCategory:", selectedCategory);
-
   const [cards, setCards] = useState<any[]>([]);
-  console.log("🚀 ~ TaskList ~ cards:", cards);
-
   const tabs = ["PR&Team", "Markets", "web3"];
+  const [buttonLoading, setButtonLoading] = useState(false);
 
-  interface Teams {
-    [key: string]: Team[];
-  }
 
-  // const teams: Teams = {
   //   "PR&Team": [
   //     {
   //       id: "1",
@@ -130,13 +122,10 @@ const TaskList = () => {
   const filteredCards = cards.filter(
     (card) => card.category === selectedCategory || card.cardType === selectedCategory
   );
-  console.log("🚀 ~ TaskList ~ filteredCards:", filteredCards);
 
   const isEligibleToBuy = (team:Team) => {
-    console.log("🚀 ~ isEligibleToBuy ~ team:", team)
     if (team.requiredCardId && team.requiredCardLevel) {
-      const requiredCard = cards.find((card) => card.id === team.requiredCardId);
-      console.log("🚀 ~ isEligibleToBuy ~ requiredCard:", requiredCard)
+      const requiredCard = cards.find((card) => card.id === team.requiredCardId || card.cardId === team.requiredCardId);
       return  requiredCard.baseLevel >= team.requiredCardLevel;
     }
     return true;
@@ -145,6 +134,7 @@ const TaskList = () => {
   
   const handleUpdateProfitPerHour = async (user:string, selectedTeam: Team) => {
     if (selectedTeam) {
+      setButtonLoading(true);
    const  result  =  await updateProfitPerHour(user!, selectedTeam);
      if(result.success){
 
@@ -152,6 +142,7 @@ const TaskList = () => {
        const { combinedCards } = await allCards(userId!);
        setCards(combinedCards);
        setIsDrawerOpen(false)
+       setButtonLoading(false);
       }else {
         alert(result.message);
       }
@@ -316,7 +307,7 @@ const TaskList = () => {
                   }
                   className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700"
                   >
-                  Go ahead
+                 {buttonLoading  ? "Loading" : "Go ahead"}
                 </Button>
               </DrawerFooter>
             </DrawerContent>

@@ -9,6 +9,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const params = useSearchParams()
     const id = params.get('id')
+    const userName = params.get('userName');
     // const id = '123456789'
 
     // const pointsInLocalStorage = window.localStorage.getItem("points")
@@ -18,9 +19,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const authentication = async () => {
             if (!authToken && authToken != id) {
 
-                const authenticate = await authenticateUserOrCreateAccount({ chatId: id! })
+                const authenticate = await authenticateUserOrCreateAccount({ chatId: id! , userName: userName! })
                 if (authenticate === 'success') {
-                    localStorage.setItem('authToken', `${id}`)
+                    localStorage.setItem('authToken', `${id}`);
+                    localStorage.setItem('userName', `${userName}`);
                 }
                 else {
                     alert("Could not authenticate you")

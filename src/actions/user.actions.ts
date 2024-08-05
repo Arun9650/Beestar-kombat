@@ -65,6 +65,7 @@ export async function creditProfitPerHour(id: string) {
   }
 }
 export async function updateProfitPerHour(id: string, selectedTeam: Team) {
+  console.log("🚀 ~ updateProfitPerHour ~ selectedTeam:", selectedTeam)
   console.log("🚀 ~ creditProfitPerHour ~ id:", id);
   const user = await prisma.user.findUnique({ where: { chatId: id } });
 
@@ -73,7 +74,7 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
   }
 
   try {
-    const purchaseCard = await prisma.card2.findUnique({
+    const purchaseCard = await prisma.userCard.findUnique({
       where: { id: selectedTeam.id },
     });
 
@@ -86,7 +87,7 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
         },
       });
 
-      await prisma.card2.update({
+      await prisma.userCard.update({
         where: { id: selectedTeam.id },
         data: { baseLevel: { increment: 1 } },
       });
@@ -95,16 +96,16 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
     } else {
       const increasedBaseCost = selectedTeam.baseCost * 1.2;
       const increasedBasePPH = selectedTeam.basePPH * 1.05;
-      await prisma.card2.create({
+      await prisma.userCard.create({
         data: {
+          cardId: selectedTeam.id,
           title: selectedTeam.title,
           image: selectedTeam.image,
-          id: selectedTeam.id,
           baseLevel: 1,
           basePPH: increasedBasePPH,
           baseCost: increasedBaseCost,
           userId: id,
-          cardType: selectedTeam.category,
+          category: selectedTeam.category,
         },
       });
 

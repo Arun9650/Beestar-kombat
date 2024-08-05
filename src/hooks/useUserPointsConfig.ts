@@ -25,6 +25,8 @@ const useUserPointsConfig = () => {
       const config = await getUserConfig(`${user}`);
       const currentState = config.user;
 
+      
+
       if (energyCapacity < currentState.capacity) {
         setEnergyCapacity(currentState.capacity);
       }
