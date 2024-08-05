@@ -252,9 +252,9 @@ const TaskList = () => {
                 <Button
                   onClick={() =>
                     updateProfitPerHour(
-                      user,
-                      selectedTeam?.profit,
-                      selectedTeam?.cost
+                      user!,
+                      selectedTeam?.profit as number,
+                      selectedTeam?.cost as number
                     )
                   }
                   className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700"
