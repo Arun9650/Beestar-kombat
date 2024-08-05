@@ -47,63 +47,6 @@ const TaskList = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
 
 
-  //   "PR&Team": [
-  //     {
-  //       id: "1",
-  //       name: "CEO",
-  //       profit: 100,
-  //       cost: 100,
-  //       image: CEO,
-  //       description:
-  //         "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
-  //     },
-  //     {
-  //       id: "2",
-  //       name: "Marketing",
-  //       profit: 200,
-  //       cost: 100,
-  //       image: CEO,
-  //       description:
-  //         "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
-  //       requiredId: 1,
-  //       requiredLevel: 2,
-  //       requiredCardName: "CEO",
-  //     },
-  //     {
-  //       id: "3",
-  //       name: "IT team",
-  //       profit: 240,
-  //       cost: 200,
-  //       description:
-  //         "Build and maintain your company's IT infrastructure with the best team.",
-  //       image: CEO,
-  //     },
-  //     {
-  //       id: "4",
-  //       name: "Support team",
-  //       profit: 70,
-  //       cost: 75,
-  //       description:
-  //         "Ensure customer satisfaction with a dedicated support team.",
-  //       image: CEO,
-  //       requiredId: 3,
-  //       requiredLevel: 3,
-  //       requiredCardName: "IT team",
-  //     },
-  //   ],
-  //   Markets: [
-  //     {
-  //       id: "1",
-  //       name: "Fan tokens",
-  //       profit: 100,
-  //       cost: 100,
-  //       image: CEO,
-  //       description:
-  //         "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
-  //     },
-  //   ],
-  // };
-
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
     const fetchCards = async () => {
@@ -126,6 +69,7 @@ const TaskList = () => {
   const isEligibleToBuy = (team:Team) => {
     if (team.requiredCardId && team.requiredCardLevel) {
       const requiredCard = cards.find((card) => card.id === team.requiredCardId || card.cardId === team.requiredCardId);
+      console.log("🚀 ~ isEligibleToBuy ~ requiredCard:", requiredCard)
       return  requiredCard.baseLevel >= team.requiredCardLevel;
     }
     return true;
@@ -148,6 +92,8 @@ const TaskList = () => {
       }
     }
   };
+
+
 
 
   return (
@@ -250,7 +196,7 @@ const TaskList = () => {
               </div>
             </TabsContent>
           </Tabs>
-          <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+          <Drawer open={isDrawerOpen}  onClose={() => setIsDrawerOpen(false)}>
               {selectedTeam && (
             <DrawerContent className="bg-[#14161a] border-none">
               <DrawerHeader className="flex justify-between items-center"></DrawerHeader>
