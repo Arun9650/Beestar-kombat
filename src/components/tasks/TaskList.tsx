@@ -12,97 +12,152 @@ import {
 } from "../ui/drawer";
 import { formatNumber } from "../../../utils/formatNumber";
 import { updateProfitPerHour } from "@/actions/user.actions";
+import { allCards } from "@/actions/tasks.actions";
+import { usePointsStore } from "@/store/PointsStore";
 
-
-export  interface Team {
+export interface Team {
   id: string;
-  name: string;
-  profit: number;
-  cost: number;
-  image: StaticImageData| string;
+  title: string;
+  image:  string;
+  basePPH: number;
+  baseCost: number;
+  baseLevel: number;
   description?: string;
-  requiredId?: number;
-  requiredLevel?: number;
-  requiredCardName?: string;
+  requiredCardId?: number;
+  requiredCardLevel?: number;
+  requiredCardTitle?: string;
+  category: string;
 }
+
+
+
 
 const TaskList = () => {
   const user = window.localStorage.getItem("authToken");
 
+
+  const {points} = usePointsStore();
+
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>();
+  const [selectedTeam, setSelectedTeam] = useState<Team>();
+  console.log("🚀 ~ TaskList ~ selectedTeam:", selectedTeam)
+  const [selectedCategory, setSelectedCategory] = useState<string>("PR&Team");
+  console.log("🚀 ~ TaskList ~ selectedCategory:", selectedCategory);
 
   const [cards, setCards] = useState<any[]>([]);
+  console.log("🚀 ~ TaskList ~ cards:", cards);
 
-  const tabs = ["PR&Team", "Markets", "Web3"];
-
+  const tabs = ["PR&Team", "Markets", "web3"];
 
   interface Teams {
     [key: string]: Team[];
   }
 
-  const teams: Teams = {
-    "PR&Team": [
-      {
-        id: "1",
-        name: "CEO",
-        profit: 100,
-        cost: 100,
-        image: CEO,
-        description:
-          "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
-      },
-      {
-        id: "2", 
-        name: "Marketing",
-        profit: 200,
-        cost: 100,
-        image: CEO,
-        description:
-          "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
-          requiredId: 1,
-          requiredLevel: 2,
-          requiredCardName: "CEO",
-      },
-      {
-        id: "3", 
-        name: "IT team",
-        profit: 240,
-        cost: 200,
-        description:
-          "Build and maintain your company's IT infrastructure with the best team.",
-        image: CEO,
-      },
-      {
-        id: "4", 
-        name: "Support team",
-        profit: 70,
-        cost: 75,
-        description:
-          "Ensure customer satisfaction with a dedicated support team.",
-        image: CEO,
-        requiredId: 3,
-        requiredLevel: 3,
-        requiredCardName: "IT team",
-      },
-    ],
-    Markets: [
-      {
-        id: "1",
-        name: "Fan tokens",
-        profit: 100,
-        cost: 100,
-        image: CEO,
-        description:
-          "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
-      },
-    ],
-  };
+  // const teams: Teams = {
+  //   "PR&Team": [
+  //     {
+  //       id: "1",
+  //       name: "CEO",
+  //       profit: 100,
+  //       cost: 100,
+  //       image: CEO,
+  //       description:
+  //         "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
+  //     },
+  //     {
+  //       id: "2",
+  //       name: "Marketing",
+  //       profit: 200,
+  //       cost: 100,
+  //       image: CEO,
+  //       description:
+  //         "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
+  //       requiredId: 1,
+  //       requiredLevel: 2,
+  //       requiredCardName: "CEO",
+  //     },
+  //     {
+  //       id: "3",
+  //       name: "IT team",
+  //       profit: 240,
+  //       cost: 200,
+  //       description:
+  //         "Build and maintain your company's IT infrastructure with the best team.",
+  //       image: CEO,
+  //     },
+  //     {
+  //       id: "4",
+  //       name: "Support team",
+  //       profit: 70,
+  //       cost: 75,
+  //       description:
+  //         "Ensure customer satisfaction with a dedicated support team.",
+  //       image: CEO,
+  //       requiredId: 3,
+  //       requiredLevel: 3,
+  //       requiredCardName: "IT team",
+  //     },
+  //   ],
+  //   Markets: [
+  //     {
+  //       id: "1",
+  //       name: "Fan tokens",
+  //       profit: 100,
+  //       cost: 100,
+  //       image: CEO,
+  //       description:
+  //         "Develop your management skills as a company founder. Imporve your leadership skills. Attract the best people to your team",
+  //     },
+  //   ],
+  // };
+
+  useEffect(() => {
+    const userId = window.localStorage.getItem("authToken");
+    const fetchCards = async () => {
+      const { combinedCards } = await allCards(userId!);
+      setCards(combinedCards);
+    };
+
+    fetchCards();
+  }, []);
 
   const handleTeamClick = (team: Team) => {
     setSelectedTeam(team);
     setIsDrawerOpen(true);
   };
+
+  const filteredCards = cards.filter(
+    (card) => card.category === selectedCategory || card.cardType === selectedCategory
+  );
+  console.log("🚀 ~ TaskList ~ filteredCards:", filteredCards);
+
+  const isEligibleToBuy = (team:Team) => {
+    console.log("🚀 ~ isEligibleToBuy ~ team:", team)
+    if (team.requiredCardId && team.requiredCardLevel) {
+      const requiredCard = cards.find((card) => card.id === team.requiredCardId);
+      console.log("🚀 ~ isEligibleToBuy ~ requiredCard:", requiredCard)
+      return  requiredCard.baseLevel >= team.requiredCardLevel;
+    }
+    return true;
+  };
+
+  
+  const handleUpdateProfitPerHour = async (user:string, selectedTeam: Team) => {
+    if (selectedTeam) {
+   const  result  =  await updateProfitPerHour(user!, selectedTeam);
+     if(result.success){
+
+       const userId = window.localStorage.getItem("authToken");
+       const { combinedCards } = await allCards(userId!);
+       setCards(combinedCards);
+       setIsDrawerOpen(false)
+      }else {
+        alert(result.message);
+      }
+    }
+  };
+
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -129,94 +184,95 @@ const TaskList = () => {
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className=" data-[state=active]:bg-[#1C1F23]  data-[state=active]:text-white text-white"
+                  onClick={() => setSelectedCategory(tab)}
+                  className="capitalize data-[state=active]:bg-[#1C1F23]  data-[state=active]:text-white text-white"
                 >
                   {tab}
                 </TabsTrigger>
               ))}
             </TabsList>
-            {tabs.map((tab) => (
-              <TabsContent
-                key={tab}
-                value={tab}
-                className="w-full   rounded-lg"
-              >
-                <div className="grid grid-cols-2 gap-4 ">
-                  {teams[tab] &&
-                    teams[tab].map((team, index) => (
-                      <div
-                        key={index}
-                        className="px-3 py-2 bg-[#272A2F] rounded-3xl"
-                        onClick={() => handleTeamClick(team)}
-                      >
-                        <div className="flex items-center gap-4 border-b pb-2 ">
-                          <Image
-                            src={team.image}
-                            alt={team.name}
-                            width={50}
-                            height={50}
-                            className=" object-cover mb-2 rounded-lg"
-                          />
+            <TabsContent
+              value={selectedCategory}
+              className="w-full   rounded-lg"
+            >
+              <div className="grid grid-cols-2 gap-4 ">
+                {filteredCards.map((team, index) => (
+                  <div
+                    key={index}
+                    className="px-3 py-2 bg-[#272A2F] rounded-3xl"
+                    onClick={() => handleTeamClick(team)}
+                  >
+                    <div className="flex items-center gap-4 border-b pb-2 ">
+                      <Image
+                        src={team.image}
+                        alt={team.name}
+                        width={50}
+                        height={50}
+                        className=" object-cover mb-2 rounded-lg"
+                      />
 
-                          <div className="flex flex-col justify-between gap-4">
-                            <h3 className="text-white font-normal text-[0.7rem]">
-                              {team.name}
-                            </h3>
-                            <p className="text-[#abadb2] text-[0.7rem] font-normal">
-                              Profit per hour:
-                              <br />
-                              <span className="text-[#abadb2]">
-                                +{team.profit}
-                              </span>
-                            </p>
-                          </div>
-                        </div>
+                      <div className="flex flex-col justify-between gap-4">
+                        <h3 className="text-white font-normal text-[0.7rem]">
+                          {team.title}
+                        </h3>
+                        <p className="text-[#abadb2] text-[0.65rem] font-normal">
+                          Profit per hour:
+                          <br />
+                          <span className="text-[#abadb2]">
+                            +{team.basePPH}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
 
-                        <div className="flex items-center mt-2 ">
-                          <div className="border-r text-[.7rem]   text-center w-12">
-                            lvl0
-                          </div>
-                          <div>
-                            <p className="text-gray-400 ml-4 text-xs gap-1 flex items-center font-thin">
-                              {
-                                team.requiredId ? (<span className="text-white font-semibold">
-                                 {team.requiredCardName}
-                                 <br />
-                                 {team.requiredLevel}
-                                
-                                </span>) : (<>
-                                <Image
+                    <div className="flex items-center mt-2 ">
+                      <div className="border-r text-[.7rem]   text-center w-12">
+                        lvl {team.baseLevel}
+                      </div>
+                      <div>
+                        <p className="text-gray-400 ml-4 text-xs gap-1 flex items-center font-thin">
+                          {isEligibleToBuy(team) ? (<>
+                            <Image
                                 src={dollarCoin}
                                 alt="coin"
                                 className="w-4 h-4"
                               />
                               <span className="text-white font-semibold">
-                                {formatNumber(team.cost)}{" "}
-                              </span></>)
-                              }
-                            </p>
-                          </div>
-                        </div>
+                                {formatNumber(team.baseCost)}{" "}
+                              </span>
+                            
+                          </>
+                          ) : (
+                            <>
+                              <span className="text-white font-semibold">
+                              {team.requiredCardTitle}
+                              <br />
+                            lvl  {team.requiredCardLevel}
+                            </span>
+                            </>
+                          )}
+                        </p>
                       </div>
-                    ))}
-                </div>
-              </TabsContent>
-            ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
           </Tabs>
           <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+              {selectedTeam && (
             <DrawerContent className="bg-[#14161a] border-none">
               <DrawerHeader className="flex justify-between items-center"></DrawerHeader>
-              {selectedTeam && (
                 <div className="text-center">
                   <Image
                     src={selectedTeam.image}
-                    alt={selectedTeam.name}
+                    alt={selectedTeam.title}
                     width={100}
                     height={100}
                     className="mx-auto mb-4"
                   />
                   <h2 className="text-2xl font-medium text-white mb-2">
-                    {selectedTeam.name}
+                    {selectedTeam.title}
                   </h2>
                   <p className="text-white mb-4 max-w-96 font-light mx-auto">
                     {selectedTeam.description}
@@ -231,7 +287,7 @@ const TaskList = () => {
                         width={20}
                         height={20}
                       />
-                      +{selectedTeam.profit}
+                      +{selectedTeam.basePPH}
                     </span>
                   </p>
                   <p className="text-white my-4">
@@ -242,27 +298,29 @@ const TaskList = () => {
                         width={40}
                         height={40}
                       />
-                      {selectedTeam.cost}{" "}
+                      {selectedTeam.baseCost}{" "}
                     </span>
                   </p>
                 </div>
-              )}
 
               <DrawerFooter>
                 <Button
+
+
+                  disabled={points < selectedTeam.baseCost}
                   onClick={() =>
-                    updateProfitPerHour(
+                    handleUpdateProfitPerHour(
                       user!,
-                      selectedTeam?.profit as number,
-                      selectedTeam?.cost as number
+                      selectedTeam
                     )
                   }
                   className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700"
-                >
+                  >
                   Go ahead
                 </Button>
               </DrawerFooter>
             </DrawerContent>
+                )}
           </Drawer>
         </div>
       </div>

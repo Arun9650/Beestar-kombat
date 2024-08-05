@@ -1,5 +1,6 @@
 "use client";
 import { creditProfitPerHour, getUserConfig } from "@/actions/user.actions";
+import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -14,10 +15,12 @@ const useUserPointsConfig = () => {
     setMultiClickLevel,
   } = useBoostersStore();
 
+  const { points,  initializePoints } = usePointsStore()
+
+
   useEffect(() => {
     const user = window.localStorage.getItem("authToken");
-    console.log("🚀 ~ useEffect ~ user:", user)
-
+    let initialPoints = window.localStorage.getItem("points")
     async function update() {
       const config = await getUserConfig(`${user}`);
       const currentState = config.user;
@@ -31,6 +34,13 @@ const useUserPointsConfig = () => {
       if (multiClickLevel < currentState.clicks) {
         setMultiClickLevel(currentState.clicks);
       }
+
+
+      const intPoints = initialPoints ? Number(initialPoints) : 0
+      const biggerNumber = intPoints > currentState.points ? intPoints : currentState.points;
+      if (points === 0) {
+          intPoints > 0 && initializePoints(biggerNumber)
+      }      
     }
 
     update();
@@ -38,7 +48,6 @@ const useUserPointsConfig = () => {
 
   useEffect(() => {
     const user = window.localStorage.getItem("authToken");
-    console.log("🚀 ~ useEffect ~ user:", user)
     const pphReward = async () => {
       if (user) {
         const credited = await creditProfitPerHour(user);

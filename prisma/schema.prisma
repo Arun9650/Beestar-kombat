@@ -31,7 +31,7 @@ model User {
   accounts       Account[]
   sessions       Session[]
   authenticators Authenticator[]
-   loginStreak        Int      @default(0)
+  loginStreak        Int      @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -39,16 +39,18 @@ model User {
   card2 Card2[]
 }
 
-// model Card {
-//   id                String    @id @default(auto()) @map("_id") @db.ObjectId
-//   title             String
-//   image             String
-//   baseCost          Float
-//   basePPH           Float
-//   baseLevel         Int       @default(0)
-//   requiredCardId    String?   @db.ObjectId // ID of the prerequisite card
-//   requiredCardLevel Int?
-// }
+model Card {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  image             String
+  baseCost          Float
+  basePPH           Float
+  baseLevel         Int       @default(0)
+  category          String
+  requiredCardId    String?   @db.ObjectId // ID of the prerequisite card
+  requiredCardLevel Int?
+  requiredCardTitle String?
+}
 
 
 model Card2 {
@@ -65,18 +67,6 @@ model Card2 {
 
 
 
-// model UserCard {
-//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-//   userId      String   
-//   cardId      String   @db.ObjectId
-//   purchaseDate DateTime @default(now())
-//   level       Int       @default(1)
-
-//   user        User      @relation(fields: [userId], references: [id])
-//   card        Card      @relation(fields: [cardId], references: [id])
-
-//   @@unique([userId, cardId])
-// }
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String

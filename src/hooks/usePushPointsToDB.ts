@@ -8,9 +8,7 @@ export const usePushPointsToDB = () => {
   // const name = process.env.NEXT_PUBLIC_TAPPED_POINTS_KEYWORD!;
 
   const { points } = usePointsStore();
-  console.log("🚀 ~ usePushPointsToDB ~ points:", points)
   const user = window.localStorage.getItem("authToken");
-  console.log("🚀 ~ usePushPointsToDB ~ user:", user)
   const push2db = useCallback(async () => {
     const done = await updatePointsInDB({ points, id: user! });
     console.log({ status: done });

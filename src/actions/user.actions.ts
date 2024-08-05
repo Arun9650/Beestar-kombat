@@ -4,10 +4,8 @@ import { Team } from "@/components/tasks/TaskList";
 import prisma from "@/lib/prisma";
 
 export async function getUserConfig(id: string) {
-  console.log("🚀 ~ getUserConfig ~ id:", id)
+  console.log("🚀 ~ getUserConfig ~ id:", id);
 
-
-  
   const user = await prisma.user.findUnique({ where: { chatId: id } });
 
   //   if (!user) throw new Error("COuld not find user");
@@ -17,6 +15,10 @@ export async function getUserConfig(id: string) {
         recharge: 0,
         clicks: 0,
         capacity: 0,
+        profit: 0,
+        profitPerHour: 0,
+        lastProfitDate: 0,
+        points: 0,
       },
     };
 
@@ -25,12 +27,16 @@ export async function getUserConfig(id: string) {
       recharge: user.refillRate,
       clicks: user.pointPerTap,
       capacity: user.rechargeLimit,
+      profit: user.profit,
+      profitPerHour: user.profitPerHour,
+      lastProfitDate: user.lastProfitDate,
+      points: user.points,
     },
   };
 }
 
 export async function creditProfitPerHour(id: string) {
-  console.log("🚀 ~ creditProfitPerHour ~ id:", id)
+  console.log("🚀 ~ creditProfitPerHour ~ id:", id);
   const user = await prisma.user.findUnique({ where: { chatId: id } });
   try {
     if (!user?.lastProfitDate) {
@@ -58,22 +64,65 @@ export async function creditProfitPerHour(id: string) {
     console.log(e);
   }
 }
-export async function updateProfitPerHour(id: string, profitPerHour: number, cost: number) {
-  console.log("🚀 ~ creditProfitPerHour ~ id:", id)
+export async function updateProfitPerHour(id: string, selectedTeam: Team) {
+  console.log("🚀 ~ creditProfitPerHour ~ id:", id);
   const user = await prisma.user.findUnique({ where: { chatId: id } });
+
+  if (!user) {
+    return { success: false, message: 'User not found' };
+  }
+
   try {
-    
+    const purchaseCard = await prisma.card2.findUnique({
+      where: { id: selectedTeam.id },
+    });
+
+    if (purchaseCard) {
+      await prisma.user.update({
+        where: { chatId: id },
+        data: {
+          profitPerHour: { increment: selectedTeam.basePPH },
+          points: { decrement: selectedTeam.baseCost },
+        },
+      });
+
+      await prisma.card2.update({
+        where: { id: selectedTeam.id },
+        data: { baseLevel: { increment: 1 } },
+      });
+
+      return { success: true, message: 'Card updated successfully' };
+    } else {
+      const increasedBaseCost = selectedTeam.baseCost * 1.2;
+      const increasedBasePPH = selectedTeam.basePPH * 1.05;
+      await prisma.card2.create({
+        data: {
+          title: selectedTeam.title,
+          image: selectedTeam.image,
+          id: selectedTeam.id,
+          baseLevel: 1,
+          basePPH: increasedBasePPH,
+          baseCost: increasedBaseCost,
+          userId: id,
+          cardType: selectedTeam.category,
+        },
+      });
 
       await prisma.user.update({
         where: { chatId: id },
-        data: { profitPerHour: {increment:  profitPerHour }, points: {decrement:  cost} },
+        data: {
+          profitPerHour: { increment: selectedTeam.basePPH },
+          points: { decrement: selectedTeam.baseCost },
+        },
       });
-    
+
+      return { success: true, message: 'Card created and user updated successfully' };
+    }
   } catch (e) {
-    console.log(e);
+    console.error(e);
+    return { success: false, message: 'An error occurred while updating the profit per hour' };
   }
 }
-
 
 // export async function purchaseCard(userid: string, cardItem: Team) {
 //   // Find the card details
@@ -85,9 +134,6 @@ export async function updateProfitPerHour(id: string, profitPerHour: number, cos
 //     throw new Error('Card not found');
 //   }
 
- 
-
-
 //   if (card) {
 //     // If the user already has the card, update its level and the user's PPH
 //     const updatedLevel = card.baseLevel + 1;
@@ -95,8 +141,8 @@ export async function updateProfitPerHour(id: string, profitPerHour: number, cos
 
 //     await prisma.card2.update({
 //       where: {id: card.id},
-//       data: { baseLevel: updatedLevel, 
-//         basePPH: 
+//       data: { baseLevel: updatedLevel,
+//         basePPH:
 //         },
 //     });
 
@@ -126,6 +172,5 @@ export async function updateProfitPerHour(id: string, profitPerHour: number, cos
 //     points: { decrement:  cardItem.cost} },
 //     });
 //   }
-
 
 // }

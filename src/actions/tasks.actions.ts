@@ -85,27 +85,27 @@ export async function checkCompletedTasks({
 // }
 
 
-// export async function allCards (userId: string) {
-//    // Fetch all cards
-//    const allCards = await prisma.card.findMany();
-//    console.log("🚀 ~ allCards ~ allCards:", allCards)
+export async function allCards (userId: string) {
+   // Fetch all cards
+   const allCards = await prisma.card.findMany();
+   console.log("🚀 ~ allCards ~ allCards:", allCards)
 
-//    // Fetch user's purchased cards
-//    const userCards = await prisma.userCard.findMany({
-//      where: { userId },
-//      include: { card: true }, // Include card details
-//    });
-//    console.log("🚀 ~ allCards ~ userCards:", userCards)
+   // Fetch user's purchased cards
+   const userCards = await prisma.card2.findMany({
+     where: { userId },
+   });
+   console.log("🚀 ~ allCards ~ userCards:", userCards);
+
+
+
  
-//    // Create a map of user purchased card IDs for easy lookup
-//    const purchasedCardIds = new Set(userCards.map(userCard => userCard.cardId));
-//    console.log("🚀 ~ allCards ~ purchasedCardIds:", purchasedCardIds)
+   // Create a map of userCards for quick lookup
+  const userCardsMap = new Map(userCards.map(card => [card.id, card]));
+
+  // Combine allCards and userCards
+  const combinedCards = allCards.map(card => userCardsMap.get(card.id) || card);
  
-//    // Separate the cards into purchased and not purchased
-//    const purchasedCards = userCards.map(userCard => userCard.card);
-//    const notPurchasedCards = allCards.filter(card => !purchasedCardIds.has(card.id));
- 
-//    return { purchasedCards, notPurchasedCards };
-// }
+   return { combinedCards };
+}
 
 
