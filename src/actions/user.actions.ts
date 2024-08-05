@@ -74,12 +74,13 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
     });
     const increasedBaseCost = selectedTeam.baseCost * 1.2;
     const increasedBasePPH = selectedTeam.basePPH * 1.05;
+    const remainingPoints = user.points - selectedTeam.baseCost;
     if (purchaseCard) {
       await prisma.user.update({
         where: { chatId: id },
         data: {
           profitPerHour: { increment: selectedTeam.basePPH },
-          points: { decrement: selectedTeam.baseCost  },
+          points:  remainingPoints ,
         },
       });
 
