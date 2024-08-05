@@ -15,7 +15,7 @@ const useUserPointsConfig = () => {
     setMultiClickLevel,
   } = useBoostersStore();
 
-  const { points,  initializePoints } = usePointsStore()
+  const { points,  initializePoints, initializePPH } = usePointsStore()
 
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const useUserPointsConfig = () => {
       const config = await getUserConfig(`${user}`);
       const currentState = config.user;
 
-      
+
 
       if (energyCapacity < currentState.capacity) {
         setEnergyCapacity(currentState.capacity);
@@ -42,6 +42,8 @@ const useUserPointsConfig = () => {
       const biggerNumber = intPoints > currentState.points ? intPoints : currentState.points;
       if (points === 0) {
           intPoints > 0 && initializePoints(biggerNumber)
+          initializePPH(currentState.profitPerHour);
+
       }      
     }
 

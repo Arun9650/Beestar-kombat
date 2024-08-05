@@ -15,7 +15,9 @@ type Points = {
   lastTap: number;
   tapInBoostMode: (count: number) => void;
   initializePoints: (initial: number) => void;
+  initializePPH: (initial: number )=> void;
   tapLimit: number;
+  PPH: number;
 };
 
 export const usePointsStore = create<Points>((set, get) => ({
@@ -25,6 +27,7 @@ export const usePointsStore = create<Points>((set, get) => ({
   lastTap: 0,
   skin: "/assets/images/space-bg.avif",
   tapLimit: 500,
+  PPH: 0,
   
   addPoints: (count) => {
     const { points } = get();
@@ -59,5 +62,9 @@ export const usePointsStore = create<Points>((set, get) => ({
   },
   initializePoints: (initial) => {
     set({ points: initial });
+  },
+
+  initializePPH: (initial) => {
+    set({ PPH: initial });
   },
 }));

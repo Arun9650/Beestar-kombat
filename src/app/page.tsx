@@ -5,6 +5,10 @@ import Header from '@/components/Header';
 import CurrentPoints from '@/components/tasks/CurrentPoints';
 
 export default function Home() {
+
+
+  
+
   return (
     <div className='bg-[#1d2025] h-full text-white/80 overflow-y-auto'>
     <section className="flex  items-center    justify-between flex-col   ">

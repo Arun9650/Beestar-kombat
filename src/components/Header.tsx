@@ -5,8 +5,12 @@ import { beeAvatar, binanceLogo, dollarCoin } from '../../public/newImages'
 import Info from '../../public/icons/Info'
 import Settings from '../../public/icons/Settings'
 import { useRouter } from 'next/navigation'
+import { usePointsStore } from '@/store/PointsStore'
 const Header = () => {
   const router = useRouter();
+
+  const userName = window.localStorage.getItem('userName');
+  const {PPH} = usePointsStore();
   return (
     <div className='w-full px-4 z-10'>
          <div className="w-full  z-10">
@@ -14,7 +18,7 @@ const Header = () => {
             
             <button onClick={() => router.push('skin')} className='flex items-center  gap-4 mt-2 mb-0 '>
               <Image src={beeAvatar} alt="Avatar" width={25} height={25} className='rounded-2xl' />
-              <p className="text-xs">{"Arun"} (CEO)</p>
+              <p className="text-xs">{userName} (CEO)</p>
             </button>
           </div>
           <div className="flex items-center justify-between space-x-4 mt-1">
@@ -38,7 +42,7 @@ const Header = () => {
                 <p className="text-[10px] text-[#85827d] font-medium">Profit per hour</p>
                 <div className="flex items-center justify-center space-x-1">
                   <Image src={dollarCoin} alt="Dollar Coin" className="w-[18px] h-[18px]" />
-                  <p className="text-sm">{"0.00"}</p>
+                  <p className="text-sm">{PPH}</p>
                   <Info size={20} className="text-[#43433b]" />
                 </div>
               </div>
