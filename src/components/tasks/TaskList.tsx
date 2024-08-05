@@ -36,7 +36,7 @@ const TaskList = () => {
   const user = window.localStorage.getItem("authToken");
 
 
-  const {points , setPoints} = usePointsStore();
+  const {points , setPoints, setPPH} = usePointsStore();
 
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -93,6 +93,7 @@ const TaskList = () => {
 
      const {user} =   await getUserConfig(userId!);
         setPoints(user?.points)
+        setPPH(user?.profitPerHour)
 
 
       }else {
