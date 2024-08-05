@@ -87,8 +87,8 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
       await prisma.userCard.update({
         where: { id: selectedTeam.id },
         data: { baseLevel: { increment: 1 }, 
-          basePPH: { increment: increasedBasePPH },
-          baseCost: { increment: increasedBaseCost } },
+          basePPH:  increasedBasePPH ,
+          baseCost:  increasedBaseCost  },
       });
 
       return { success: true, message: 'Card updated successfully' };
