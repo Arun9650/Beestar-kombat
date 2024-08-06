@@ -13,7 +13,7 @@ export type User = {
 export type User2 = Omit<User, "id, createdAt, updatedAt">;
 
 export async function createAccount(
-  chatId: string, name: string
+  chatId: string, name: string, referredByUser?: string
 ): Promise<"success" | "accountAlreadyExist" | "unknownError"> {
   try {
     const chatExist = await prisma.user.findUnique({
@@ -21,7 +21,18 @@ export async function createAccount(
     });
     if (chatExist) return "accountAlreadyExist";
 
-    await prisma.user.create({ data: { chatId, points: 0, name } });
+
+
+    if (referredByUser) {
+      const referredUser = await prisma.user.findUnique({ where: { chatId: referredByUser } });
+      if (referredUser) {
+        await prisma.user.update({ where: { chatId: referredByUser }, data: { points: { increment: 5000 } } });
+      }
+      await prisma.user.create({ data: { chatId, points: 5000, name } });
+    }else {
+      await prisma.user.create({ data: { chatId, points: 0, name } });
+    }
+
     return "success";
   } catch (e) {
     console.log(e);
@@ -64,14 +75,16 @@ export async function updateProfile(
 export async function authenticateUserOrCreateAccount({
   chatId,
   userName,
+  referredByUser
 }: {
   chatId: string;
   userName: string;
+  referredByUser?: string;
 }): Promise<"success" | "unknownError" | "accountCreationFailed"> {
   try {
     const userAuth = await authenticateUser({ chatId });
     if (userAuth === "userNotFound") {
-      await createAccount(chatId, userName);
+      await createAccount(chatId, userName,   referredByUser);
     }
 
     const account = await prisma.user.findUnique({ where: { chatId } });

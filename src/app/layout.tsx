@@ -6,7 +6,7 @@ import BottomMenus from "@/components/layouts/BottomMenus";
  import { ToastContainer } from 'react-toastify'
 import "react-toastify/ReactToastify.css"
 import AuthProviderWithSuspense from "@/providers/AuthProvider";
-import { TonConnectUIProvider } from '@tonconnect/ui-react';
+// import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
 const montserrat = Montserrat({ subsets: ["latin"], variable: '--montserat' });
 
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.className} min-h-screen  h-screen bg-[#1d2025] `}>
-      <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json">
+      {/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
       <AuthProviderWithSuspense>
           <LoadingScreenProvider>
             <main className=" min-h-screen backdrop-blur-[3px] flex flex-col justify-between  text-white/80">
@@ -33,7 +33,7 @@ export default function RootLayout({
           </LoadingScreenProvider>
       </AuthProviderWithSuspense>
         <ToastContainer />
-      </TonConnectUIProvider>
+      {/* </TonConnectUIProvider> */}
       </body>
     </html>
   );

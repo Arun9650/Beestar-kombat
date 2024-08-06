@@ -12,6 +12,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     console.log("🚀 ~ AuthProvider ~ id:", id)
     let userName;
     const user = params.get('userName');
+    const referredByUser = params.get('referredByUser');
 
     if(user){
         userName = user;
@@ -28,8 +29,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const authToken = window.localStorage.getItem('authToken')
         const authentication = async () => {
             if (!authToken && authToken != id) {
+                const referredByUserValue = referredByUser ?? undefined; 
 
-                const authenticate = await authenticateUserOrCreateAccount({ chatId: id! , userName: userName! })
+                const authenticate = await authenticateUserOrCreateAccount({ chatId: id! , userName: userName!, referredByUser: referredByUserValue  })
                 console.log("🚀 ~ authentication ~ authenticate:", authenticate)
                 if (authenticate === 'success') {
                     localStorage.setItem('authToken', `${id}`);

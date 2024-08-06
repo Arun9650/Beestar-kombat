@@ -106,3 +106,54 @@ export const checkRewardStatus = async (userId:string) => {
 };
 
 
+
+export const referUser = async (referrerChatId:string, referredChatId:string, referredUserName:string) => {
+  try {
+    // Find the referrer by chatId
+    const referrer = await prisma.user.findUnique({ where: { chatId: referrerChatId } });
+    if (!referrer) {
+      throw new Error('Referrer not found');
+    }
+
+    // Check if the referred user already exists
+    let referredUser = await prisma.user.findUnique({ where: { chatId: referredChatId } });
+    if (referredUser) {
+      throw new Error('User already exists');
+    }
+
+    // Create the new user
+    referredUser = await prisma.user.create({
+      data: {
+        chatId: referredChatId,
+        name: referredUserName,
+        referredById: referrer.id,
+      },
+    });
+
+    // Create a referral record
+    await prisma.referral.create({
+      data: {
+        referrerId: referrer.id,
+        referredId: referredUser.id,
+      },
+    });
+
+    // Reward both users
+    const reward = 5000; // Example reward amount
+    await prisma.user.updateMany({
+      where: {
+        OR: [{ id: referrer.id }, { id: referredUser.id }],
+      },
+      data: {
+        points: {
+          increment: reward,
+        },
+      },
+    });
+
+    return { success: true, reward };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error || 'Failed to refer user' };
+  }
+};

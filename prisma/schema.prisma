@@ -37,7 +37,23 @@ model User {
 
   userCard UserCard[]
   dailyRewards DailyReward[]
+
+  referrals    Referral[] @relation("UserReferrer")
+  referredBy   Referral?  @relation("UserReferred")
+  referredById String?    @db.ObjectId
+
 }
+
+
+model Referral {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  referrerId String   @db.ObjectId
+  referredId String   @db.ObjectId @unique
+  referrer   User     @relation("UserReferrer", fields: [referrerId], references: [id])
+  referred   User     @relation("UserReferred", fields: [referredId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
 
 
 model DailyReward {
