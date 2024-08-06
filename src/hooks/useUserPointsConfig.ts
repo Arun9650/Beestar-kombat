@@ -24,7 +24,8 @@ const useUserPointsConfig = () => {
     console.log("🚀 ~ useEffect ~ initialPoints:", initialPoints)
     async function update() {
       const config = await getUserConfig(`${user}`);
-      const currentState = config.user;
+      const currentState = config?.user;
+     if(currentState){
       console.log("🚀 ~ update ~ currentState:", currentState.points)
 
 
@@ -47,7 +48,8 @@ const useUserPointsConfig = () => {
       if (points === 0) {
           intPoints > 0 && initializePoints(biggerNumber)
           initializePPH(currentState.profitPerHour);
-      }      
+      }   
+     }   
     }
 
     update();

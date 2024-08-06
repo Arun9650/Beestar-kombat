@@ -1,7 +1,7 @@
 "use client";
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   approved,
   BeeCoin,
@@ -24,7 +24,15 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { formatNumber } from "../../../utils/formatNumber";
+import { checkRewardStatus, claimReward } from "@/actions/bonus.actions";
 
+interface Reward {
+  id?: string;
+  userId?: string;
+  day: number;
+  coins: number;
+  createdAt?: Date;
+}
 
 
 const EarnMoreCoins = () => {
@@ -46,6 +54,37 @@ const EarnMoreCoins = () => {
   const [currentDay, setCurrentDay] = useState(1);
 
   const [goal, setGoal] = React.useState(350);
+
+  const [rewards, setReward] = useState<Reward | null>(null);
+  const [nextRewardAvailable, setNextRewardAvailable] = useState(false);
+
+  const userId = window.localStorage.getItem('authToken'); // Ensure userId is properly handled
+
+  useEffect(() => {
+    const checkReward = async () => {
+      if (!userId) return;
+      const data = await checkRewardStatus(userId);
+      setNextRewardAvailable(data.nextRewardAvailable!);
+      setReward(data.lastReward!);
+    };
+
+    checkReward();
+  }, [userId]);
+
+  const handleClaimReward = async () => {
+    if (!userId) return;
+    const data = await claimReward(userId);
+    if (data.success) {
+      setNextRewardAvailable(false);
+    setReward((prev) => ({
+      day: (prev?.day || 0) + 1,
+      coins: data.reward || 0,
+    }));
+    } else {
+      console.log(data.error);
+    }
+  };
+
 
   const handleClaim = () => {
     // Handle claim logic here
@@ -125,19 +164,19 @@ const EarnMoreCoins = () => {
                     </p>
                   </div>
                   <div className="grid grid-cols-4 gap-2">
-                    {dailyRewards.map((reward, index) => (
+                    {dailyRewards.map(({day,reward }) => (
                       <div
-                        key={index}
+                        key={day}
                         className={`px-2 py-2 flex flex-col items-center justify-center gap-1 rounded-lg text-center ${
-                          currentDay >= reward.day
+                          reward && (rewards?.day ?? 0) >= day 
                             ? "bg-green-600"
                             : "bg-[#222429]"
                         }`}
                       >
-                        <p className="text-xs text-white">Day {reward.day}</p>
+                        <p className="text-xs text-white">Day {day}</p>
                         <Image src={dollarCoin} alt="Coin" className="w-5 h-5"  />
                         <p className="text-xs font-semibold  text-white">
-                          {formatNumber(reward.reward)}{" "}
+                          {formatNumber(reward)}{" "}
                         </p>
                       </div>
                     ))}
@@ -145,7 +184,8 @@ const EarnMoreCoins = () => {
 
                   <DrawerFooter className=" p-0">
                     <Button
-                      onClick={handleClaim}
+                    onClick={handleClaimReward}
+                    disabled={!nextRewardAvailable}
                       className="w-full p-7 my-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700"
                     >
                       Claim

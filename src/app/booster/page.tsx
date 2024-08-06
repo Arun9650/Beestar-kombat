@@ -1,19 +1,19 @@
 'use client'
 // pages/boosters.js
 import React from 'react';
-import { dollarCoin } from '../../../public/newImages';
+import { dollarCoin, honeycomb, recharge, rocket } from '../../../public/newImages';
 import Image from 'next/image';
 import { usePointsStore } from '@/store/PointsStore';
 import { SlArrowRight } from 'react-icons/sl';
 
 const freeBoosters = [
-  { name: 'Full energy', status: '6/6 available', icon: '/full-energy-icon.png' },
-  { name: 'Turbo', status: 'Coming soon', icon: '/turbo-icon.png' },
+  { name: 'Full energy', status: '6/6 available', icon: honeycomb },
+  { name: 'Turbo', status: 'Coming soon', icon: rocket },
 ];
 
 const boosters = [
 //   { name: 'Multitap', cost: '16K', level: '5 lvl', icon: '/multitap-icon.png' },
-  { name: 'Energy limit', cost: '2K', level: '2 lvl', icon: '/energy-limit-icon.png' },
+  { name: 'Energy limit', cost: '2K', level: '2 lvl', icon: recharge },
 ];
 
 const Boosters = () => {
@@ -34,7 +34,7 @@ const Boosters = () => {
           <h2 className="text-lg font-bold mb-2">Free daily boosters</h2>
           {freeBoosters.map((booster) => (
             <div key={booster.name} className="flex items-center bg-[#1d2025]  p-4 rounded-2xl mb-2">
-              <img src={booster.icon} alt={booster.name} className="w-8 h-8 mr-4" />
+              <Image src={booster.icon} alt={booster.name} width={50} height={50} className="w-8 h-8 mr-4" />
               <div className="flex-1">
                 <p className="font-bold">{booster.name}</p>
                 <p className="text-gray-400">{booster.status}</p>
@@ -46,11 +46,11 @@ const Boosters = () => {
           <h2 className="text-lg font-bold mb-2">Boosters</h2>
           {boosters.map((booster) => (
             <div key={booster.name} className="flex items-center bg-[#1d2025]  p-4 rounded-2xl mb-2">
-              <img src={booster.icon} alt={booster.name} className="w-8 h-8 mr-4" />
+            <Image src={booster.icon} alt={booster.name} width={50} height={50} className="w-8 h-8 mr-4" />
               <div className="flex-1">
                 <p className="font-bold">{booster.name}</p>
                 <div className="flex items-center text-gray-400">
-                  <img src="/coin-icon.png" alt="Coin" className="w-4 h-4 mr-1" />
+                  <Image src={dollarCoin} alt="Coin" width={50} height={50} className="w-4 h-4 mr-1" />
                   <span>{booster.cost}</span>
                   <span className="ml-2">{booster.level}</span>
                 </div>

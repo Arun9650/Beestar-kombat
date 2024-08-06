@@ -13,7 +13,7 @@ export type User = {
 export type User2 = Omit<User, "id, createdAt, updatedAt">;
 
 export async function createAccount(
-  chatId: string
+  chatId: string, name: string
 ): Promise<"success" | "accountAlreadyExist" | "unknownError"> {
   try {
     const chatExist = await prisma.user.findUnique({
@@ -21,7 +21,7 @@ export async function createAccount(
     });
     if (chatExist) return "accountAlreadyExist";
 
-    await prisma.user.create({ data: { chatId, points: 0 } });
+    await prisma.user.create({ data: { chatId, points: 0, name } });
     return "success";
   } catch (e) {
     console.log(e);
@@ -71,7 +71,7 @@ export async function authenticateUserOrCreateAccount({
   try {
     const userAuth = await authenticateUser({ chatId });
     if (userAuth === "userNotFound") {
-      await createAccount(chatId);
+      await createAccount(chatId, userName);
     }
 
     const account = await prisma.user.findUnique({ where: { chatId } });

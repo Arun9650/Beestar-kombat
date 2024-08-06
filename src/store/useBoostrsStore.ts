@@ -18,6 +18,8 @@ export type BoostersStore = {
   setEnergyCapacity: (val: number) => void;
   setRechargeVelocity: (vl: number) => void;
   setMultiClickLevel: (val: number) => void;
+
+  
 };
 
 export const useBoostersStore = create<BoostersStore>((set, get) => ({

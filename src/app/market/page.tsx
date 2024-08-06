@@ -8,6 +8,7 @@ const MarketPlace = () => {
     return (
         <section className=''>
             <EarnMoreCoins/>
+            
         </section>
     )
 }

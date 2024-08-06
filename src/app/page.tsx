@@ -6,11 +6,8 @@ import CurrentPoints from '@/components/tasks/CurrentPoints';
 
 export default function Home() {
 
-
-  
-
   return (
-    <div className='bg-[#1d2025] h-full text-white/80 overflow-y-auto'>
+    <div className='bg-[#1d2025]  mb-16 text-white/80 overflow-y-auto'>
     <section className="flex  items-center    justify-between flex-col   ">
     <Header/>
     <DailyItems/>
@@ -20,6 +17,7 @@ export default function Home() {
       <div className='flex flex-col  px-4  gap-y-4'>
         <GameLevelProgress />
       </div>
+
     </div>
   );
 }

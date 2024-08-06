@@ -17,6 +17,7 @@ export async function getUserConfig(id: string) {
         profitPerHour: 0,
         lastProfitDate: 0,
         points: 0,
+        name: '',
       },
     };
 
@@ -29,6 +30,7 @@ export async function getUserConfig(id: string) {
       profitPerHour: user.profitPerHour,
       lastProfitDate: user.lastProfitDate,
       points: user.points,
+      name: user.name,
     },
   };
 }
@@ -93,8 +95,8 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
 
       return { success: true, message: 'Card updated successfully' };
     } else {
-      const increasedBaseCost = selectedTeam.baseCost * 1.2;
-      const increasedBasePPH = selectedTeam.basePPH * 1.05;
+      const increasedBaseCost = selectedTeam.baseCost * 1.5;
+      const increasedBasePPH = selectedTeam.basePPH * 1.25;
       await prisma.userCard.create({
         data: {
           cardId: selectedTeam.id,
@@ -124,3 +126,25 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
   }
 }
 
+
+
+export const getLeaderboard = async () => {
+  try {
+    const leaderboard = await prisma.user.findMany({
+      orderBy: {
+        points: 'desc',
+      },
+      select: {
+        points: true,
+        chatId: true,
+        name: true,
+      },
+      take: 10, // Adjust this number to get more or fewer users
+    });
+
+    return { success: true, leaderboard };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to fetch leaderboard' };
+  }
+};

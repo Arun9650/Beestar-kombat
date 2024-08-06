@@ -1,19 +1,70 @@
 'use client'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { beeAvatar, binanceLogo, dollarCoin } from '../../public/newImages'
 import Info from '../../public/icons/Info'
 import Settings from '../../public/icons/Settings'
 import { useRouter } from 'next/navigation'
 import { usePointsStore } from '@/store/PointsStore'
 const Header = () => {
+
+  const levelNames = [
+    "Bronze",    // From 0 to 4999 coins
+    "Silver",    // From 5000 coins to 24,999 coins
+    "Gold",      // From 25,000 coins to 99,999 coins
+    "Platinum",  // From 100,000 coins to 999,999 coins
+    "Diamond",   // From 1,000,000 coins to 2,000,000 coins
+    "Epic",      // From 2,000,000 coins to 10,000,000 coins
+    "Legendary", // From 10,000,000 coins to 50,000,000 coins
+    "Master",    // From 50,000,000 coins to 100,000,000 coins
+    "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
+    "Lord"       // From 1,000,000,000 coins to ∞
+  ];
+
+  const levelMinPoints = [
+    0,        // Bronze
+    5000,     // Silver
+    25000,    // Gold
+    100000,   // Platinum
+    1000000,  // Diamond
+    2000000,  // Epic
+    10000000, // Legendary
+    50000000, // Master
+    100000000,// GrandMaster
+    1000000000// Lord
+  ];
+
+
   const router = useRouter();
 
   const userName = window.localStorage.getItem('userName');
-  const local = window.localStorage.getItem('point');
-  console.log("🚀 ~ Header ~ userName:", local)
-  const {PPH} = usePointsStore();
-  console.log("🚀 ~ Header ~ PPH:", PPH)
+  const {PPH, points} = usePointsStore();
+
+  const [levelIndex, setLevelIndex] = useState(6);
+
+  
+  const calculateProgress = () => {
+    if (levelIndex >= levelNames.length - 1) {
+      return 100;
+    }
+    const currentLevelMin = levelMinPoints[levelIndex];
+    const nextLevelMin = levelMinPoints[levelIndex + 1];
+    const progress = ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
+    return Math.min(progress, 100);
+  };
+
+  useEffect(() => {
+    const currentLevelMin = levelMinPoints[levelIndex];
+    const nextLevelMin = levelMinPoints[levelIndex + 1];
+    if (points >= nextLevelMin && levelIndex < levelNames.length - 1) {
+      setLevelIndex(levelIndex + 1);
+    } else if (points < currentLevelMin && levelIndex > 0) {
+      setLevelIndex(levelIndex - 1);
+    }
+  }, [points, levelIndex, levelMinPoints, levelNames.length]);
+
+
+
   return (
     <div className='w-full px-4 z-10'>
          <div className="w-full  z-10">
@@ -28,12 +79,12 @@ const Header = () => {
             <div className="flex items-center w-1/3">
               <div onClick={() => router.push('leaderboard')}  className="w-full">
                 <div className="flex items-baseline  justify-between">
-                  <p className="text-[8px]">{'Bronze'}</p>
-                  <p className="text-sm">{  1} <span className="text-[#95908a]"></span></p>
+                  <p className="text-[8px]">{levelNames[levelIndex]}</p>
+                  <p className="text-sm">{levelIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>
                 </div>
                 <div className="flex items-center  border-2 border-[#43433b] rounded-full">
                   <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
-                    <div className="progress-gradient h-2 rounded-full" style={{ width: `${50}%` }}></div>
+                    <div className="progress-gradient h-2 rounded-full" style={{ width: `${calculateProgress()}%` }}></div>
                   </div>
                 </div>
               </div>

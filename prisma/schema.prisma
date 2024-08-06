@@ -22,10 +22,9 @@ model User {
   refillRate     Int      @default(1)
   bonus          Int      @default(0)
   active         Boolean  @default(true)
-  skin           String   @default("/assets/images/space-bg.avif")
+  skin           String   @default("/newImages/BeeMain.png")
   lastLogin      DateTime @default(now())
-  referredBy     String?  @default("admin")
-  referralLink   String?
+ skins       UserSkin[]
   league         String?  @default("beginner")
 
   accounts       Account[]
@@ -43,7 +42,7 @@ model User {
 
 model DailyReward {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
+  userId    String   
   day       Int      // Day of the reward streak
   coins     Int
   user      User     @relation(fields: [userId], references: [chatId])
@@ -80,6 +79,11 @@ model UserCard {
   category    String
   discription String?
 }
+
+
+
+
+
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -184,10 +188,19 @@ model Tasks {
 model Skins {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  profitPerHour Int?   @default(0)
-  image         String @default("/assets/images/space-bg.avif")
+  image         String @default("/newImages/BeeMain.png")
   cost          Int
-  league        String @default("pilot")
+  featured    Boolean @default(false)
+  league        String @default("Bronze")
+  users    UserSkin[]
+}
+
+model UserSkin {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId String   
+  skinId String   @db.ObjectId
+  user   User     @relation(fields: [userId], references: [chatId])
+  skin   Skins     @relation(fields: [skinId], references: [id])
 }
 
 model TasksCompletion {

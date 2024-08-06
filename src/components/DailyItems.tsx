@@ -5,7 +5,6 @@ import Image from "next/image";
 
 const DailyItems = () => {
   const [dailyRewardTimeLeft, setDailyRewardTimeLeft] = useState("");
-  const [dailyCipherTimeLeft, setDailyCipherTimeLeft] = useState("");
   const [dailyComboTimeLeft, setDailyComboTimeLeft] = useState("");
 
   const calculateTimeLeft = (targetHour: number) => {
@@ -30,7 +29,6 @@ const DailyItems = () => {
   useEffect(() => {
     const updateCountdowns = () => {
       setDailyRewardTimeLeft(calculateTimeLeft(0));
-      setDailyCipherTimeLeft(calculateTimeLeft(19));
       setDailyComboTimeLeft(calculateTimeLeft(12));
     };
 
@@ -42,31 +40,40 @@ const DailyItems = () => {
 
   return (
     <div className="w-full z-0">
-
-<div className="flex-grow mt-2 border-t-4 border-[#f3ba2f] rounded-t-[48px] relative top-glow z-0">
-<div className=" pb-0 bg-[#1d2025] rounded-t-[46px]">
-    <div className="px-4 mt-6 flex justify-between gap-2">
-    <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
-      <div className="dot"></div>
-      <Image src={dailyReward} alt="Daily Reward" className="mx-auto w-12 h-12" />
-      <p className="text-[10px] text-center text-white mt-1">Daily reward</p>
-      <p className="text-[10px] font-medium text-center text-gray-400 mt-2">{dailyRewardTimeLeft}</p>
-    </div>
-    <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
-      <div className="dot"></div>
-      <Image src={dailyCipher} alt="Daily Cipher" className="mx-auto w-12 h-12" />
-      <p className="text-[10px] text-center text-white mt-1">Daily cipher</p>
-      <p className="text-[10px] font-medium text-center text-gray-400 mt-2">{dailyCipherTimeLeft}</p>
-    </div>
-    <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
-      <div className="dot"></div>
-      <Image src={dailyCombo} alt="Daily Combo" className="mx-auto w-12 h-12" />
-      <p className="text-[10px] text-center text-white mt-1">Daily combo</p>
-      <p className="text-[10px] font-medium text-center text-gray-400 mt-2">{dailyComboTimeLeft}</p>
-    </div>
-  </div>
-  </div>
-  </div>
+      <div className="flex-grow mt-2 border-t-4 border-[#f3ba2f] rounded-t-[48px] relative top-glow z-0">
+        <div className=" pb-0 bg-[#1d2025] rounded-t-[46px]">
+          <div className="px-4 mt-6 flex justify-between gap-2">
+            <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
+              <div className="dot"></div>
+              <Image
+                src={dailyReward}
+                alt="Daily Reward"
+                className="mx-auto w-12 h-12"
+              />
+              <p className="text-[10px] text-center text-white mt-1">
+                Daily reward
+              </p>
+              <p className="text-[10px] font-medium text-center text-gray-400 mt-2">
+                {dailyRewardTimeLeft}
+              </p>
+            </div>
+            <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
+              <div className="dot"></div>
+              <Image
+                src={dailyCombo}
+                alt="Daily Combo"
+                className="mx-auto w-12 h-12"
+              />
+              <p className="text-[10px] text-center text-white mt-1">
+                Daily combo
+              </p>
+              <p className="text-[10px] font-medium text-center text-gray-400 mt-2">
+                {dailyComboTimeLeft}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

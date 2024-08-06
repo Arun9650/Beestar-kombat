@@ -25,25 +25,84 @@ export async function allDailyBonuses(): Promise<
 }
 
 
-// export async function claimDailyBonus(userId, ) {
-//   try {
 
-//     if (!userId) {
-//       return new Response(JSON.stringify({ error: 'Missing userId' }), { status: 400 });
-//     }
 
-//     const today = new Date();
-//     const user = await prisma.user.findUnique({
-//       where: { chatId:userId },
-//     });
+const dailyRewards = [
+  { day: 1, reward: 500 },
+  { day: 2, reward: 1000 },
+  { day: 3, reward: 2500 },
+  { day: 4, reward: 5000 },
+  { day: 5, reward: 15000 },
+  { day: 6, reward: 25000 },
+  { day: 7, reward: 100000 },
+  { day: 8, reward: 500000 },
+  { day: 9, reward: 1000000 },
+  { day: 10, reward: 5000000 },
+];
 
-//     let nextRewardAvailable = true;
-//     if (lastReward && lastReward.createdAt.toDateString() === today.toDateString()) {
-//       nextRewardAvailable = false;
-//     }
+export const claimReward = async (userId: string) => {
+  try {
+    if (!userId) {
+      throw new Error('Missing userId');
+    }
 
-//     return new Response(JSON.stringify({ nextRewardAvailable, lastReward }), { status: 200 });
-// }
+    const today = new Date();
+    const lastReward = await prisma.dailyReward.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' }
+    });
 
+    let day = 1;
+    if (lastReward) {
+      const lastRewardDate = new Date(lastReward.createdAt);
+      const differenceInDays = Math.floor((today.getTime() - lastRewardDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (differenceInDays === 1) {
+        day = lastReward.day + 1;
+      } else if (differenceInDays > 1) {
+        day = 1;
+      }
+    }
+
+    const reward = dailyRewards.find(r => r.day === day)?.reward || dailyRewards[dailyRewards.length - 1].reward;
+
+    await prisma.dailyReward.create({
+      data: { userId, day, coins: reward }
+    });
+
+    await prisma.user.update({
+      where: { chatId: userId },
+      data: { points: { increment: reward } }
+    });
+
+    return { success: true, reward };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to claim reward' };
+  }
+};
+
+export const checkRewardStatus = async (userId:string) => {
+  try {
+    if (!userId) {
+      throw new Error('Missing userId');
+    }
+
+    const today = new Date();
+    const lastReward = await prisma.dailyReward.findFirst({
+      where: { userId: userId },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    let nextRewardAvailable = true;
+    if (lastReward && new Date(lastReward.createdAt).toDateString() === today.toDateString()) {
+      nextRewardAvailable = false;
+    }
+
+    return { nextRewardAvailable, lastReward };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to check reward status' };
+  }
+};
 
 

@@ -9,6 +9,8 @@ export type SkinType = {
   profitPerHour?: number | null;
   cost: number;
   league?: string;
+  featured?: boolean;
+  owned?: boolean;
 };
 
 export async function createSkin({
@@ -24,8 +26,6 @@ export async function createSkin({
         name,
         cost: 100,
         image,
-        league: "first",
-        profitPerHour: 400,
       },
     });
 
@@ -92,6 +92,7 @@ export async function skinBuy({
     const skin = await prisma.skins.findUnique({ where: { id } });
     const user = await prisma.user.findUnique({ where: { chatId } });
     const newBalance = localBalance - skin?.cost!;
+    console.log("🚀 ~ newBalance:", newBalance)
 
     if (!user) return { status: "invalidUser" };
     if (!skin) return { status: "invalidSkin" };
@@ -103,10 +104,19 @@ export async function skinBuy({
         where: { chatId },
         data: { points: newBalance },
       });
+
+
+      await prisma.userSkin.create({
+        data: {
+          userId: chatId,
+          skinId: id,
+        },
+      });
+
       return { points: newBalance, status: "success", image: skin.image };
     }
   } catch (e) {
-    console.log(e);
+    console.log("error while buying skin ", e);
     return { status: "errorOccurred" };
   }
 }
@@ -117,4 +127,43 @@ export async function getCurrentSkin({ user }: { user: string }) {
   const skin = acct?.skin;
 
   return skin;
+}
+
+export const SkinsToShow = async (userId: string) => {
+  try {
+    const userSkins = await prisma.userSkin.findMany({
+      where: { userId },
+    });
+
+
+    const allSkins = await prisma.skins.findMany();
+
+    const userSkinsMap = new Map(userSkins.map((skin) => [skin.skinId, skin]));
+
+
+    const combinedSkins = allSkins.map((skin) => ({
+      ...skin,
+      owned: userSkinsMap.has(skin.id),
+    }));
+
+
+    return { success: true, combinedSkins };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to get user skins' };
+  }
+};
+
+
+export async function getUserSkins(userId: string) {
+  try {
+    const userSkins = await prisma.userSkin.findMany({
+      where: { userId },
+    });
+
+    return userSkins;
+  } catch (error) {
+    console.error("Error getting user skins",error);
+    return [];
+  }
 }

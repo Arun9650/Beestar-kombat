@@ -7,6 +7,7 @@ import { BeeCoin, Bees, binanceLogo,  } from "../../../public/newImages";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import useExchangeStore from "@/store/useExchangeStore";
 
 type NavigationItem = {
   name: string;
@@ -17,10 +18,12 @@ type NavigationItem = {
 const BottomNavigation = () => {
   const [activeLink, setActiveLink] = useState("/");
 
+  const {exchange} = useExchangeStore();
+
   const NavigationItems: NavigationItem[] = [
     {
       name: "Exchange",
-      icon: <Image src={binanceLogo} width={24} height={24} alt="Exchange" />,
+      icon: <Image src={exchange?.icon!} width={24} height={24} alt="Exchange"  />,
       link: "/",
     },
     {

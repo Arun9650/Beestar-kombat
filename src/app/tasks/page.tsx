@@ -7,7 +7,7 @@ import React from "react";
 
 const TasksPage = async () => {
   return (
-    <section className="flex items-center justify-center bg-[#1d2025]  flex-col overflow-auto ">
+    <section className="flex items-center justify-center mb-16 bg-[#1d2025]  flex-col overflow-auto ">
       {/* <CurrentPoints /> */}
       <Header />
       <TaskList />

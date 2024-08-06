@@ -12,7 +12,7 @@ const ReferralPage = () => {
   
 
   return (
-    <div className="p-4 bg-black h-screen text-white  shadow-lg max-w-xl mx-auto">
+    <div className="p-4 bg-black mb-16 text-white min-h-screen  shadow-lg max-w-xl mx-auto">
       <h1 className="text-4xl mt-5 font-bold mx-auto  flex justify-center ">Invite friends!</h1>
       <p className="mb-4  flex justify-center mt-4">You and your friend will receive bonuses</p>
       <div className="space-y-4">

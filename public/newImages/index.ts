@@ -35,7 +35,16 @@ import collectionCoins3 from './collectionCoin3.png'
 import collectionCoins4 from './collectionCoin4.png'
 import collectionCoins5 from './collectionCoin5.png'
 import Diamond from './diamond.png' 
-
+import bingx from './bingx.png'
+import bybit from './bybit.png'
+import crypto from './crypto.png'
+import htx from './htx.png'
+import kucoin from './kucoin.png'
+import okx from './okx.png'
+import honeycomb from './honeycomb.png'
+import recharge from './recharge.png'
+import rocket from './rocket.png'
+import coolBee from './cool_bee.png'
 
 export {
     binanceLogo,
@@ -74,5 +83,15 @@ export {
      collectionCoins3,
      collectionCoins4,
      collectionCoins5,
-     Diamond
+     Diamond,
+     bingx,
+     bybit,
+     crypto,
+     htx,
+     kucoin,
+     okx,
+     honeycomb,
+     recharge,
+     rocket,
+     coolBee
 };

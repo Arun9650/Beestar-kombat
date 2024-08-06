@@ -3,15 +3,23 @@
 import { authenticateUserOrCreateAccount } from '@/actions/auth.actions'
 import { useSearchParams } from 'next/navigation'
 import React, { Suspense, useEffect } from 'react'
-
+import randomName from '@scaleway/random-name'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const params = useSearchParams()
     const id = params.get('id')
     console.log("🚀 ~ AuthProvider ~ id:", id)
-    const userName = params.get('userName');
-    console.log("🚀 ~ AuthProvider ~ userName:", userName)
+    let userName;
+    const user = params.get('userName');
+
+    if(user){
+        userName = user;
+    }else {
+        userName = randomName()
+    }
+
+   
     // const id = '123456789'
 
     // const pointsInLocalStorage = window.localStorage.getItem("points")
