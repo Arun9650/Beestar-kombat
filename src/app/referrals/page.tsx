@@ -1,15 +1,21 @@
-
-
+'use client';
 
 import Copy from '../../../public/icons/Copy';
 import {  Gift } from '../../../public/newImages';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 
 const ReferralPage = () => {
 
 
-  
+  const [isTapped, setIsTapped] = useState(false);
+
+  const handleTap = () => {
+    setIsTapped(true);
+    navigator.clipboard.writeText("https://tonswap.io/referrals");
+    setTimeout(() => setIsTapped(false), 200); // Reset the tap animation after 200ms
+  };
+
 
   return (
     <div className="p-4 bg-black mb-16 text-white min-h-screen  shadow-lg max-w-xl mx-auto">
@@ -42,7 +48,8 @@ const ReferralPage = () => {
       </div>
       <div className="mt-4 flex justify-center space-x-4">
         <button className="bg-blue-600 py-4 px-4 rounded-2xl w-full semi-bold text-2xl ">Invite a friend</button>
-        <button className="bg-blue-600 py-2 px-4 rounded-2xl">
+        <button onClick={handleTap} className={`bg-blue-600 py-2 px-4 rounded-2xl ${isTapped ? 'scale-95' : ''} transition-transform duration-200`}>
+     
           <Copy className='w-6 h-6 text-white' />
         </button>
       </div>

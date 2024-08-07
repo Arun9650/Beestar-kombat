@@ -2,10 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { dailyCipher, dailyCombo, dailyReward } from "../../public/newImages";
 import Image from "next/image";
+import useExchangeStore from "@/store/useExchangeStore";
 
 const DailyItems = () => {
   const [dailyRewardTimeLeft, setDailyRewardTimeLeft] = useState("");
   const [dailyComboTimeLeft, setDailyComboTimeLeft] = useState("");
+
+
+  const { exchange, setExchange, exchanges } = useExchangeStore();
 
   const calculateTimeLeft = (targetHour: number) => {
     const now = new Date();
@@ -27,6 +31,16 @@ const DailyItems = () => {
   };
 
   useEffect(() => {
+
+
+    const exchangeName = window.localStorage.getItem('exchange');
+
+    const getExchange  = exchanges.find((exchange) => exchange.name === exchangeName);
+
+    if (getExchange !== undefined) {
+      setExchange(getExchange!);
+    }
+    
     const updateCountdowns = () => {
       setDailyRewardTimeLeft(calculateTimeLeft(0));
       setDailyComboTimeLeft(calculateTimeLeft(12));

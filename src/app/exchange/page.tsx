@@ -4,25 +4,17 @@
 import React, { useState } from 'react';
 import { SlArrowRight } from 'react-icons/sl';
 import { binanceLogo, bingx, bybit, crypto, htx, kucoin, okx } from '../../../public/newImages';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import useExchangeStore, { TExchange } from '@/store/useExchangeStore';
+import { FaCheck } from "react-icons/fa";
 
-const exchanges = [
-  { name: 'Binance', icon: binanceLogo },
-  { name: 'OKX', icon: okx },
-  { name: 'Crypto.com', icon: crypto },
-  { name: 'Bybit', icon: bybit },
-  { name: 'BingX', icon: bingx },
-  { name: 'HTX', icon: htx },
-  { name: 'Kucoin', icon: kucoin },
-];
+
 
 const Exchange = () => {
-  const { exchange, setExchange } = useExchangeStore();
-  const [selectedExchange, setSelectedExchange] = useState(exchange);
+  const { exchange, setExchange , exchanges } = useExchangeStore();
   const handleSelect = (exchange: TExchange) => {
     setExchange(exchange);
-    setSelectedExchange(exchange);
+    window.localStorage.setItem('exchange', exchange.name);
   };
   return (
     <div className="min-h-screen bg-black text-white">
@@ -30,12 +22,14 @@ const Exchange = () => {
         <h1 className="text-lg mx-auto  w-fit font-bold">Choose exchange</h1>
       </header>
       <main className="p-4 space-y-2">
-        {exchanges.map((exchange) => (
-          <div onClick={() => handleSelect(exchange)} key={exchange.name} className="flex items-center bg-[#1d2025] p-4 rounded-2xl">
-            <Image src={exchange.icon} alt={`${exchange.name} icon`} className="w-6 h-6 mr-4" />
-            <span className="flex-1">{exchange.name}</span>
+        {exchanges.map((item) => (
+          <div onClick={() => handleSelect(item)} key={item.name} className="flex items-center bg-[#1d2025] p-4 rounded-2xl">
+            <Image src={item.icon} alt={`${item.name} icon`} className="w-6 h-6 mr-4" />
+            <span className="flex-1">{item.name}</span>
             <span className="text-gray-400"> 
-                <SlArrowRight className='text-gray-400' />
+              {
+                item.name !== exchange?.name ? <SlArrowRight className='text-gray-400' /> : <FaCheck className='text-gray-400' />
+              }
                  </span>
           </div>
         ))}

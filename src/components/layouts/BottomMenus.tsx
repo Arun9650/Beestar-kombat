@@ -23,7 +23,7 @@ const BottomNavigation = () => {
   const NavigationItems: NavigationItem[] = [
     {
       name: "Exchange",
-      icon: <Image src={exchange?.icon!} width={24} height={24} alt="Exchange"  />,
+      icon: <Image src={exchange?.icon!} width={24} height={24} alt="Exchange"  className="object-contain w-full h-full" />,
       link: "/",
     },
     {
@@ -73,7 +73,7 @@ const BottomNavigation = () => {
               <div
                 className={`${
                   activeLink === item.link ? " text-white" : ""
-                } mx-auto`}
+                } mx-auto w-7 h-7`}
               >
                 {item.icon}
               </div>
@@ -93,6 +93,3 @@ const BottomNavigation = () => {
 };
 
 export default BottomNavigation;
-
-
-

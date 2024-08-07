@@ -21,12 +21,10 @@ const useUserPointsConfig = () => {
   useEffect(() => {
     const user = window.localStorage.getItem("authToken");
     let initialPoints = window.localStorage.getItem("points")
-    console.log("🚀 ~ useEffect ~ initialPoints:", initialPoints)
     async function update() {
       const config = await getUserConfig(`${user}`);
       const currentState = config?.user;
      if(currentState){
-      console.log("🚀 ~ update ~ currentState:", currentState.points)
 
 
 
@@ -42,9 +40,7 @@ const useUserPointsConfig = () => {
 
 
       const intPoints = initialPoints ? Number(initialPoints) : 0
-      console.log("🚀 ~ update ~ intPoints:", intPoints)
       const biggerNumber = intPoints > currentState.points ? intPoints : currentState.points;
-      console.log("🚀 ~ update ~ biggerNumber:", biggerNumber)
       if (points === 0) {
           intPoints > 0 && initializePoints(biggerNumber)
           initializePPH(currentState.profitPerHour);
