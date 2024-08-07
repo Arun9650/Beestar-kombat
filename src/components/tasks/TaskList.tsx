@@ -175,7 +175,7 @@ const TaskList = () => {
                             Profit per hour:
                             <br />
                             <span className="text-[#abadb2]">
-                              +{team.basePPH}
+                              +{parseFloat(team.basePPH).toFixed(2)}
                             </span>
                           </p>
                         </div>

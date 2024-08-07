@@ -26,7 +26,7 @@ model User {
   lastLogin      DateTime @default(now())
  skins       UserSkin[]
   league         String?  @default("beginner")
-
+  referralCount  Int             @default(0) // Field to count referrals
   accounts       Account[]
   sessions       Session[]
   authenticators Authenticator[]

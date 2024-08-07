@@ -26,7 +26,9 @@ export async function createAccount(
     if (referredByUser) {
       const referredUser = await prisma.user.findUnique({ where: { chatId: referredByUser } });
       if (referredUser) {
-        await prisma.user.update({ where: { chatId: referredByUser }, data: { points: { increment: 5000 } } });
+        await prisma.user.update({ where: { chatId: referredByUser }, data: { points: { increment: 5000 } , referralCount: {increment : 1} } });
+
+        await prisma.user.create({ data: { chatId, points: 5000, name } });
       }
       await prisma.user.create({ data: { chatId, points: 5000, name } });
     }else {

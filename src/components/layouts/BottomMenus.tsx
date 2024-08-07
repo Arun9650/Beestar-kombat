@@ -5,7 +5,7 @@ import Friends from "../../../public//icons/Friends";
 import Mine from "../../../public/icons/Mine";
 import { BeeCoin, Bees, binanceLogo,  } from "../../../public/newImages";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from "react";
 import useExchangeStore from "@/store/useExchangeStore";
 
@@ -54,6 +54,7 @@ const BottomNavigation = () => {
   };
 
   const route = useRouter();
+  const pathname = usePathname();
   return (
     <div className="fixed bottom-0  p-1 h-fit left-1/2 transform -translate-x-1/2 w-full  max-w-xl bg-[#272a2f] flex justify-around items-center z-50  text-xs">
       {NavigationItems.map((item, index) => {
@@ -61,7 +62,7 @@ const BottomNavigation = () => {
           <div
             key={index}
             className={`${
-              activeLink === item.link
+              pathname === item.link
                 ? "bg-[#1c1f24] text-white"
                 : "bg-[#272a2f]"
             } p-1.5 w-full flex items-center justify-center rounded-2xl `}
@@ -72,14 +73,14 @@ const BottomNavigation = () => {
             >
               <div
                 className={`${
-                  activeLink === item.link ? " text-white" : ""
+                  pathname === item.link ? " text-white" : ""
                 } mx-auto w-7 h-7`}
               >
                 {item.icon}
               </div>
               <p
                 className={` text-[10px] ${
-                  activeLink === item.link ? " text-white" : ""
+                  pathname === item.link ? " text-white" : ""
                 }  mt-1`}
               >
                 {item.name}

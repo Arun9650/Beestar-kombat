@@ -61,7 +61,7 @@ const EarnMoreCoins = () => {
       id: 2,
       title: "Follow Us On X channel",
       reward: 10000,
-      link: "",
+      link: "https://x.com",
       icon: X,
     },
     {

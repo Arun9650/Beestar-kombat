@@ -1,10 +1,11 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import Copy from '../../../public/icons/Copy';
 import {  Gift } from '../../../public/newImages';
 import Image from 'next/image';
 import React, { useState } from 'react';
-
+import { TelegramShareButton } from 'react-share'
 const ReferralPage = () => {
 
 
@@ -47,7 +48,11 @@ const ReferralPage = () => {
         <p className="text-gray-400 p-4">You haven&apos;t invited anyone yet</p>
       </div>
       <div className="mt-4 flex justify-center space-x-4">
-        <button className="bg-blue-600 py-4 px-4 rounded-2xl w-full semi-bold text-2xl ">Invite a friend</button>
+        <Button className="bg-blue-600 py-4 px-4 rounded-2xl w-full semi-bold text-sm ">
+          <TelegramShareButton url="https://tonswap.io/referrals" >
+          Invite a friend
+          </TelegramShareButton>
+          </Button>
         <button onClick={handleTap} className={`bg-blue-600 py-2 px-4 rounded-2xl ${isTapped ? 'scale-95' : ''} transition-transform duration-200`}>
      
           <Copy className='w-6 h-6 text-white' />

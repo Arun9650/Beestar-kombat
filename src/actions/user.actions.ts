@@ -152,3 +152,18 @@ export const getLeaderboard = async () => {
     return { success: false, error: 'Failed to fetch leaderboard' };
   }
 };
+
+
+export const DeleteUser = async (userId:string) => {
+  try {
+    const user = await prisma.user.delete({
+      where : {chatId:userId}
+    })
+
+    return { success: true}
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to fetch Delete Account' };
+    
+  }
+}
