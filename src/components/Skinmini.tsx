@@ -74,7 +74,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
           { length: 20 },
           (_, i) => data[i % data.length]
         );
-        setSkinsData(biggerArray!);
+        setSkinsData(data!);
         const {user} =   await getUserConfig(userId!);
 
         if(user?.points){
