@@ -8,13 +8,16 @@ import React, { Suspense } from "react";
 
 const TasksPage = async () => {
   return (
-    <section className="flex items-center justify-center mb-16 bg-[#1d2025]  flex-col overflow-auto ">
+    <section className="flex relative items-center justify-center mb-16 bg-[#1d2025]  flex-col overflow-auto ">
       {/* <CurrentPoints /> */}
       <Header />
 
       <TaskList />
       <CurrentPoints />
+      <div className="relative">
+
       <TapGlobe />
+      </div>
 
       <div className="flex flex-col w-fit ml-4  gap-y-4">
         <GameLevelProgress />

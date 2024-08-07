@@ -29,17 +29,24 @@ const TapGlobe = () => {
   useLocalPointsStorage();
   usePushPointsToDB();
 
-  const handleTap = (e: any) => {
-    const rect = e.target.getBoundingClientRect();
+  const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
+    []
+  );
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const prevClicks = clickCoordinate;
-
-    setClickCoordinate([{ x, y }, ...prevClicks]);
-
-    console.log(secondsLeft);
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    card.style.transform = `perspective(1000px) rotateX(${
+      -y / 10
+    }deg) rotateY(${x / 10}deg)`;
+    setTimeout(() => {
+      card.style.transform = "";
+    }, 100);
+    // setCoins(coins + pointsToAdd);
+    // setUser((prevUser) => ({ ...prevUser, coins: prevUser.coins + pointsToAdd }));
+    setClicks([...clicks, { id: Date.now(), x: e.pageX, y: e.pageY }]);
 
     if (secondsLeft > 0) {
       tapInBoostMode(7 * multiClickLevel);
@@ -51,6 +58,10 @@ const TapGlobe = () => {
       setIsTapping(true);
       setTimeout(() => setIsTapping(false), 2000);
     }
+  };
+
+  const handleAnimationEnd = (id: number) => {
+    setClicks((prevClicks) => prevClicks.filter((click) => click.id !== id));
   };
 
   useEffect(() => {
@@ -68,7 +79,7 @@ const TapGlobe = () => {
       if (!isTapping) {
         increaseTapsLeft();
       }
-    }, 2000); // Adjust interval as needed
+    }, 1000); // Adjust interval as needed
 
     return () => clearInterval(intervalId);
   }, [isTapping]);
@@ -82,36 +93,38 @@ const TapGlobe = () => {
   }, [secondsLeft]);
 
   return (
-    <>
-      <div className=" flex justify-center ">
-        <div className="  rounded-full circle-outer">
-          <div className="relative ">
+    <div className="relative ">
+      <div className=" flex justify-center relative">
+        <div
+          onClick={handleCardClick}
+          className="relative   rounded-full circle-outer"
+        >
+          <div className=" ">
             <Image
               src="/assets/images/BeeMain.png"
               height={200}
               width={200}
               alt=""
-              onClick={handleTap}
               className="transition duration-300  cursor-pointer"
             />
-
-            {clickCoordinate.length > 1 &&
-              clickCoordinate.map((click, index) => (
-                <div
-                  key={index}
-                  className={`text-4xl font-bold text-orange-400 absolute tap-count-animation`}
-                  style={{
-                    left: click.x,
-                    top: click.y,
-                  }}
-                >
-                  +{(secondsLeft > 0 ? 7 : 1) * multiClickLevel}
-                </div>
-              ))}
+            {clicks.map((click) => (
+              <div
+                key={click.id}
+                className=" text-5xl font-bold opacity-0 absolute  text-white pointer-events-none"
+                style={{
+                  top: `${click.y - 250}px`,
+                  left: `${click.x - 28}px`,
+                  animation: `float 1s ease-out`,
+                }}
+                onAnimationEnd={() => handleAnimationEnd(click.id)}
+              >
+                { (secondsLeft > 0 ? 7 : 1) *  multiClickLevel}
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
