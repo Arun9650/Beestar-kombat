@@ -3,7 +3,7 @@
 // pages/exchange.js
 import React, { useState } from 'react';
 import { SlArrowRight } from 'react-icons/sl';
-import { binanceLogo, bingx, bybit, crypto, htx, kucoin, okx } from '../../../public/newImages';
+
 import Image, { StaticImageData } from 'next/image';
 import useExchangeStore, { TExchange } from '@/store/useExchangeStore';
 import { FaCheck } from "react-icons/fa";

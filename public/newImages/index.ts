@@ -36,7 +36,6 @@ import collectionCoins4 from './collectionCoin4.png'
 import collectionCoins5 from './collectionCoin5.png'
 import Diamond from './diamond.png' 
 import bingx from './bingx.png'
-import bybit from './bybit.png'
 import crypto from './crypto.png'
 import htx from './htx.png'
 import kucoin from './kucoin.png'
@@ -85,7 +84,6 @@ export {
      collectionCoins5,
      Diamond,
      bingx,
-     bybit,
      crypto,
      htx,
      kucoin,
