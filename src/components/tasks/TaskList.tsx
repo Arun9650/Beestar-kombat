@@ -14,11 +14,12 @@ import { formatNumber } from "../../../utils/formatNumber";
 import { getUserConfig, updateProfitPerHour } from "@/actions/user.actions";
 import { allCards } from "@/actions/tasks.actions";
 import { usePointsStore } from "@/store/PointsStore";
+import { Skeleton } from "../ui/skeleton";
 
 export interface Team {
   id: string;
   title: string;
-  image:  string;
+  image: string;
   basePPH: number;
   baseCost: number;
   baseLevel: number;
@@ -29,15 +30,10 @@ export interface Team {
   category: string;
 }
 
-
-
-
 const TaskList = () => {
   const user = window.localStorage.getItem("authToken");
 
-
-  const {points , setPoints, setPPH} = usePointsStore();
-
+  const { points, setPoints, setPPH } = usePointsStore();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team>();
@@ -46,12 +42,14 @@ const TaskList = () => {
   const tabs = ["PR&Team", "Markets", "web3"];
   const [buttonLoading, setButtonLoading] = useState(false);
 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
     const fetchCards = async () => {
       const { combinedCards } = await allCards(userId!);
       setCards(combinedCards);
+      setLoading(false);
     };
 
     fetchCards();
@@ -59,51 +57,51 @@ const TaskList = () => {
 
   const handleTeamClick = (team: Team) => {
     setSelectedTeam(team);
-    const result =  isEligibleToBuy(team);
-    if(result){
-     setIsDrawerOpen(true);
+    const result = isEligibleToBuy(team);
+    if (result) {
+      setIsDrawerOpen(true);
     }
   };
 
   const filteredCards = cards.filter(
-    (card) => card.category === selectedCategory || card.cardType === selectedCategory
+    (card) =>
+      card.category === selectedCategory || card.cardType === selectedCategory
   );
 
-  const isEligibleToBuy = (team:Team) => {
+  const isEligibleToBuy = (team: Team) => {
     if (team.requiredCardId && team.requiredCardLevel) {
-      const requiredCard = cards.find((card) => card.id === team.requiredCardId || card.cardId === team.requiredCardId);
-      console.log("🚀 ~ isEligibleToBuy ~ requiredCard:", requiredCard)
-      return  requiredCard.baseLevel >= team.requiredCardLevel;
+      const requiredCard = cards.find(
+        (card) =>
+          card.id === team.requiredCardId || card.cardId === team.requiredCardId
+      );
+      console.log("🚀 ~ isEligibleToBuy ~ requiredCard:", requiredCard);
+      return requiredCard.baseLevel >= team.requiredCardLevel;
     }
     return true;
   };
 
-  
-  const handleUpdateProfitPerHour = async (user:string, selectedTeam: Team) => {
+  const handleUpdateProfitPerHour = async (
+    user: string,
+    selectedTeam: Team
+  ) => {
     if (selectedTeam) {
       setButtonLoading(true);
-   const  result  =  await updateProfitPerHour(user!, selectedTeam);
-     if(result.success){
+      const result = await updateProfitPerHour(user!, selectedTeam);
+      if (result.success) {
+        const userId = window.localStorage.getItem("authToken");
+        const { combinedCards } = await allCards(userId!);
+        setCards(combinedCards);
+        setIsDrawerOpen(false);
+        setButtonLoading(false);
 
-       const userId = window.localStorage.getItem("authToken");
-       const { combinedCards } = await allCards(userId!);
-       setCards(combinedCards);
-       setIsDrawerOpen(false)
-       setButtonLoading(false);
-
-     const {user} =   await getUserConfig(userId!);
-        setPoints(user?.points)
-        setPPH(user?.profitPerHour)
-
-
-      }else {
+        const { user } = await getUserConfig(userId!);
+        setPoints(user?.points);
+        setPPH(user?.profitPerHour);
+      } else {
         alert(result.message);
       }
     }
   };
-
-
-
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -122,7 +120,8 @@ const TaskList = () => {
             <Image src={QuestionMark} alt="?" className="w-full h-full" />
           </div>
         </div>
-        {/* <h2 className="text-4xl font-bold mb-8">{formatNumber(coins)}</h2> */}
+
+        {/* cards start from here  */}
         <div className="flex flex-col items-center w-full">
           <Tabs defaultValue="PR&Team" className="w-full">
             <TabsList className="flex justify-around w-full bg-[#292d32] rounded-t-lg">
@@ -137,83 +136,95 @@ const TaskList = () => {
                 </TabsTrigger>
               ))}
             </TabsList>
-            <TabsContent
-              value={selectedCategory}
-              className="w-full   rounded-lg"
-            >
-              <div className="grid grid-cols-2 gap-4 ">
-                {filteredCards.map((team, index) => (
-                  <div
-                    key={index}
-                    className="px-3 py-2 bg-[#272A2F] rounded-3xl"
-                    onClick={() => handleTeamClick(team)}
-                  >
-                    <div className="flex items-center gap-4 border-b pb-2 ">
-                      <Image
-                        src={team.image}
-                        alt={team.name}
-                        width={50}
-                        height={50}
-                        className=" object-cover mb-2 rounded-lg"
-                      />
 
-                      <div className="flex flex-col justify-between gap-4">
-                        <h3 className="text-white font-normal text-[0.7rem]">
-                          {team.title}
-                        </h3>
-                        <p className="text-[#abadb2] text-[0.65rem] font-normal">
-                          Profit per hour:
-                          <br />
-                          <span className="text-[#abadb2]">
-                            +{team.basePPH}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center mt-2 ">
-                      <div className="border-r text-[.7rem]   text-center w-12">
-                        lvl {team.baseLevel}
-                      </div>
-                      <div>
-                        <p className="text-gray-400 ml-4 text-xs gap-1 flex items-center font-thin">
-                          {isEligibleToBuy(team) ? (<>
-                            <Image
-                                src={dollarCoin}
-                                alt="coin"
-                                className="w-4 h-4"
-                              />
-                              <span className="text-white font-semibold">
-                                {formatNumber(team.baseCost)}{" "}
-                              </span>
-                            
-                          </>
-                          ) : (
-                            <>
-                              <span className="text-white font-semibold">
-                              {team.requiredCardTitle}
-                              <br />
-                            lvl  {team.requiredCardLevel}
-                            </span>
-                            </>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+            {loading ? (
+              <div>
+                <div className="grid grid-cols-2 gap-4 mt-3 ">
+                  <Skeleton className="w-full h-20" />
+                  <Skeleton className="w-full h-20" />
+                  <Skeleton className="w-full h-20" />
+                  <Skeleton className="w-full h-20" />
+                </div>{" "}
               </div>
-            </TabsContent>
+            ) : (
+              <TabsContent
+                value={selectedCategory}
+                className="w-full   rounded-lg"
+              >
+                <div className="grid grid-cols-2 gap-4 ">
+                  {filteredCards.map((team, index) => (
+                    <div
+                      key={index}
+                      className="px-3 py-2 bg-[#272A2F] rounded-3xl"
+                      onClick={() => handleTeamClick(team)}
+                    >
+                      <div className="flex items-center gap-4 border-b pb-2 ">
+                        <Image
+                          src={team.image}
+                          alt={team.name}
+                          width={50}
+                          height={50}
+                          className=" object-cover mb-2 rounded-lg"
+                        />
+
+                        <div className="flex flex-col justify-between gap-4">
+                          <h3 className="text-white font-normal text-[0.7rem]">
+                            {team.title}
+                          </h3>
+                          <p className="text-[#abadb2] text-[0.65rem] font-normal">
+                            Profit per hour:
+                            <br />
+                            <span className="text-[#abadb2]">
+                              +{team.basePPH}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center mt-2 ">
+                        <div className="border-r text-[.7rem]   text-center w-12">
+                          lvl {team.baseLevel}
+                        </div>
+                        <div>
+                          <p className="text-gray-400 ml-4 text-xs gap-1 flex items-center font-thin">
+                            {isEligibleToBuy(team) ? (
+                              <>
+                                <Image
+                                  src={dollarCoin}
+                                  alt="coin"
+                                  className="w-4 h-4"
+                                />
+                                <span className="text-white font-semibold">
+                                  {formatNumber(team.baseCost)}{" "}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="text-white font-semibold">
+                                  {team.requiredCardTitle}
+                                  <br />
+                                  lvl {team.requiredCardLevel}
+                                </span>
+                              </>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+            )}
           </Tabs>
-          <Drawer  open={isDrawerOpen}  onClose={() => setIsDrawerOpen(false)}>
-              {selectedTeam && (
-            <DrawerContent className="bg-[#14161a] border-none ">
-              
-              <DrawerHeader  onClick={() => setIsDrawerOpen(false)} className="flex text-white rounded-full justify-end  mr-0  w-full  items-center">
-                  <div className="p-3 px-5 bg-[#1C1F23] rounded-full">
-                    x
-                  </div>
-              </DrawerHeader>
+          <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+            {selectedTeam && (
+              <DrawerContent className="bg-[#14161a] border-none ">
+                <DrawerHeader
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="flex text-white rounded-full justify-end  mr-0  w-full  items-center"
+                >
+                  <div className="p-3 px-5 bg-[#1C1F23] rounded-full">x</div>
+                </DrawerHeader>
                 <div className="text-center">
                   <Image
                     src={selectedTeam.image}
@@ -254,24 +265,19 @@ const TaskList = () => {
                   </p>
                 </div>
 
-              <DrawerFooter>
-                <Button
-
-
-                  disabled={points < selectedTeam.baseCost}
-                  onClick={() =>
-                    handleUpdateProfitPerHour(
-                      user!,
-                      selectedTeam
-                    )
-                  }
-                  className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700"
+                <DrawerFooter>
+                  <Button
+                    disabled={points < selectedTeam.baseCost}
+                    onClick={() =>
+                      handleUpdateProfitPerHour(user!, selectedTeam)
+                    }
+                    className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700"
                   >
-                 {buttonLoading  ? "Loading" : "Go ahead"}
-                </Button>
-              </DrawerFooter>
-            </DrawerContent>
-                )}
+                    {buttonLoading ? "Loading" : "Go ahead"}
+                  </Button>
+                </DrawerFooter>
+              </DrawerContent>
+            )}
           </Drawer>
         </div>
       </div>

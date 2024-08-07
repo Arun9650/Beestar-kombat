@@ -93,6 +93,10 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
           baseCost:  increasedBaseCost  },
       });
 
+
+
+
+
       return { success: true, message: 'Card updated successfully' };
     } else {
       const increasedBaseCost = selectedTeam.baseCost * 1.5;

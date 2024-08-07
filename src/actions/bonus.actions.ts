@@ -157,3 +157,80 @@ export const referUser = async (referrerChatId:string, referredChatId:string, re
     return { success: false, error: error || 'Failed to refer user' };
   }
 };
+
+
+export const getAchievements = async () => {
+  try {
+    const categories = await prisma.achievementCategory.findMany({
+      include: { milestones: true },
+    });
+    return { success: true, categories };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to fetch achievements' };
+  }
+};
+
+export const getUserAchievements = async (userId:string) => {
+  try {
+    const userAchievements = await prisma.userAchievement.findMany({
+      where: { userId: userId },
+      include: { milestone: { include: { category: true } } },
+    });
+    return { success: true, userAchievements };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to fetch user achievements' };
+  }
+};
+
+export const updateUserAchievement = async (userId:string, milestoneId:string) => {
+  try {
+    const userAchievement = await prisma.userAchievement.create({
+      data: {
+        userId,
+        milestoneId,
+      },
+    });
+
+    await prisma.achievementMilestone.update({
+      where: { id: milestoneId },
+      data: { unlocked: true },
+    });
+
+    return { success: true, userAchievement };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to update user achievement' };
+  }
+};
+
+export const getAchievementsWithStatus = async (userId:string) => {
+  try {
+    const categories = await prisma.achievementCategory.findMany({
+      include: { milestones: true },
+    });
+
+    const userAchievements = await prisma.userAchievement.findMany({
+      where: { userId },
+      include: {
+        milestone: true,
+      },
+    });
+
+    const userAchievementIds = userAchievements.map(ua => ua.milestoneId);
+
+    const categoriesWithStatus = categories.map(category => ({
+      ...category,
+      milestones: category.milestones.map(milestone => ({
+        ...milestone,
+        unlocked: userAchievementIds.includes(milestone.id),
+      })),
+    }));
+
+    return { success: true, categories: categoriesWithStatus };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to fetch achievements with status' };
+  }
+};

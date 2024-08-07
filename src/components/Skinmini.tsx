@@ -40,13 +40,8 @@ const Skinmini = ({ tab }: { tab: string }) => {
       const userSkins = await SkinsToShow(userId!);
       const data = userSkins.combinedSkins;
       if (data) {
-        const biggerArray = Array.from(
-          { length: 20 },
-          (_, i) => data[i % data.length]
-        );
-
-        setSkinsData(biggerArray!);
-        setSelectedSkin(biggerArray[0]);
+        setSkinsData(data!);
+        setSelectedSkin(data[0]);
         setLoading(false);
       }
     };
