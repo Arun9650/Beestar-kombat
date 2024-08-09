@@ -1,16 +1,11 @@
-import EarnMoreCoins from '@/components/market/EarnMoreCoins'
-import MarketComponent from '@/components/market/MarketComponent'
-import CurrentPoints from '@/components/tasks/CurrentPoints'
-
+import EarnMoreCoins from "@/components/market/EarnMoreCoins";
 
 const MarketPlace = () => {
-    
-    return (
-        <section className=''>
-            <EarnMoreCoins/>
-            
-        </section>
-    )
-}
+  return (
+    <section className="">
+      <EarnMoreCoins />
+    </section>
+  );
+};
 
-export default MarketPlace
+export default MarketPlace;

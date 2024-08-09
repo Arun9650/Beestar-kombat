@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import LoadingScreenProvider from "@/providers/LoadingScreenProvider";
-import BottomMenus from "@/components/layouts/BottomMenus";
-
 import AuthProviderWithSuspense from "@/providers/AuthProvider";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import TopNavBar from "@/components/navigation/TopNavBar";
 import BottomNavBar from "@/components/navigation/BottomNavBar";
 
