@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { dollarCoin } from "../../public/newImages";
 import { formatNumber } from "../../utils/formatNumber";
 import Info from "../../public/icons/Info";
@@ -10,10 +10,27 @@ import CurrentPoints from "./tasks/CurrentPoints";
 import TapGlobe from "./game/Globe";
 import GameLevelProgress from "./game/GameLevelProgress";
 import PointsTracker from "./game/PointsTracker";
+import { getUserEnergy } from "@/actions/bonus.actions";
 
 const HeroSection = () => {
   const { PPH } = usePointsStore();
-  const { multiClickLevel } = useBoostersStore();
+  const { multiClickLevel,setEnergyCapacity } = useBoostersStore();
+  useEffect(() => {
+    const userId = window.localStorage.getItem("authToken");
+    console.log("🚀 ~ useEffect ~ userId:", userId)
+    // const boostersEnergy = window.localStorage.getItem("BoostersEnergy");
+    const fetchEnergy = async () => {
+      const boostersEnergy = await getUserEnergy(userId!);
+      console.log("🚀 ~ fetchEnergy ~ boostersEnergy:", boostersEnergy)
+    if (boostersEnergy.energy && boostersEnergy.success) {
+      setEnergyCapacity((boostersEnergy.energy));
+    }
+
+    }
+
+    fetchEnergy();
+  },[]) 
+
   return (
     <div className="bg-black h-full flex-grow pb-20  bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] flex flex-col justify-between  overflow-hidden">
     <div className="grid grid-cols-2 divide-x w-full pt-4  rounded-full px-4 py-[2px]">

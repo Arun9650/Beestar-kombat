@@ -1,6 +1,6 @@
 "use client";
 // pages/boosters.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   dollarCoin,
   honeycomb,
@@ -19,6 +19,7 @@ import {
   DrawerHeader,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { creditEnergy, getUserEnergy } from "@/actions/bonus.actions";
 
 
 interface Booster {
@@ -68,17 +69,33 @@ const Boosters = () => {
     },
   ];
 
-  const handleEnergyCapacityIncrease = () => {
+  const handleEnergyCapacityIncrease = async () => {
+    const userId = window.localStorage.getItem("authToken");
     if (energyCapacity * 2 <= points) {
       reducePoints(energyCapacity * 2);
       setEnergyCapacity(energyCapacity + 500);
-      window.localStorage.setItem("BoostersEnergy", (energyCapacity + 500).toString());
-      toast.success("Energy Capacity increased to " + energyCapacity  + 500);
+       await creditEnergy(userId!);
+       const boostersEnergy  =  500;
+      toast.success("Energy Capacity credited " + boostersEnergy);
     } else {
       toast.error("Not enough points");
     }
   };
 
+
+  useEffect(() => {
+    const userId = window.localStorage.getItem("authToken");
+    // const boostersEnergy = window.localStorage.getItem("BoostersEnergy");
+    const fetchEnergy = async () => {
+      const boostersEnergy = await getUserEnergy(userId!);
+    if (boostersEnergy.energy && boostersEnergy.success) {
+      setEnergyCapacity((boostersEnergy.energy));
+    }
+
+    }
+
+    fetchEnergy();
+  },[]) 
 
   const handleFuelRefill = () => {
     if (refill > 0) {
@@ -139,7 +156,7 @@ const handleBoosterSelection = (boosterName:string) => {
               />
               <div className="flex-1">
                 <p className="font-bold">{booster.name}</p>
-                <p className="text-gray-400">{booster.status}/6 available</p>
+                <p className="text-gray-400">{booster.status}{booster.name === "Full energy" && ("/6 available")}</p>
               </div>
             </div>
           ))}

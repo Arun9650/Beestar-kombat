@@ -234,3 +234,55 @@ export const getAchievementsWithStatus = async (userId:string) => {
     return { success: false, error: 'Failed to fetch achievements with status' };
   }
 };
+
+
+export const creditEnergy = async (userId:string) => {
+  console.log("🚀 ~ creditEnergy ~ userId:", userId)
+  
+  try {
+    // Find the referrer by chatId
+    const user = prisma.user.findUnique({ where: { chatId: userId } });
+    console.log("🚀 ~ creditEnergy ~ user:", user)
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    await prisma.bonuster.upsert({
+      where: { chatId: userId },
+      update: {
+        energy: {
+          increment: 500,
+        },
+      },
+      create: {
+        chatId: userId,
+        energy: 500,
+      },
+    });
+
+   
+    return { success: true ,message: 'Energy credited successfully' };
+    
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to credit energy' };
+    
+  }
+
+}
+
+export const getUserEnergy = async (userId:string) =>{
+  try {
+    const user = await prisma.bonuster.findUnique({ where: { chatId: userId } });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return { success: true, energy: user.energy };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Failed to get user energy' };
+  }
+}
