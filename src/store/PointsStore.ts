@@ -27,7 +27,7 @@ export const usePointsStore = create<Points>((set, get) => ({
   nextBenchmark: 1000,
   currentTapsLeft: useBoostersStore.getState().energyCapacity,
   lastTap: 0,
-  skin: "/assets/images/space-bg.avif",
+  skin: "/newImages/BeeMain.png",
   tapLimit: 500,
   PPH: 0,
   

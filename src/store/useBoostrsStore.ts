@@ -23,7 +23,7 @@ export type BoostersStore = {
 };
 
 export const useBoostersStore = create<BoostersStore>((set, get) => ({
-  refill: 3,
+  refill: 6,
   tapCommando: 3,
   secondsLeft: 0,
 
@@ -45,7 +45,7 @@ export const useBoostersStore = create<BoostersStore>((set, get) => ({
   },
 
   //   one time boosts
-  energyCapacity: 500,
+  energyCapacity: Number(window.localStorage.getItem('BoostersEnergy')) || 500,
   multiClickLevel: 1,
   rechargeVelocity: 1,
 
