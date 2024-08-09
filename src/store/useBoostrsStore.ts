@@ -45,7 +45,7 @@ export const useBoostersStore = create<BoostersStore>((set, get) => ({
   },
 
   //   one time boosts
-  energyCapacity: Number(window.localStorage.getItem('BoostersEnergy')) || 500,
+  energyCapacity: 500,
   multiClickLevel: 1,
   rechargeVelocity: 1,
 
