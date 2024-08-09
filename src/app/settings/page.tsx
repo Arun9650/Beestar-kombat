@@ -23,9 +23,17 @@ const Settings = () => {
 
    const handleDeleteUser = async () => {
 
+    window.localStorage.removeItem("authToken");
+    window.localStorage.removeItem("BoostersEnergy");
+    window.localStorage.removeItem("exchange");
+    window.localStorage.removeItem("Points");
+    window.localStorage.removeItem("userName");
+    
     const userId = window.localStorage.getItem("authToken");
     setButtonLoading(true);
     const result = await DeleteUser(userId!);
+    
+
 
     if(result.success){
       setButtonLoading(false);
