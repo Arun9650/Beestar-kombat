@@ -15,6 +15,7 @@ const Leaderboard = () => {
 
   const [levelIndex, setLevelIndex] = useState(6);
   const { points, PPH } = usePointsStore();
+  const [userName , setUserName] = useState('Honey Collector');
   
   
   const levelNames = [
@@ -66,6 +67,8 @@ const Leaderboard = () => {
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
+      const userName = window.localStorage.getItem("userName");
+      setUserName(userName!);
       const response = await getLeaderboard();
       if (response.leaderboard) {
         setLeaderboardData(response.leaderboard);
@@ -123,7 +126,7 @@ const Leaderboard = () => {
               className="w-10 h-10 rounded-full mr-4"
             />
             <div className="flex-1">
-              <p className="font-bold">{"Arun"}</p>
+              <p className="font-bold">{userName ? userName: "honey Collector"}</p>
               <p className="text-yellow-500">{PPH}</p>
             </div>
             <div className="text-lg">{points}</div>

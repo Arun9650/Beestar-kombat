@@ -72,13 +72,13 @@ const EarnMoreCoins = () => {
 
       icon: exchange,
     },
-    {
-      id: 4,
-      title: "Invite 3 friends",
-      reward: 10000,
-      link: "",
-      icon: invite,
-    },
+    // {
+    //   id: 4,
+    //   title: "Invite 3 friends",
+    //   reward: 10000,
+    //   link: "",
+    //   icon: invite,
+    // },
   ];
 
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +103,7 @@ const EarnMoreCoins = () => {
     if (!userId) return;
     const data = await claimReward(userId);
     if (data.success && data.reward) {
-      setNextRewardAvailable(false);
+      setNextRewardAvailable(false);``
       setReward((prev) => ({
         day: (prev?.day || 0) + 1,
         coins: data.reward || 0,
@@ -209,7 +209,9 @@ const EarnMoreCoins = () => {
                       <div
                         key={day}
                         className={`px-2 py-2 flex flex-col items-center justify-center gap-1 rounded-lg text-center ${
-                          reward && (rewards?.day ?? 0) >= day
+                          reward && (rewards?.day ?? 0) === day
+                            ? "border border-green-600"
+                            :  (rewards?.day ?? 0)  > day
                             ? "bg-green-600"
                             : "bg-[#222429]"
                         }`}
