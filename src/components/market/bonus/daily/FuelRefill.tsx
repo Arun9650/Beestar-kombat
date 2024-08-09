@@ -4,7 +4,7 @@ import { usePointsStore } from '@/store/PointsStore'
 import { useBoostersStore } from '@/store/useBoostrsStore'
 import { Rocket } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify'
+import { toast } from 'react-hot-toast'
 
 const FuelRefill = () => {
 

@@ -3,12 +3,13 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import LoadingScreenProvider from "@/providers/LoadingScreenProvider";
 import BottomMenus from "@/components/layouts/BottomMenus";
- import { ToastContainer } from 'react-toastify'
-import "react-toastify/ReactToastify.css"
-import AuthProviderWithSuspense from "@/providers/AuthProvider";
-// import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
-const montserrat = Montserrat({ subsets: ["latin"], variable: '--montserat' });
+import AuthProviderWithSuspense from "@/providers/AuthProvider";
+import toast, { Toaster } from "react-hot-toast";
+import TopNavBar from "@/components/navigation/TopNavBar";
+import BottomNavBar from "@/components/navigation/BottomNavBar";
+
+const montserrat = Montserrat({ subsets: ["latin"], variable: "--montserat" });
 
 export const metadata: Metadata = {
   title: "Beestar - Telegram Kombat",
@@ -22,18 +23,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.className} min-h-screen  h-screen bg-[#1d2025] `}>
-      {/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
-      <AuthProviderWithSuspense>
+      <body className={`${montserrat.className} min-h-screen   h-screen  `}>
+        {/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
+        <AuthProviderWithSuspense>
           <LoadingScreenProvider>
-            <main className=" min-h-screen backdrop-blur-[3px] flex flex-col justify-between  text-white/80">
+            <main className=" min-h-screen relative  flex flex-col  text-white/80">
+            <TopNavBar/>
               {children}
+              <BottomNavBar/>
             </main>
-            <BottomMenus />
           </LoadingScreenProvider>
-      </AuthProviderWithSuspense>
-        <ToastContainer />
-      {/* </TonConnectUIProvider> */}
+        </AuthProviderWithSuspense>
+        <Toaster
+          toastOptions={{
+            className: "",
+            style: {
+              border: "0px solid #713200",
+              padding: "6px",
+              color: "#ffffff",
+              fontSize: "10px",
+              backgroundColor: "#1d2025",
+            },
+          }}
+        />
+        {/* </TonConnectUIProvider> */}
       </body>
     </html>
   );

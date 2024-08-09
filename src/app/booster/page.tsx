@@ -12,7 +12,6 @@ const freeBoosters = [
 ];
 
 const boosters = [
-//   { name: 'Multitap', cost: '16K', level: '5 lvl', icon: '/multitap-icon.png' },
   { name: 'Energy limit', cost: '2K', level: '2 lvl', icon: recharge },
 ];
 
@@ -20,7 +19,7 @@ const Boosters = () => {
     const { points } = usePointsStore()
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen  bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] text-white">
       <div className="p-4">
         <div className="text-center mb-8">
           <p className="text-gray-400">Your balance</p>
@@ -33,7 +32,7 @@ const Boosters = () => {
         <div>
           <h2 className="text-lg font-bold mb-2">Free daily boosters</h2>
           {freeBoosters.map((booster) => (
-            <div key={booster.name} className="flex items-center bg-[#1d2025]  p-4 rounded-2xl mb-2">
+            <div key={booster.name} className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-2 rounded-2xl mb-2">
               <Image src={booster.icon} alt={booster.name} width={50} height={50} className="w-8 h-8 mr-4" />
               <div className="flex-1">
                 <p className="font-bold">{booster.name}</p>
@@ -45,7 +44,7 @@ const Boosters = () => {
         <div className="mt-8">
           <h2 className="text-lg font-bold mb-2">Boosters</h2>
           {boosters.map((booster) => (
-            <div key={booster.name} className="flex items-center bg-[#1d2025]  p-4 rounded-2xl mb-2">
+            <div key={booster.name} className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none   p-2 rounded-2xl mb-2">
             <Image src={booster.icon} alt={booster.name} width={50} height={50} className="w-8 h-8 mr-4" />
               <div className="flex-1">
                 <p className="font-bold">{booster.name}</p>

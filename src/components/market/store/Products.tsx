@@ -6,7 +6,7 @@ import EachProduct, { ProductType } from './EachProduct'
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { SkinType, getSkins, skinBuy } from '@/actions/skins.actions'
 import { Coins } from 'lucide-react'
-import { toast } from 'react-toastify'
+import { toast } from 'react-hot-toast'
 import { usePointsStore } from '@/store/PointsStore'
 
 const Products = () => {

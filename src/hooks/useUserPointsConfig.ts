@@ -1,9 +1,10 @@
 "use client";
 import { creditProfitPerHour, getUserConfig } from "@/actions/user.actions";
+import useLoadingScreenStore from "@/store/loadingScreenStore";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const useUserPointsConfig = () => {
   const {
@@ -16,7 +17,7 @@ const useUserPointsConfig = () => {
   } = useBoostersStore();
 
   const { points,  initializePoints, initializePPH } = usePointsStore()
-
+  const { isLoading } = useLoadingScreenStore();
 
   useEffect(() => {
     const user = window.localStorage.getItem("authToken");
@@ -52,19 +53,27 @@ const useUserPointsConfig = () => {
   }, []);
 
   useEffect(() => {
+
+    console.log("points", points);
     const user = window.localStorage.getItem("authToken");
     const pphReward = async () => {
       if (user) {
         const credited = await creditProfitPerHour(user);
+        console.log("🚀 ~ pphReward ~ credited:", credited)
 
         
-        if (credited == "success") {
+        if (credited && (credited as { success: boolean }).success) {
           toast.success("Profit Credited");
         }
       }
       };
 
-    pphReward();
+
+  
+
+        pphReward();
+      
+
   }, []);
 
 

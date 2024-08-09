@@ -6,7 +6,7 @@ import { useBoostersStore } from '@/store/useBoostrsStore'
 import Image from 'next/image'
 import React from 'react'
 import { FaCaretRight, FaStarAndCrescent } from 'react-icons/fa'
-import { toast } from 'react-toastify'
+import { toast } from 'react-hot-toast'
 
 const OneTimeBoosters = () => {
     const { multiClickLevel, energyCapacity, rechargeVelocity, setRechargeVelocity, setMultiClickLevel, setEnergyCapacity } = useBoostersStore()

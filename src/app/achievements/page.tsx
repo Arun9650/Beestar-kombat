@@ -119,11 +119,11 @@ const handleUpdateAchievement = async (milestoneId:string) => {
 
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen top-glow border-t-4 pt-4  border-[#f3ba2f]  bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl  text-white">
       <header className="p-4  flex items-center justify-between">
         <h1 className="text-lg font-bold mx-auto">Achievements</h1>
       </header>
-      <main className="p-4 pb-8 bg-[#1d2025b7] rounded-t-3xl ">
+      <main className="p-4 pb-8  rounded-t-3xl bg-black/55 shadow-xl  bg-opacity-85 backdrop-blur-none ">
         {categories.map((achievement, index) => (
           <div key={index} className="mb-8">
             <div className="flex justify-between items-center mb-4">
@@ -135,14 +135,6 @@ const handleUpdateAchievement = async (milestoneId:string) => {
                 <div key={index} className={`flex flex-col justify-center  items-center bg-[#1d2025] h-20 rounded-lg ${milestone.unlocked ? '' : 'opacity-50'}`}>
                   <Image src={milestone.icon} alt={milestone.name} width={30} height={30} className="mb-2" />
                   <p className="text-center text-[10px] w-full min-w-full ">{milestone.name}</p>
-                  {/* {!milestone.unlocked && (
-                      <button
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                        onClick={() => handleUpdateAchievement(milestone.id)}
-                      >
-                        Unlock
-                      </button>
-                    )} */}
                 </div>
               ))}
             </div>

@@ -76,7 +76,7 @@ const Leaderboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b  from-purple-800 to-black text-white">
+    <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  from-purple-800 to-black text-white">
       <div className="p-4 flex flex-col items-center">
         <div className="relative">
           <Image
@@ -84,12 +84,7 @@ const Leaderboard = () => {
             alt="Epic Hamster"
             className="w-32 h-32 mx-auto"
           />
-          <button className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 p-2 rounded-full">
-            &lt;
-          </button>
-          <button className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 p-2 rounded-full">
-            &gt;
-          </button>
+         
         </div>
         <h1 className="text-4xl font-bold mt-4">{levelNames[levelIndex]}</h1>
         <p className="text-xl">{levelIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>
@@ -103,7 +98,7 @@ const Leaderboard = () => {
           {leaderboardData.map((user, index) => (
             <div
               key={index}
-              className="flex items-center bg-gray-900 p-4 overflow-y-auto rounded-lg mt-2"
+              className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2"
             >
               <Image
                 src={beeAvatar}
@@ -121,7 +116,7 @@ const Leaderboard = () => {
           ))}
         </div>
         <div>
-          <div className=" fixed bottom-20 border  w-[90%] left-1/2 transform -translate-x-1/2 flex items-center bg-gray-900 p-4 overflow-y-auto rounded-lg mt-2">
+          <div className=" fixed bottom-20   w-[90%] left-1/2 transform -translate-x-1/2 flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2">
             <Image
               src={beeAvatar}
               alt={"user"}

@@ -35,25 +35,25 @@ const Settings = () => {
    }
 
   return (
-    <div className="h-screen bg-black text-white">
+    <div className="h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] text-white">
       <main className="p-4">
         <h2 className="text-2xl font-bold mb-4">Settings</h2>
         <div className="space-y-2">
-          <div className="bg-[#1d2025] p-4 rounded-2xl flex items-center justify-between">
+          <div className="bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-4 rounded-2xl flex items-center justify-between">
             <div>
             <h3 className="text-sm font-medium">Select language</h3>
             <p className="text-gray-400 text-xs">English</p>
             </div>
             <SlArrowRight className='text-gray-400' />
           </div>
-          <div onClick={() => {router.push('exchange')}} className="bg-[#1d2025] p-4 rounded-2xl  flex items-center justify-between">
+          <div onClick={() => {router.push('exchange')}} className="bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-4 rounded-2xl  flex items-center justify-between">
             <div>
             <h3 className="text-sm font-medium">Choose exchange</h3>
             <p className="text-gray-400 text-xs">{exchange.name}</p>
             </div>
             <SlArrowRight className='text-gray-400' />
           </div>
-          <div onClick={() => setIsDrawerOpen(true)} className="bg-[#1d2025] p-4 rounded-2xl  flex items-center justify-between">
+          <div onClick={() => setIsDrawerOpen(true)} className="bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-4 rounded-2xl  flex items-center justify-between">
             <h3 className="text-sm font-medium">Delete account</h3>
             <SlArrowRight className='text-gray-400' />
           </div>

@@ -1,20 +1,15 @@
 "use client";
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from "./ui/drawer";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import { dollarCoin } from "../../public/newImages";
 import { usePointsStore } from "@/store/PointsStore";
-import {
-  getCurrentSkin,
-  getSkins,
-  getUserSkins,
-  skinBuy,
-  SkinsToShow,
-  SkinType,
-} from "@/actions/skins.actions";
+import { skinBuy, SkinsToShow, SkinType } from "@/actions/skins.actions";
 import { getUserConfig } from "@/actions/user.actions";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const Skinmini = ({ tab }: { tab: string }) => {
   const [selectedSkin, setSelectedSkin] = useState<SkinType>();
@@ -24,12 +19,13 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const leftContainerRef = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
   const [userId, setUserId] = useState("");
 
   const [Loading, setLoading] = useState(true);
   const filteredSkins =
     tab === "featured" ? skinsData.filter((skin) => skin.featured) : skinsData;
-  const { points , setPoints} = usePointsStore();
+  const { points, setPoints ,setSkin} = usePointsStore();
 
   useEffect(() => {
     // const userId = window.localStorage.getItem('userId');
@@ -51,6 +47,11 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
   const handleBuySkin = async (userId: string, selectedSkin: any) => {
     if (!selectedSkin) return;
+
+
+    if(selectedSkin.owned){return}
+
+
     setButtonLoading(true);
     const id = selectedSkin.id;
     const localBalance = points;
@@ -62,20 +63,31 @@ const Skinmini = ({ tab }: { tab: string }) => {
       setSelectedSkin(selectedSkin);
       setIsDrawerOpen(false);
 
+      toast.success("Skin Purchased");
       const userSkins = await SkinsToShow(userId!);
       const data = userSkins.combinedSkins;
       if (data) {
-        const biggerArray = Array.from(
-          { length: 20 },
-          (_, i) => data[i % data.length]
-        );
         setSkinsData(data!);
-        const {user} =   await getUserConfig(userId!);
 
-        if(user?.points){
-            setPoints(user?.points);
+        const filter = data.filter((skin) => skin.id === id); 
+        setSelectedSkin(filter[0]);
+        const { user } = await getUserConfig(userId!);
+
+        if (user?.points) {
+          setPoints(user?.points);
         }
       }
+    }
+  };
+
+  const handleChooseSkin = (skin: SkinType) => {
+    if(!skin.owned){
+      setIsDrawerOpen(true);
+    }
+    else{
+      setIsDrawerOpen(false);
+      router.push("/");
+      setSkin(skin.image);
     }
   };
 
@@ -86,7 +98,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
   }, [selectedSkin, skinsData]);
 
   return (
-    <div className="">
+    <div className="h-full flex-grow">
       <div className="grid grid-cols-2 gap-2">
         {
           <>
@@ -120,8 +132,8 @@ const Skinmini = ({ tab }: { tab: string }) => {
                 {selectedSkin?.cost}{" "}
               </p>
               <button
-                onClick={() => setIsDrawerOpen(true)}
-                className="mt-4 w-full py-2 bg-purple-700 rounded-xl text-white "
+                onClick={() =>   handleChooseSkin(selectedSkin!)}
+                className="mt-4 w-full py-2 bg-yellow-400 text-zinc-700 rounded-xl font-medium"
               >
                 {selectedSkin?.owned ? "Choose" : "Unlock"}
               </button>
@@ -136,7 +148,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
                     key={index}
                     className={`relative  py-2 px-4 h-fit rounded-lg bg-[#1d2025] ${
                       selectedSkin?.name === skin.name
-                        ? "border-2 border-blue-500"
+                        ? "border-2 border-yellow-400"
                         : ""
                     }`}
                     onClick={() => setSelectedSkin(skin)}
@@ -185,9 +197,6 @@ const Skinmini = ({ tab }: { tab: string }) => {
                 <h2 className="text-2xl font-medium text-white mb-2">
                   {selectedSkin.name}
                 </h2>
-                {/* <p className="text-white mb-4 max-w-96 font-light mx-auto">
-                    {selectedSkin.description}
-                  </p> */}
                 <p className="text-white">
                   Profit per hour:
                   <br />
@@ -202,11 +211,11 @@ const Skinmini = ({ tab }: { tab: string }) => {
                 <Button
                   disabled={points < selectedSkin.cost}
                   onClick={() => handleBuySkin(userId!, selectedSkin)}
-                  className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700"
+                  className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
                 >
-                  {buttonLoading ? "Loading" : "Buy"}
+                  {buttonLoading ? <div className="loader"></div> : "Buy"}
                 </Button>
-              </DrawerFooter>   
+              </DrawerFooter>
             </DrawerContent>
           )}
         </Drawer>

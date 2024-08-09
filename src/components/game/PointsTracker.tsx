@@ -3,6 +3,7 @@
 import { usePointsStore } from '@/store/PointsStore'
 import Image from 'next/image'
 import React from 'react'
+import { formatNumber } from '../../../utils/formatNumber'
 
 const PointsTracker = () => {
     const { points } = usePointsStore()
@@ -12,7 +13,7 @@ const PointsTracker = () => {
             <span className='text-6xl'>
                 <Image src="/assets/images/dollar-coin.png" height={40} width={40} alt="" />
             </span>
-            {points.toLocaleString()}
+            {formatNumber(points)}
         </div>
     )
 }

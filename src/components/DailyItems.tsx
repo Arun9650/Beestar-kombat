@@ -1,15 +1,29 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { dailyCipher, dailyCombo, dailyReward } from "../../public/newImages";
+import {
+  binanceLogo,
+  dailyCipher,
+  dailyCombo,
+  dailyReward,
+  dollarCoin,
+} from "../../public/newImages";
 import Image from "next/image";
 import useExchangeStore from "@/store/useExchangeStore";
+import Link from "next/link";
+import { usePointsStore } from "@/store/PointsStore";
+import Info from "../../public/icons/Info";
+import Settings from "../../public/icons/Settings";
+import { useRouter } from "next/navigation";
+import { useBoostersStore } from "@/store/useBoostrsStore";
+import { formatNumber } from "../../utils/formatNumber";
 
 const DailyItems = () => {
   const [dailyRewardTimeLeft, setDailyRewardTimeLeft] = useState("");
   const [dailyComboTimeLeft, setDailyComboTimeLeft] = useState("");
 
-
+  const route = useRouter();
   const { exchange, setExchange, exchanges } = useExchangeStore();
+  const { multiClickLevel } = useBoostersStore();
 
   const calculateTimeLeft = (targetHour: number) => {
     const now = new Date();
@@ -31,16 +45,16 @@ const DailyItems = () => {
   };
 
   useEffect(() => {
+    const exchangeName = window.localStorage.getItem("exchange");
 
-
-    const exchangeName = window.localStorage.getItem('exchange');
-
-    const getExchange  = exchanges.find((exchange) => exchange.name === exchangeName);
+    const getExchange = exchanges.find(
+      (exchange) => exchange.name === exchangeName
+    );
 
     if (getExchange !== undefined) {
       setExchange(getExchange!);
     }
-    
+
     const updateCountdowns = () => {
       setDailyRewardTimeLeft(calculateTimeLeft(0));
       setDailyComboTimeLeft(calculateTimeLeft(12));
@@ -52,38 +66,40 @@ const DailyItems = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const { PPH } = usePointsStore();
+
   return (
-    <div className="w-full z-0">
-      <div className="flex-grow mt-2 border-t-4 border-[#f3ba2f] rounded-t-[48px] relative top-glow z-0">
-        <div className=" pb-0 bg-[#1d2025] rounded-t-[46px]">
+    <div className="w-full  z-0">
+      <div className="flex-grow mt-2 relative  border-t-4 border-[#f3ba2f] rounded-t-[48px]  top-glow -z-1">
+        <div className=" pb-0  rounded-t-[46px]">
           <div className="px-4 mt-6 flex justify-between gap-2">
-            <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
-              <div className="dot"></div>
-              <Image
-                src={dailyReward}
-                alt="Daily Reward"
-                className="mx-auto w-12 h-12"
-              />
-              <p className="text-[10px] text-center text-white mt-1">
-                Daily reward
-              </p>
-              <p className="text-[10px] font-medium text-center text-gray-400 mt-2">
-                {dailyRewardTimeLeft}
-              </p>
-            </div>
-            <div className="bg-[#272a2f] rounded-lg px-4 py-2 w-full relative">
-              <div className="dot"></div>
-              <Image
-                src={dailyCombo}
-                alt="Daily Combo"
-                className="mx-auto w-12 h-12"
-              />
-              <p className="text-[10px] text-center text-white mt-1">
-                Daily combo
-              </p>
-              <p className="text-[10px] font-medium text-center text-gray-400 mt-2">
-                {dailyComboTimeLeft}
-              </p>
+            <div className="grid grid-cols-2 divide-x w-full   rounded-full px-4 py-[2px] ">
+              <div className="flex items-center  flex-col">
+                <p className="text-[10px]">Earn per tap</p>
+                <div className="flex gap-2 items-center">
+                  <Image
+                    src={dollarCoin}
+                    alt="Dollar Coin"
+                    className="w-[18px] h-[18px]"
+                  />
+                  +{multiClickLevel}
+                </div>
+              </div>
+
+              <div className="text-center ">
+                <p className="text-[10px] text-[#85827d] font-medium">
+                  Profit per hour
+                </p>
+                <div className="flex items-center justify-center space-x-1">
+                  <Image
+                    src={dollarCoin}
+                    alt="Dollar Coin"
+                    className="w-[18px] h-[18px]"
+                  />
+                  <p className="text-sm">{formatNumber(PPH)}</p>
+                  <Info size={16} className="text-[#43433b]" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

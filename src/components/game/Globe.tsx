@@ -25,6 +25,7 @@ const TapGlobe = () => {
   } = usePointsStore();
   const { secondsLeft, decreaseSecondsLeft } = useBoostersStore();
   const { multiClickLevel } = useBoostersStore();
+  const {skin} = usePointsStore();
 
   useLocalPointsStorage();
   usePushPointsToDB();
@@ -94,26 +95,20 @@ const TapGlobe = () => {
 
   return (
     <div className="relative ">
-      <div className=" flex justify-center relative">
+      <div className=" mx-auto  w-fit ">
         <div
           onClick={handleCardClick}
           className="relative   rounded-full circle-outer"
         >
-          <div className=" ">
-            <Image
-              src="/assets/images/BeeMain.png"
-              height={200}
-              width={200}
-              alt=""
-              className="transition duration-300  cursor-pointer"
-            />
+          <div className="circle-inner rounded-full  ">
+           
             {clicks.map((click) => (
               <div
                 key={click.id}
                 className=" text-5xl font-bold opacity-0 absolute  text-white pointer-events-none"
                 style={{
                   top: `${click.y - 250}px`,
-                  left: `${click.x - 28}px`,
+                  left: `${click.x -28 }px`,
                   animation: `float 1s ease-out`,
                 }}
                 onAnimationEnd={() => handleAnimationEnd(click.id)}
@@ -121,6 +116,13 @@ const TapGlobe = () => {
                 { (secondsLeft > 0 ? 7 : 1) *  multiClickLevel}
               </div>
             ))}
+             <Image
+              src={skin ?? "/assets/images/BeeMain.png"}
+              height={200}
+              width={200}
+              alt=""
+              className="transition duration-300  cursor-pointer"
+            />
           </div>
         </div>
       </div>

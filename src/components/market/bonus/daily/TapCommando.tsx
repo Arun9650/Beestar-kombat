@@ -4,7 +4,7 @@ import { usePointsStore } from '@/store/PointsStore'
 import { useBoostersStore } from '@/store/useBoostrsStore'
 import { Snowflake } from 'lucide-react'
 import React, { useState } from 'react'
-import { toast } from 'react-toastify'
+import { toast } from 'react-hot-toast'
 
 const TapCommando = () => {
     const { tapCommando, decreaseTapCommando, secondsLeft, setSecondsLeft } = useBoostersStore()

@@ -17,13 +17,13 @@ const Exchange = () => {
     window.localStorage.setItem('exchange', exchange.name);
   };
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  text-white">
       <header className="p-4  ">
         <h1 className="text-lg mx-auto  w-fit font-bold">Choose exchange</h1>
       </header>
       <main className="p-4 space-y-2">
         {exchanges.map((item) => (
-          <div onClick={() => handleSelect(item)} key={item.name} className="flex items-center bg-[#1d2025] p-4 rounded-2xl">
+          <div onClick={() => handleSelect(item)} key={item.name} className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-4 rounded-2xl">
             <Image src={item.icon} alt={`${item.name} icon`} className="w-6 h-6 mr-4" />
             <span className="flex-1">{item.name}</span>
             <span className="text-gray-400"> 

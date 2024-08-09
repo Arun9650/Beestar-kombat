@@ -56,11 +56,14 @@ export async function creditProfitPerHour(id: string) {
 
       await prisma.user.update({
         where: { chatId: id },
-        data: { profit: profitMade, lastProfitDate: now },
+        data: { points: profitMade, lastProfitDate: now },
       });
+      return { profit: profitMade, success: true };
     }
+    
   } catch (e) {
     console.log(e);
+    return { success: false, message: 'An error occurred while updating the profit per hour' }
   }
 }
 export async function updateProfitPerHour(id: string, selectedTeam: Team) {

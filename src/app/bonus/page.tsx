@@ -4,7 +4,7 @@ import React from "react";
 
 const AirDrop = () => {
   return (
-    <div className="p-4   max-w-xl mx-auto text-white ">
+    <div className="p-4 flex-grow bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]   max-w-xl mx-auto text-white ">
       <div className="flex flex-col items-center mb-6">
         <div className="glowing-coin my-4">
             <Image src={BeeCoin} alt="TON Wallet" width={150} height={150} />
@@ -17,7 +17,7 @@ const AirDrop = () => {
       </div>
       <div className="mt-8">
         <h2 className="text-lg font-semibold mb-4">Tasks list</h2>
-        <div className="bg-blue-500 p-4 rounded-lg flex items-center justify-between">
+        <div className="bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 rounded-lg flex items-center justify-between">
           <div className="flex items-center">
             <Image
               src={tonWallet}

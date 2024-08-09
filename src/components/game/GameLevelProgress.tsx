@@ -14,7 +14,7 @@ const GameLevelProgress = () => {
   const router = useRouter();
 
   return (
-    <div className="flex items-center justify-between w-full ">
+    <div className="flex items-center justify-between w-full px-4">
       <div className="flex items-center my-4  gap-2 text-lg">
         <div>
           <Image

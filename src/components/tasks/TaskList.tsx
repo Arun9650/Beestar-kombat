@@ -74,7 +74,6 @@ const TaskList = () => {
         (card) =>
           card.id === team.requiredCardId || card.cardId === team.requiredCardId
       );
-      console.log("🚀 ~ isEligibleToBuy ~ requiredCard:", requiredCard);
       return requiredCard.baseLevel >= team.requiredCardLevel;
     }
     return true;
@@ -91,9 +90,6 @@ const TaskList = () => {
         const userId = window.localStorage.getItem("authToken");
         const { combinedCards } = await allCards(userId!);
         setCards(combinedCards);
-        setIsDrawerOpen(false);
-        setButtonLoading(false);
-
         const { user } = await getUserConfig(userId!);
         setPoints(user?.points);
         setPPH(user?.profitPerHour);
@@ -103,34 +99,26 @@ const TaskList = () => {
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="p-4 flex flex-col items-center">
-        <div className="flex justify-between my-2 py-2 px-4 rounded-xl w-full items-center  bg-[#292d32]">
-          <h1 className="text-md font-semibold ">Daily Combo</h1>
-          <div className="flex items-center space-x-2">
-            <span className="text-yellow-400">+5,000,000</span>
-            <Image src={dollarCoin} alt="coin" className="w-6 h-6" />
-          </div>
-        </div>
-        <div className="flex justify-between w-full mb-4">
-          <div className="grid grid-cols-3 items-center w-full  justify-between  gap-2">
-            <Image src={QuestionMark} alt="?" className="w-full h-full" />
-            <Image src={QuestionMark} alt="?" className="w-full h-full" />
-            <Image src={QuestionMark} alt="?" className="w-full h-full" />
-          </div>
-        </div>
+  const handleTabChange = (tab: string) => {
+    setSelectedCategory(tab);
+  };
 
+  return (
+    <div className="flex flex-col items-center  pt-4 w-full">
+      <div className=" flex flex-col items-center w-full px-4">
         {/* cards start from here  */}
-        <div className="flex flex-col items-center w-full">
-          <Tabs defaultValue="PR&Team" className="w-full">
-            <TabsList className="flex justify-around w-full bg-[#292d32] rounded-t-lg">
+        <div className="flex flex-col  items-center w-full">
+          <Tabs
+            onValueChange={(value) => handleTabChange(value)}
+            defaultValue="PR&Team"
+            className="w-full"
+          >
+            <TabsList className="flex  justify-around w-full p-2 bg-zinc-800  text-yellow-400  rounded-xl shadow-2xl border border-yellow-400">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  onClick={() => setSelectedCategory(tab)}
-                  className="capitalize data-[state=active]:bg-[#1C1F23]  data-[state=active]:text-white text-white"
+                  className="capitalize data-[state=active]:bg-yellow-400  data-[state=active]:text-zinc-800  w-full"
                 >
                   {tab}
                 </TabsTrigger>
@@ -138,8 +126,8 @@ const TaskList = () => {
             </TabsList>
 
             {loading ? (
-              <div>
-                <div className="grid grid-cols-2 gap-4 mt-3 ">
+              <div className="w-full ">
+                <div className="grid grid-cols-2 gap-3 mt-3 ">
                   <Skeleton className="w-full h-20" />
                   <Skeleton className="w-full h-20" />
                   <Skeleton className="w-full h-20" />
@@ -151,53 +139,52 @@ const TaskList = () => {
                 value={selectedCategory}
                 className="w-full   rounded-lg"
               >
-                <div className="grid grid-cols-2 gap-4 ">
+                <div className="grid grid-cols-2 gap-3 ">
                   {filteredCards.map((team, index) => (
                     <div
                       key={index}
-                      className="px-3 py-2 bg-[#272A2F] rounded-3xl"
+                      className="px-3 py-2 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  rounded-2xl"
                       onClick={() => handleTeamClick(team)}
                     >
-                      <div className="flex items-center gap-4 border-b pb-2 ">
+                      <div className="flex items-center gap-4  pb-2 ">
                         <Image
                           src={team.image}
                           alt={team.name}
                           width={50}
                           height={50}
-                          className=" object-cover mb-2 rounded-lg"
+                          className="     rounded-md"
                         />
 
-                        <div className="flex flex-col justify-between gap-4">
+                        <div className="flex flex-col justify-between gap-1">
                           <h3 className="text-white font-normal text-[0.7rem]">
                             {team.title}
                           </h3>
-                          <p className="text-[#abadb2] text-[0.65rem] font-normal">
-                            Profit per hour:
-                            <br />
-                            <span className="text-[#abadb2]">
-                              +{parseFloat(team.basePPH).toFixed(2)}
-                            </span>
-                          </p>
+                          <div className="text-[.7rem]">
+                            lvl {team.baseLevel}
+                          </div>
                         </div>
                       </div>
-
+                      <p className="text-white  p-1 px-2 rounded-2xl  flex  justify-between text-[0.65rem] font-normal">
+                        Profit per hour:
+                        <br />
+                        <span className="text-white">
+                          +{parseFloat(team.basePPH).toFixed(2)}
+                        </span>
+                      </p>
                       <div className="flex items-center mt-2 ">
-                        <div className="border-r text-[.7rem]   text-center w-12">
-                          lvl {team.baseLevel}
-                        </div>
-                        <div>
-                          <p className="text-gray-400 ml-4 text-xs gap-1 flex items-center font-thin">
+                        <div className="w-full">
+                          <p className="text-gray-400  text-xs gap-1 flex items-center font-thin">
                             {isEligibleToBuy(team) ? (
-                              <>
+                              <div className="bg-black/35 border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full">
                                 <Image
                                   src={dollarCoin}
                                   alt="coin"
                                   className="w-4 h-4"
                                 />
-                                <span className="text-white font-semibold">
+                                <span className="text-white  font-semibold">
                                   {formatNumber(team.baseCost)}{" "}
                                 </span>
-                              </>
+                              </div>
                             ) : (
                               <>
                                 <span className="text-white font-semibold">
@@ -271,9 +258,13 @@ const TaskList = () => {
                     onClick={() =>
                       handleUpdateProfitPerHour(user!, selectedTeam)
                     }
-                    className="w-full py-8 bg-blue-600 text-white text-xl rounded-lg hover:bg-blue-700"
+                    className="w-full py-8 bg-yellow-600 text-white text-xl rounded-lg hover:bg-yellow-700"
                   >
-                    {buttonLoading ? "Loading" : "Go ahead"}
+                    {buttonLoading ? (
+                      <div className="loader"></div>
+                    ) : (
+                      "Go ahead"
+                    )}
                   </Button>
                 </DrawerFooter>
               </DrawerContent>

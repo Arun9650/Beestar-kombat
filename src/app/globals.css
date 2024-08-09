@@ -29,6 +29,10 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --bg-body: #dff9fb;
+    --bg-nav: #220455;
+    --color-nav: #644c89;
+    --color-nav-active: #fff;
   }
 
   .dark {
@@ -68,6 +72,18 @@
   }
 }
 
+
+body {
+  background-image: url('/newImages/background-bee-final.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode:darken;
+  background-attachment: fixed;
+  z-index: -1;
+  /* z-index: -1; */
+}
+
 .tap-count-animation {
   animation-name: tapAnim;
   animation-duration: 3s;
@@ -80,7 +96,7 @@
 }
 
 .top-glow {
-  box-shadow: 0 -26px 20px rgba(243, 186, 47, 0.3);
+  box-shadow: 0 -16px 20px rgba(243, 186, 47, 0.3);
 }
 
 /* tap-count-animation {
@@ -133,7 +149,8 @@
 
 
 .circle-outer {
-  background: linear-gradient(to bottom, #575def, #202731);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(255, 255, 0, 0.6));
+  opacity: 0.8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,10 +161,12 @@
 }
 
 .circle-inner {
-  background: radial-gradient(circle, #4960b2, #282e3e);
+  background: radial-gradient(circle, #939d0586, #282e3e);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 70vw;
+  height: 70vw;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
@@ -184,4 +203,43 @@
   background: radial-gradient(circle, rgba(255, 223, 0, 0.3), transparent);
   border-radius: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 30px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 4px solid lightblue;
+  border-right-color: rgb(0, 51, 255);
+  animation: l2 1s infinite linear;
+}
+@keyframes l2 {to{transform: rotate(1turn)}}
+
+
+.nav-indicator {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #272a2f;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -100;
+  transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* cubic-bezier(0.175, 0.885, 0.32, 1.275) */
+}
+
+#filter-svg {
+  display: none;
+}
+
+
+.nav {
+  filter: url('#goo');
+  list-style-type: none;
+  display: flex;
+  background-color: #272a2f;
+  /* height: 80px; */
+  border-radius: 20px;
 }

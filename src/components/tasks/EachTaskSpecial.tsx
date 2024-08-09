@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { FaCaretRight } from 'react-icons/fa'
 import { Button } from '../ui/button'
 import { usePointsStore } from '@/store/PointsStore'
-import { toast } from 'react-toastify'
+import { toast } from 'react-hot-toast'
 import { checkCompletedTasks, completeTask } from '@/actions/tasks.actions'
 
 interface Props {

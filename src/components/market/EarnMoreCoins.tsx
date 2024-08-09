@@ -1,7 +1,6 @@
 "use client";
 
-
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   approved,
   BeeCoin,
@@ -26,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { formatNumber } from "../../../utils/formatNumber";
 import { checkRewardStatus, claimReward } from "@/actions/bonus.actions";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 interface Reward {
   id?: string;
@@ -102,12 +102,13 @@ const EarnMoreCoins = () => {
   const handleClaimReward = async () => {
     if (!userId) return;
     const data = await claimReward(userId);
-    if (data.success) {
+    if (data.success && data.reward) {
       setNextRewardAvailable(false);
       setReward((prev) => ({
         day: (prev?.day || 0) + 1,
         coins: data.reward || 0,
       }));
+      toast.success(`Reward claimed successfully! ${data.reward} `);
     } else {
       console.log(data.error);
     }
@@ -116,22 +117,23 @@ const EarnMoreCoins = () => {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   useEffect(() => {
-    const storedCompletedTasks = JSON.parse(window.localStorage.getItem('completedTasks') || '[]');
+    const storedCompletedTasks = JSON.parse(
+      window.localStorage.getItem("completedTasks") || "[]"
+    );
     setCompletedTasks(storedCompletedTasks);
   }, []);
 
   const handleCompleteTask = (taskId: string) => {
     const newCompletedTasks = [...completedTasks, taskId];
     setCompletedTasks(newCompletedTasks);
-    window.localStorage.setItem('completedTasks', JSON.stringify(newCompletedTasks));
+    window.localStorage.setItem(
+      "completedTasks",
+      JSON.stringify(newCompletedTasks)
+    );
   };
 
-
-
-
-
   return (
-    <div className="p-4 bg-black text-white max-w-xl mb-16 mx-auto shadow-lg">
+    <div className="p-4 bg-black flex-grow  bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  text-white max-w-xl pb-20 mx-auto shadow-lg">
       <div className="flex flex-col items-center mb-6">
         <div className="glowing-coin my-8">
           <Image src={dollarCoin} alt="TON Wallet" width={150} height={150} />
@@ -143,7 +145,7 @@ const EarnMoreCoins = () => {
       <div className="space-y-4">
         <div>
           <h2 className="text-lg font-semibold mb-2">Beestar Youtube</h2>
-          <div className="p-4 bg-[#1d2025] rounded-2xl flex items-center justify-between">
+          <div className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between">
             <div className="flex items-center">
               <Image src={Youtube} alt="YouTube" className="w-12 h-12 mr-4" />
               <div>
@@ -158,7 +160,7 @@ const EarnMoreCoins = () => {
         </div>
         <div>
           <h2 className="text-lg font-semibold mb-2">Daily tasks</h2>
-          <div className="p-4 bg-[#1d2025] rounded-2xl flex items-center justify-between">
+          <div className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between">
             <div>
               <p className="flex items-center " onClick={() => setIsOpen(true)}>
                 <Image
@@ -243,9 +245,9 @@ const EarnMoreCoins = () => {
           <h2 className="text-lg font-semibold mb-2">Tasks list</h2>
           {taskList.map((task, index) => (
             <div
-            onClick={() => handleCompleteTask(task.id.toString())}
+              onClick={() => handleCompleteTask(task.id.toString())}
               key={index}
-              className="p-4 bg-[#1d2025] rounded-2xl mt-2 flex items-center justify-between"
+              className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl mt-2 flex items-center justify-between"
             >
               <div className="flex items-center">
                 <Image
@@ -262,7 +264,11 @@ const EarnMoreCoins = () => {
                 </Link>
               </div>
               {completedTasks.includes(task.id.toString()) && (
-                <Image src={approved} alt="approved icon" className="w-12 h-12" />
+                <Image
+                  src={approved}
+                  alt="approved icon"
+                  className="w-12 h-12"
+                />
               )}
             </div>
           ))}

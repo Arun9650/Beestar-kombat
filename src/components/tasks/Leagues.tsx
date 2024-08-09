@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import LeagueProgress from '@/app/tasks/LeagueProgress'
 import { usePointsStore } from '@/store/PointsStore'
-import { toast } from 'react-toastify'
+import { toast } from 'react-hot-toast'
 
 const Leagues = () => {
     const { addPoints } = usePointsStore()
