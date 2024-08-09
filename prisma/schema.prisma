@@ -36,6 +36,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   userCard UserCard[]
+  Bonuster Bonuster[]
   dailyRewards DailyReward[]
 
   referrals    Referral[] @relation("UserReferrer")
@@ -201,10 +202,9 @@ model Points {
 
 model Bonuster {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  icon   String
-  points String
-  level  String
+  chatId String @unique
+  energy Int
+  user User @relation(fields: [chatId], references: [chatId])
 }
 
 model DailyBoosters {
