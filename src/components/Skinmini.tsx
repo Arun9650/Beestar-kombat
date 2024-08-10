@@ -186,9 +186,9 @@ const Skinmini = ({ tab }: { tab: string }) => {
                 {filteredSkins.map((skin, index) => (
                   <div
                     key={index}
-                    className={`relative  py-2 px-4 h-fit rounded-lg bg-[#1d2025] ${
+                    className={`relative  py-2 px-2 h-full rounded-lg bg-[#1d2025] ${
                       selectedSkin?.name === skin.name
-                        ? "border-2 border-yellow-400"
+                        ? "border-2 border-yellow-400 overflow-hidden"
                         : ""
                     }`}
                     onClick={() => setSelectedSkin(skin)}
@@ -203,7 +203,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
                         className="w-full h-auto mb-2"
                       />
                     </figure>
-                    <p className="text-center text-xs">{skin.name}</p>
+                    <p className="text-center mx-auto text-xs">{skin.name}</p>
                     {skin.owned ? (
                       <></>
                     ) : (
@@ -213,7 +213,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
                         </div>
 
                         {skin.league !== levelNames[levelIndex]  && (
-                          <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
+                          <div className="absolute top-0 left-0 w-full h-full rounded-lg bg-black/50"></div>
                         )}
                       </>
                     )}
