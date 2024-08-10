@@ -43,6 +43,8 @@ model User {
   referredBy   Referral?  @relation("UserReferred")
   referredById String?    @db.ObjectId
  achievements  UserAchievement[]
+
+ userTasks TasksCompletion[]
 }
 
 
@@ -224,9 +226,19 @@ model Tasks {
   category String
   name     String
   points   Int
+  link     String
   icon     String
+  user     TasksCompletion[]
 }
 
+model TasksCompletion {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  taskId String @db.ObjectId
+  userId String
+  user  User @relation(fields: [userId], references: [chatId])
+  task  Tasks @relation(fields: [taskId], references: [id])
+  points Int
+}
 model Skins {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   name          String
@@ -245,9 +257,4 @@ model UserSkin {
   skin   Skins     @relation(fields: [skinId], references: [id])
 }
 
-model TasksCompletion {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  taskId String
-  userId String
-  reward Int
-}
+

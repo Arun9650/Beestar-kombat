@@ -39,9 +39,18 @@ export async function completeTask({
 
     await prisma.tasksCompletion.create({
       data: {
-        reward: task.points,
+        points: task.points,
         taskId,
         userId,
+      },
+    });
+
+    await prisma.user.update({
+      where: { chatId: userId },
+      data: {
+        points: {
+          increment: task.points,
+        },
       },
     });
 
@@ -49,6 +58,38 @@ export async function completeTask({
   } catch (e) {
     console.log(e);
     return "unknownError";
+  }
+}
+
+
+export async function TaskToShow(userId: string){
+  try {
+      // Fetch all tasks
+      const allTasks = await prisma.tasks.findMany();
+
+      // Fetch user's tasks
+      const userTasks = await prisma.tasksCompletion.findMany({
+        where: { userId },
+        include: { task: true },
+      });
+  
+      // Create a map of user tasks for quick lookup
+      const userTasksMap = new Map(userTasks.map(userTask => [userTask.taskId, userTask]));
+  
+      // Combine tasks and add a property to indicate if it belongs to the user
+    const combinedTasks = allTasks.map(task => {
+      const userTask = userTasksMap.get(task.id);
+      return {
+        ...task,
+        isUserTask: !!userTask, // Add isUserTask property
+        userTaskDetails: userTask ? userTask : null // Optionally add user task details
+      };
+    });
+
+    return combinedTasks;
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    throw new Error('Could not fetch tasks');
   }
 }
 
@@ -71,6 +112,31 @@ export async function checkCompletedTasks({
     return false;
   }
 }
+
+
+export async function addTask(name: string, category: string, points: number, icon: string, link: string): Promise<string> {
+  // Check for existing task with the same name and category to avoid duplicates
+  const existingTask = await prisma.tasks.findFirst({
+    where: { name, category },
+  });
+
+  if (existingTask) {
+    throw new Error('A task with the same name and category already exists.');
+  }
+
+  const task = await prisma.tasks.create({
+    data: {
+      name,
+      category,
+      points,
+      icon,
+      link
+    },
+  });
+
+  return `Task '${task.name}' added successfully with ID: ${task.id}`;
+}
+
 
 export async function allCards(userId: string) {
   // Fetch all cards

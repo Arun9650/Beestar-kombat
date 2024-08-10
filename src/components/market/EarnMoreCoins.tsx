@@ -3,13 +3,8 @@
 import React, { useEffect, useState } from "react";
 import {
   approved,
-  BeeCoin,
   Calendar,
   dollarCoin,
-  exchange,
-  invite,
-  Telegram,
-  X,
   Youtube,
 } from "../../../public/newImages";
 import Image from "next/image";
@@ -18,7 +13,6 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
@@ -26,6 +20,8 @@ import { formatNumber } from "../../../utils/formatNumber";
 import { checkRewardStatus, claimReward } from "@/actions/bonus.actions";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { completeTask, tasksList, TaskToShow } from "@/actions/tasks.actions";
+import { Skeleton } from "../ui/skeleton";
 
 interface Reward {
   id?: string;
@@ -34,6 +30,16 @@ interface Reward {
   coins: number;
   createdAt?: Date;
 }
+
+type Task = {
+  id: string;
+  name: string;
+  points: number;
+  category: string;
+  icon: string;
+  link: string;
+  isUserTask: boolean;
+};
 
 const EarnMoreCoins = () => {
   const dailyRewards = [
@@ -49,42 +55,14 @@ const EarnMoreCoins = () => {
     { day: 10, reward: 5000000 },
   ];
 
-  const taskList = [
-    {
-      id: 1,
-      title: "Join our TG channel",
-      reward: 5000,
-      link: "https://t.me/+2jJ-IidSHKo0OWJl",
-      icon: Telegram,
-    },
-    {
-      id: 2,
-      title: "Follow Us On X channel",
-      reward: 10000,
-      link: "https://x.com",
-      icon: X,
-    },
-    {
-      id: 3,
-      title: "choose your exchange",
-      reward: 10000,
-      link: "/exchange",
 
-      icon: exchange,
-    },
-    // {
-    //   id: 4,
-    //   title: "Invite 3 friends",
-    //   reward: 10000,
-    //   link: "",
-    //   icon: invite,
-    // },
-  ];
 
   const [isOpen, setIsOpen] = useState(false);
 
   const [rewards, setReward] = useState<Reward | null>(null);
   const [nextRewardAvailable, setNextRewardAvailable] = useState(false);
+  const [taskList, setTaskList] = useState<Task[]>();
+  const [isLoading, setIsLoading] = useState(true);
 
   const userId = window.localStorage.getItem("authToken"); // Ensure userId is properly handled
 
@@ -103,7 +81,8 @@ const EarnMoreCoins = () => {
     if (!userId) return;
     const data = await claimReward(userId);
     if (data.success && data.reward) {
-      setNextRewardAvailable(false);``
+      setNextRewardAvailable(false);
+      ``;
       setReward((prev) => ({
         day: (prev?.day || 0) + 1,
         coins: data.reward || 0,
@@ -117,19 +96,34 @@ const EarnMoreCoins = () => {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   useEffect(() => {
-    const storedCompletedTasks = JSON.parse(
-      window.localStorage.getItem("completedTasks") || "[]"
-    );
-    setCompletedTasks(storedCompletedTasks);
+    const userId = window.localStorage.getItem("authToken");
+    const getAllTask = async () => {
+      const tasks = await TaskToShow(userId!);
+      if (tasks && tasks.length > 0) {
+        setTaskList(tasks);
+        setIsLoading(false);
+      }
+    };
+
+    getAllTask();
   }, []);
 
-  const handleCompleteTask = (taskId: string) => {
-    const newCompletedTasks = [...completedTasks, taskId];
-    setCompletedTasks(newCompletedTasks);
-    window.localStorage.setItem(
-      "completedTasks",
-      JSON.stringify(newCompletedTasks)
-    );
+  const handleCompleteTask = async (taskId: string) => {
+    const userId = window.localStorage.getItem("authToken");
+
+    if (!userId) return;
+    const result = await completeTask({ userId, taskId });
+
+    if (result === "success") {
+      setCompletedTasks((prev) => [...prev, taskId]);
+      toast.success("Task completed successfully!");
+      setIsLoading(true);
+      const tasks = await TaskToShow(userId!);
+      if (tasks && tasks.length > 0) {
+        setTaskList(tasks);
+      }
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -211,7 +205,7 @@ const EarnMoreCoins = () => {
                         className={`px-2 py-2 flex flex-col items-center justify-center gap-1 rounded-lg text-center ${
                           reward && (rewards?.day ?? 0) === day
                             ? "border border-green-600"
-                            :  (rewards?.day ?? 0)  > day
+                            : (rewards?.day ?? 0) > day
                             ? "bg-green-600"
                             : "bg-[#222429]"
                         }`}
@@ -245,35 +239,44 @@ const EarnMoreCoins = () => {
         </div>
         <div>
           <h2 className="text-lg font-semibold mb-2">Tasks list</h2>
-          {taskList.map((task, index) => (
-            <div
-              onClick={() => handleCompleteTask(task.id.toString())}
-              key={index}
-              className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl mt-2 flex items-center justify-between"
-            >
-              <div className="flex items-center">
-                <Image
-                  src={task.icon}
-                  alt="Telegram"
-                  className="w-12 h-12 mr-6"
-                />
-                <Link href={task.link}>
-                  <p className="font-semibold">{task.title}</p>
-                  <p className="text-yellow-400  flex items-center justify-start gap-1">
-                    <Image src={dollarCoin} alt="Coin" className="w-4 h-4 " />
-                    +5,000
-                  </p>
-                </Link>
+          {isLoading ? (
+            // Skeleton loader
+            <Skeleton className="w-full h-20" />
+          ) : (
+            taskList &&
+            taskList.length > 0 &&
+            taskList.map((task: Task, index) => (
+              <div
+                onClick={() => handleCompleteTask(task.id)}
+                key={index}
+                className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl mt-2 flex items-center justify-between"
+              >
+                <div className="flex items-center">
+                  <Image
+                    src={task.icon}
+                    alt="Telegram"
+                    className="w-12 h-12 mr-6"
+                    width={50}
+                    height={50}
+                  />
+                  <Link href={task.link}>
+                    <p className="font-semibold">{task.name}</p>
+                    <p className="text-yellow-400 flex items-center justify-start gap-1">
+                      <Image src={dollarCoin} alt="Coin" className="w-4 h-4" />
+                      +5,000
+                    </p>
+                  </Link>
+                </div>
+                {task.isUserTask && completedTasks.includes(task.id) && (
+                  <Image
+                    src={approved}
+                    alt="approved icon"
+                    className="w-12 h-12"
+                  />
+                )}
               </div>
-              {completedTasks.includes(task.id.toString()) && (
-                <Image
-                  src={approved}
-                  alt="approved icon"
-                  className="w-12 h-12"
-                />
-              )}
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
