@@ -51,7 +51,6 @@ const Leaderboard = () => {
     const currentLevelMin = levelMinPoints[levelIndex];
     const nextLevelMin = levelMinPoints[levelIndex + 1];
     const progress = ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
-    console.log("🚀 ~ calculateProgress ~ progress:", progress)
     return Math.min(progress, 100);
   };
 

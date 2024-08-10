@@ -17,6 +17,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const [leftContainerHeight, setLeftContainerHeight] = useState<number>(0);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [levelIndex, setLevelIndex] = useState(0);
   const leftContainerRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
@@ -25,7 +26,37 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const [Loading, setLoading] = useState(true);
   const filteredSkins =
     tab === "featured" ? skinsData.filter((skin) => skin.featured) : skinsData;
-  const { points, setPoints ,setSkin} = usePointsStore();
+  const { points, setPoints, setSkin } = usePointsStore();
+
+
+  
+  const levelNames = [
+    "Bronze", // From 0 to 4999 coins
+    "Silver", // From 5000 coins to 24,999 coins
+    "Gold", // From 25,000 coins to 99,999 coins
+    "Platinum", // From 100,000 coins to 999,999 coins
+    "Diamond", // From 1,000,000 coins to 2,000,000 coins
+    "Epic", // From 2,000,000 coins to 10,000,000 coins
+    "Legendary", // From 10,000,000 coins to 50,000,000 coins
+    "Master", // From 50,000,000 coins to 100,000,000 coins
+    "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
+    "Lord", // From 1,000,000,000 coins to ∞
+  ];
+  
+  const levelMinPoints = [
+    0, // Bronze
+    5000, // Silver
+    25000, // Gold
+    100000, // Platinum
+    1000000, // Diamond
+    2000000, // Epic
+    10000000, // Legendary
+    50000000, // Master
+    100000000, // GrandMaster
+    1000000000, // Lord
+  ];
+
+
 
   useEffect(() => {
     // const userId = window.localStorage.getItem('userId');
@@ -45,12 +76,22 @@ const Skinmini = ({ tab }: { tab: string }) => {
     fetchSkins();
   }, []);
 
+  useEffect(() => {
+    const currentLevelMin = levelMinPoints[levelIndex];
+    const nextLevelMin = levelMinPoints[levelIndex + 1];
+    if (points >= nextLevelMin && levelIndex < levelNames.length - 1) {
+      setLevelIndex(levelIndex + 1);
+    } else if (points < currentLevelMin && levelIndex > 0) {
+      setLevelIndex(levelIndex - 1);
+    }
+  }, [points, levelIndex, levelMinPoints, levelNames.length]);
+
   const handleBuySkin = async (userId: string, selectedSkin: any) => {
     if (!selectedSkin) return;
 
-
-    if(selectedSkin.owned){return}
-
+    if (selectedSkin.owned) {
+      return;
+    }
 
     setButtonLoading(true);
     const id = selectedSkin.id;
@@ -69,7 +110,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
       if (data) {
         setSkinsData(data!);
 
-        const filter = data.filter((skin) => skin.id === id); 
+        const filter = data.filter((skin) => skin.id === id);
         setSelectedSkin(filter[0]);
         const { user } = await getUserConfig(userId!);
 
@@ -81,10 +122,9 @@ const Skinmini = ({ tab }: { tab: string }) => {
   };
 
   const handleChooseSkin = (skin: SkinType) => {
-    if(!skin.owned){
+    if (!skin.owned) {
       setIsDrawerOpen(true);
-    }
-    else{
+    } else {
       setIsDrawerOpen(false);
       router.push("/");
       setSkin(skin.image);
@@ -132,7 +172,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
                 {selectedSkin?.cost}{" "}
               </p>
               <button
-                onClick={() =>   handleChooseSkin(selectedSkin!)}
+                onClick={() => handleChooseSkin(selectedSkin!)}
                 className="mt-4 w-full py-2 bg-yellow-400 text-zinc-700 rounded-xl font-medium"
               >
                 {selectedSkin?.owned ? "Choose" : "Unlock"}
@@ -167,9 +207,15 @@ const Skinmini = ({ tab }: { tab: string }) => {
                     {skin.owned ? (
                       <></>
                     ) : (
-                      <div className="absolute top-2 right-2 text-blue-500">
-                        🔒
-                      </div>
+                      <>
+                        <div className="absolute top-2 right-2 text-blue-500">
+                          🔒
+                        </div>
+
+                        {skin.league !== levelNames[levelIndex]  && (
+                          <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
+                        )}
+                      </>
                     )}
                   </div>
                 ))}
@@ -198,6 +244,9 @@ const Skinmini = ({ tab }: { tab: string }) => {
                   {selectedSkin.name}
                 </h2>
                 <p className="text-white">
+                  {selectedSkin.league !== levelNames[levelIndex] && (<span className="text-yellow-400">You need to be at {selectedSkin.league}</span>)}
+                </p>
+                <p className="text-white">
                   Profit per hour:
                   <br />
                   <span className="text-white  flex max-w-fit mx-auto gap-2">
@@ -209,7 +258,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
               <DrawerFooter>
                 <Button
-                  disabled={points < selectedSkin.cost}
+                  disabled={points < selectedSkin.cost  || selectedSkin.league === levelNames[levelIndex]}
                   onClick={() => handleBuySkin(userId!, selectedSkin)}
                   className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
                 >
