@@ -17,11 +17,9 @@ const HeroSection = () => {
   const { multiClickLevel,setEnergyCapacity } = useBoostersStore();
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
-    console.log("🚀 ~ useEffect ~ userId:", userId)
     // const boostersEnergy = window.localStorage.getItem("BoostersEnergy");
     const fetchEnergy = async () => {
       const boostersEnergy = await getUserEnergy(userId!);
-      console.log("🚀 ~ fetchEnergy ~ boostersEnergy:", boostersEnergy)
     if (boostersEnergy.energy && boostersEnergy.success) {
       setEnergyCapacity((boostersEnergy.energy));
     }

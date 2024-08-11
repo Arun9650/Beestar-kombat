@@ -140,16 +140,18 @@ const EarnMoreCoins = () => {
         <div>
           <h2 className="text-lg font-semibold mb-2">Beestar Youtube</h2>
           <div className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between">
+              <Link href="https://youtube.com/channel/UCQyXoMQxQBdZSrBiRfDdZoQ">
             <div className="flex items-center">
               <Image src={Youtube} alt="YouTube" className="w-12 h-12 mr-4" />
               <div>
-                <p className="font-semibold">5 richest people in the world</p>
+                <p className="font-semibold">Check out our youtube channel</p>
                 <p className="text-yellow-400  flex items-center justify-start gap-1">
                   <Image src={dollarCoin} alt="Coin" className="w-4 h-4 " />
                   +100,000
                 </p>
               </div>
             </div>
+              </Link>
           </div>
         </div>
         <div>

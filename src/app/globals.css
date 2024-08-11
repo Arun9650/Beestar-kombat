@@ -74,14 +74,13 @@
 
 
 body {
-  background-image: url('/newImages/background-bee-final.webp');
+  background-color: #57530c;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   background-blend-mode:darken;
   background-attachment: fixed;
   z-index: -1;
-  /* z-index: -1; */
 }
 
 .tap-count-animation {

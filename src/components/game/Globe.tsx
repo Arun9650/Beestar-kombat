@@ -108,7 +108,7 @@ const TapGlobe = () => {
                 className=" text-5xl font-bold opacity-0 absolute  text-white pointer-events-none"
                 style={{
                   top: `${click.y - 250}px`,
-                  left: `${click.x -28 }px`,
+                  left: `${click.x - 28 }px`,
                   animation: `float 1s ease-out`,
                 }}
                 onAnimationEnd={() => handleAnimationEnd(click.id)}
