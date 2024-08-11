@@ -44,7 +44,7 @@ import honeycomb from './honeycomb.png'
 import recharge from './recharge.png'
 import rocket from './rocket.png'
 import coolBee from './cool_bee.png'
-
+import SponsorImage from './sponsorImage.png'
 export {
     binanceLogo,
     dollarCoin,
@@ -91,5 +91,6 @@ export {
      honeycomb,
      recharge,
      rocket,
-     coolBee
+     coolBee,
+     SponsorImage
 };

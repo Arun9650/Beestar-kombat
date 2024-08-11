@@ -31,7 +31,7 @@ export interface Team {
 }
 
 const TaskList = () => {
-  const user = window.localStorage.getItem("authToken");
+ 
 
   const { points, setPoints, setPPH } = usePointsStore();
 
@@ -44,8 +44,11 @@ const TaskList = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const [user, setUser] = useState<string | null>(null);
+
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
+    setUser(userId);
     const fetchCards = async () => {
       const { combinedCards } = await allCards(userId!);
       setCards(combinedCards);

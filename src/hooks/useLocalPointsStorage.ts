@@ -7,7 +7,7 @@ import { useEffect } from "react";
 export const useLocalPointsStorage = () => {
   const { points } = usePointsStore();
   const name = process.env.NEXT_PUBLIC_TAPPED_POINTS_KEYWORD!;
-  const authToken = window.localStorage.getItem("authToken");
+
 
   const store = (points: number) => {
     // window.localStorage.setItem(`${authToken}${name}`, `${points}`);
@@ -21,14 +21,16 @@ export const useLocalPointsStorage = () => {
   };
 
   useEffect(() => {
+    const authToken = window.localStorage.getItem("authToken");
     const preStorePoints = async () => {
-      const {user} = await getUserConfig(`${authToken}`);
+      const user = await getUserConfig(`${authToken}`);
       const prevStoredPoints = window.localStorage.getItem(`points`);
+      console.log("🚀 ~ preStorePoints ~ user:", user)
 
     if (Number(prevStoredPoints)> 0) {
       store(Number(prevStoredPoints));
     } else {
-      store(user.points);
+      store(user?.user.points);
       // window.localStorage.setItem(`${authToken}${name}`, `${points}`);
       //   console.log("set");
 

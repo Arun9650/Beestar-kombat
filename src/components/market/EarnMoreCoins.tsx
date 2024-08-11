@@ -64,9 +64,12 @@ const EarnMoreCoins = () => {
   const [taskList, setTaskList] = useState<Task[]>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const userId = window.localStorage.getItem("authToken"); // Ensure userId is properly handled
+  const [userId, setUserId] = useState<string | null>(null);
+
 
   useEffect(() => {
+    const userId = window.localStorage.getItem("authToken"); // Ensure userId is properly handled
+    setUserId(userId);
     const checkReward = async () => {
       if (!userId) return;
       const data = await checkRewardStatus(userId);
@@ -109,7 +112,6 @@ const EarnMoreCoins = () => {
   }, []);
 
   const handleCompleteTask = async (taskId: string) => {
-    const userId = window.localStorage.getItem("authToken");
 
     if (!userId) return;
     const result = await completeTask({ userId, taskId });

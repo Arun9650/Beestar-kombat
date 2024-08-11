@@ -5,7 +5,7 @@ import Friends from "../../../public/icons/Friends";
 import Image from "next/image";
 import { FaGamepad } from "react-icons/fa6";
 import Coins from "../../../public/icons/Coins";
-import { BeeCoin } from "../../../public/newImages";
+import { BeeCoin, SponsorImage } from "../../../public/newImages";
 import { usePathname, useRouter } from "next/navigation";
 
 const BottomNavBar = () => {
@@ -32,7 +32,7 @@ const BottomNavBar = () => {
     },
     {
       name: "AirDrop",
-      icon: <Image src={BeeCoin} width={24} height={24} alt="AirDrop" />,
+      icon: <Image src={SponsorImage} width={24} height={24} alt="AirDrop" />,
       link: "/bonus",
     },
   ];

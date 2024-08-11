@@ -1,4 +1,4 @@
-import { BeeCoin, tonWallet } from "../../../public/newImages";
+import { BeeCoin, SponsorImage, tonWallet } from "../../../public/newImages";
 import Image from "next/image";
 import React from "react";
 
@@ -7,7 +7,7 @@ const AirDrop = () => {
     <div className="p-4 flex-grow bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]   max-w-xl mx-auto text-white ">
       <div className="flex flex-col items-center mb-6">
         <div className="glowing-coin my-4">
-            <Image src={BeeCoin} alt="TON Wallet" width={150} height={150} />
+            <Image src={SponsorImage} alt="TON Wallet" width={150} height={150} />
         </div>
         <h1 className="text-2xl font-bold mt-4">Airdrop tasks</h1>
         <p className="text-center mt-2">
