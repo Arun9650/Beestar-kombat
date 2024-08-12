@@ -20,6 +20,7 @@ type Points = {
   PPH: number;
   setPPH: (count: number) => void;
   setPoints : (count: number) => void
+  setCurrentTapsLeft: (newTapsLeft: number) => void
 };
 
 export const usePointsStore = create<Points>((set, get) => ({
@@ -30,6 +31,9 @@ export const usePointsStore = create<Points>((set, get) => ({
   skin: "/newImages/BeeMain.png",
   tapLimit: useBoostersStore.getState().energyCapacity,
   PPH: 0,
+  setCurrentTapsLeft: (newTapsLeft: number) => {
+    set({ currentTapsLeft: newTapsLeft });
+  },
   
   addPoints: (count) => {
     const { points } = get();

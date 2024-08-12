@@ -18,6 +18,7 @@ export async function getUserConfig(id: string) {
         lastProfitDate: 0,
         points: 0,
         name: '',
+        
       },
     };
 
@@ -31,6 +32,7 @@ export async function getUserConfig(id: string) {
       lastProfitDate: user.lastProfitDate,
       points: user.points,
       name: user.name,
+      lastLogin: user.lastLogin
     },
   };
 }

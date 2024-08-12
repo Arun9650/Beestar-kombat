@@ -55,6 +55,7 @@ const TapGlobe = () => {
       addPoints(multiClickLevel);
 
       decreaseTapsLeft(1);
+      window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
 
       setIsTapping(true);
       setTimeout(() => setIsTapping(false), 2000);

@@ -79,7 +79,7 @@ const Boosters = () => {
       window.localStorage.setItem("energyCapacity", newEnergyCapacity.toString());
       await creditEnergy(userId!);
       const boostersEnergy = 500;
-      setIsDrawerOpen(false);
+      setIsDrawerOpen(false); 
       toast.success("Energy Capacity credited " + boostersEnergy);
     } else {
       toast.error("Not enough points");
