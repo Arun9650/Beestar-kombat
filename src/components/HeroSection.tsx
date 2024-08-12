@@ -15,17 +15,25 @@ import { getUserEnergy } from "@/actions/bonus.actions";
 const HeroSection = () => {
   const { PPH } = usePointsStore();
   const { multiClickLevel,setEnergyCapacity } = useBoostersStore();
+
+
   useEffect(() => {
-    const userId = window.localStorage.getItem("authToken");
-    // const boostersEnergy = window.localStorage.getItem("BoostersEnergy");
-    const fetchEnergy = async () => {
-      const boostersEnergy = await getUserEnergy(userId!);
-    if (boostersEnergy.energy && boostersEnergy.success) {
-      setEnergyCapacity((boostersEnergy.energy));
+    let userId;
+    if (typeof window !== 'undefined') {
+    
+     userId = window.localStorage.getItem("authToken");
     }
-
-    }
-
+      // const boostersEnergy = window.localStorage.getItem("BoostersEnergy");
+      const fetchEnergy = async () => {
+        const boostersEnergy = await getUserEnergy(userId!);
+        console.log("🚀 ~ fetchEnergy ~ boostersEnergy:", boostersEnergy)
+        if ( boostersEnergy) {
+          if(boostersEnergy.energy > 0){
+            setEnergyCapacity((boostersEnergy.energy));
+          }
+        }
+      }
+      
     fetchEnergy();
   },[]) 
 

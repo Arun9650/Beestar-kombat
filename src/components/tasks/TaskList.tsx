@@ -87,6 +87,15 @@ const TaskList = () => {
     selectedTeam: Team
   ) => {
     if (selectedTeam) {
+
+      const userId  = await getUserConfig(user!);
+
+    if (userId?.user.points < selectedTeam.baseCost) {
+      alert("Insufficient points to update the profit per hour.");
+      return;
+    }
+
+
       setButtonLoading(true);
       const result = await updateProfitPerHour(user!, selectedTeam);
       if (result.success) {
@@ -96,6 +105,8 @@ const TaskList = () => {
         const { user } = await getUserConfig(userId!);
         setPoints(user?.points);
         setPPH(user?.profitPerHour);
+        setIsDrawerOpen(false);
+        setButtonLoading(false);
       } else {
         alert(result.message);
       }

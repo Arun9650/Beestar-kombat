@@ -56,7 +56,7 @@ export async function creditProfitPerHour(id: string) {
 
       await prisma.user.update({
         where: { chatId: id },
-        data: { points: profitMade, lastProfitDate: now },
+        data: { points: {increment: profitMade}, lastProfitDate: now },
       });
       return { profit: profitMade, success: true };
     }
@@ -79,7 +79,7 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
     });
     const increasedBaseCost = selectedTeam.baseCost * 1.2;
     const increasedBasePPH = selectedTeam.basePPH * 1.05;
-    const remainingPoints = user.points - selectedTeam.baseCost;
+    const remainingPoints = Math.max(user.points - selectedTeam.baseCost, 0);
     if (purchaseCard) {
       await prisma.user.update({
         where: { chatId: id },

@@ -28,7 +28,7 @@ export const usePointsStore = create<Points>((set, get) => ({
   currentTapsLeft: useBoostersStore.getState().energyCapacity,
   lastTap: 0,
   skin: "/newImages/BeeMain.png",
-  tapLimit: 500,
+  tapLimit: useBoostersStore.getState().energyCapacity,
   PPH: 0,
   
   addPoints: (count) => {
@@ -78,3 +78,9 @@ export const usePointsStore = create<Points>((set, get) => ({
   }
 
 }));
+
+
+// Subscribe to energyCapacity changes in useBoostersStore
+useBoostersStore.subscribe((newState) => {
+  usePointsStore.setState({ tapLimit: newState.energyCapacity, currentTapsLeft: newState.energyCapacity });
+});

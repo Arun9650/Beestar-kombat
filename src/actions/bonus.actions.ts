@@ -283,6 +283,6 @@ export const getUserEnergy = async (userId:string) =>{
     return { success: true, energy: user.energy };
   } catch (error) {
     console.error(error);
-    return { success: false, error: 'Failed to get user energy' };
+    return { success: false, error: 'Failed to get user energy'  , energy: 0 };
   }
 }

@@ -21,16 +21,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { creditEnergy, getUserEnergy } from "@/actions/bonus.actions";
 
-
 interface Booster {
   name: string;
-  status?: string
+  status?: string;
   icon: StaticImageData;
   discription?: string;
   cost?: number;
   level?: number;
 }
-
 
 const Boosters = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -44,17 +42,20 @@ const Boosters = () => {
     setRechargeVelocity,
     setMultiClickLevel,
     setEnergyCapacity,
-    refill, decreaseRefill,
+    refill,
+    setRefill,
+    decreaseRefill,
   } = useBoostersStore();
-  const { points, reducePoints , currentTapsLeft, increaseTapsLeft } = usePointsStore();
+  const { points, reducePoints, currentTapsLeft, increaseTapsLeft } =
+    usePointsStore();
 
   const freeBoosters = [
     {
       name: "Full energy",
-      status:  refill.toString(),
+      status: refill.toString(),
       icon: honeycomb,
       discription:
-        "reachage your energy to the maximum and do another round of mining.",
+        "Reacharge your energy to the maximum and do another round of mining.",
     },
     { name: "Turbo", status: "Coming soon", icon: rocket },
   ];
@@ -73,55 +74,70 @@ const Boosters = () => {
     const userId = window.localStorage.getItem("authToken");
     if (energyCapacity * 2 <= points) {
       reducePoints(energyCapacity * 2);
-      setEnergyCapacity(energyCapacity + 500);
-       await creditEnergy(userId!);
-       const boostersEnergy  =  500;
+      const newEnergyCapacity = energyCapacity + 500;
+      setEnergyCapacity(newEnergyCapacity);
+      window.localStorage.setItem("energyCapacity", newEnergyCapacity.toString());
+      await creditEnergy(userId!);
+      const boostersEnergy = 500;
+      setIsDrawerOpen(false);
       toast.success("Energy Capacity credited " + boostersEnergy);
     } else {
       toast.error("Not enough points");
     }
   };
 
-
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
-    // const boostersEnergy = window.localStorage.getItem("BoostersEnergy");
-    const fetchEnergy = async () => {
-      const boostersEnergy = await getUserEnergy(userId!);
-    if (boostersEnergy.energy && boostersEnergy.success) {
-      setEnergyCapacity((boostersEnergy.energy));
+    const storedEnergyCapacity = window.localStorage.getItem("energyCapacity");
+    const storedRefill = window.localStorage.getItem("refill");
+
+    if (storedEnergyCapacity) {
+      setEnergyCapacity(parseInt(storedEnergyCapacity));
+    } else {
+      const fetchEnergy = async () => {
+        const boostersEnergy = await getUserEnergy(userId!);
+        if (boostersEnergy.energy && boostersEnergy.success) {
+          setEnergyCapacity(boostersEnergy.energy);
+          window.localStorage.setItem(
+            "energyCapacity",
+            boostersEnergy.energy.toString()
+          );
+        }
+      };
+      fetchEnergy();
     }
 
+    if (storedRefill) {
+      setRefill(parseInt(storedRefill));
     }
-
-    fetchEnergy();
-  },[]) 
+  }, []);
 
   const handleFuelRefill = () => {
     if (refill > 0) {
-        const tapsToAdd = energyCapacity - currentTapsLeft
-        console.log(energyCapacity)
-
-        increaseTapsLeft(tapsToAdd)
-        decreaseRefill()
-
-        toast.success("Taps refilled" + energyCapacity)
+      const tapsToAdd = energyCapacity - currentTapsLeft;
+      increaseTapsLeft(tapsToAdd);
+      decreaseRefill();
+      const newRefillValue = refill - 1;
+      setRefill(newRefillValue);
+      window.localStorage.setItem("refill", newRefillValue.toString());
+      window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
+      setIsDrawerOpen(false);
+      toast.success("Taps refilled " + energyCapacity);
     }
-}
+  };
 
-
-const handleBoosterSelection = (boosterName:string) => {
-  switch (boosterName) {
-    case "Full energy":
-      handleFuelRefill();
-      break;
-    case "Energy limit":
-      handleEnergyCapacityIncrease();
-      break;
-    default:
-      toast.error("Booster not recognized or not available");
-  }
-};
+  const handleBoosterSelection = (boosterName: string) => {
+    switch (boosterName) {
+      case "Full energy":
+        handleFuelRefill();
+        break;
+      case "Energy limit":
+        handleEnergyCapacityIncrease();
+        break;
+      default:
+        toast.error("Booster not recognized or not available");
+    }
+  };
 
   const handleBoosterClick = (booster: Booster) => {
     setSelectedBooster(booster);
@@ -156,7 +172,10 @@ const handleBoosterSelection = (boosterName:string) => {
               />
               <div className="flex-1">
                 <p className="font-bold">{booster.name}</p>
-                <p className="text-gray-400">{booster.status}{booster.name === "Full energy" && ("/6 available")}</p>
+                <p className="text-gray-400">
+                  {booster.status}
+                  {booster.name === "Full energy" && "/6 available"}
+                </p>
               </div>
             </div>
           ))}
@@ -218,15 +237,11 @@ const handleBoosterSelection = (boosterName:string) => {
                   <h2 className="text-2xl font-medium text-white mb-2">
                     {selectedBooster?.name}
                   </h2>
+                  <p className="text-gray-400">{selectedBooster?.discription}</p>
                 </div>
-
-                <p className="text-white mx-auto text-sm max-w-[80%] text-center">
-                  {selectedBooster.discription}
-                </p>
-
-                {selectedBooster.name === "Energy limit" && (
-                  <p className="text-white mx-auto">
-                    +500 energy points for level {selectedBooster.level}
+                {selectedBooster?.name === "Full energy" && (
+                  <p className="text-sm text-yellow-500">
+                    You will recharge full energy points for level {selectedBooster.level}
                   </p>
                 )}
 
@@ -246,7 +261,6 @@ const handleBoosterSelection = (boosterName:string) => {
               </div>
               <DrawerFooter>
                 <Button
-                  // disabled={points < selectedSkin.cost}
                   onClick={() => handleBoosterSelection(selectedBooster.name)}
                   className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
                 >

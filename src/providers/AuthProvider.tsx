@@ -34,8 +34,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const authenticate = await authenticateUserOrCreateAccount({ chatId: id! , userName: userName!, referredByUser: referredByUserValue  })
                 console.log("🚀 ~ authentication ~ authenticate:", authenticate)
                 if (authenticate === 'success') {
-                    localStorage.setItem('authToken', `${id}`);
-                    localStorage.setItem('userName', `${userName}`);
+                    window.localStorage.setItem('authToken', `${id}`);
+                    window.localStorage.setItem('userName', `${userName}`);
                 }
                 else {
                     alert("Could not authenticate you")
