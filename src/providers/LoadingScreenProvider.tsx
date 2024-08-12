@@ -6,6 +6,7 @@ import useLoadingScreenStore from "@/store/loadingScreenStore";
 import { usePointsStore } from "@/store/PointsStore";
 import useUserPointsConfig from "@/hooks/useUserPointsConfig";
 import WebApp from "@twa-dev/sdk"
+import { UpdateUser } from "@/actions/user.actions";
 const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useLoadingScreenStore();
   usePointsStore();
@@ -16,10 +17,8 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
 
 
   useEffect(() => {
-    console.log('useTelegram')
     function initTg() {
     if (typeof window !== 'undefined') {
-    console.log('Telegram WebApp is set');
     WebApp.ready()
     WebApp.expand()
     } else {
@@ -35,7 +34,16 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
 
 
-    console.log(isLoading);
+    const updateUser = async () => {
+      const user = window.localStorage.getItem("authToken");
+
+      if (user) {
+        await UpdateUser(user);
+      }
+    }
+
+    updateUser();
+    
   }, [isLoading]);
 
   if (!isLoading) {

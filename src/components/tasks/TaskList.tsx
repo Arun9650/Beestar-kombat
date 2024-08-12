@@ -103,7 +103,9 @@ const TaskList = () => {
         const { combinedCards } = await allCards(userId!);
         setCards(combinedCards);
         const { user } = await getUserConfig(userId!);
+        console.log("🚀 ~ TaskList ~ user:", user.points)
         setPoints(user?.points);
+        window.localStorage.setItem("points", user?.points.toString());
         setPPH(user?.profitPerHour);
         setIsDrawerOpen(false);
         setButtonLoading(false);

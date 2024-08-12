@@ -32,10 +32,14 @@ const useUserPointsConfig = () => {
         const config = await getUserConfig(`${user}`);
         const currentState = config?.user;
         if (currentState) {
+          console.log("🚀 ~ update ~ energyCapacity:", energyCapacity)
+          console.log("🚀 ~ update ~ energyCapacity:", energyCapacityLocal)
           if (
             energyCapacity < currentState.capacity &&
             currentState.capacity > Number(energyCapacityLocal)
           ) {
+            console.log("🚀 ~ update ~ energyCapacity:", currentState.capacity)
+
             setEnergyCapacity(currentState.capacity);
           }
           if (rechargeVelocity < currentState.recharge) {
@@ -49,16 +53,16 @@ const useUserPointsConfig = () => {
             const lastLoginDate = config.user.lastLogin;
             const now = new Date();
             const lastLoginDateObj = lastLoginDate
-              ? new Date(lastLoginDate)
-              : new Date();
+            ? new Date(lastLoginDate)
+            : new Date();
             const timeDifferenceInSeconds = Math.floor(
               (now.getTime() - lastLoginDateObj.getTime()) / 1000
             );
+            
   
             let currentTapsLeft = Number(currentTapsLeftLocal);
   
             const remainingTaps =  currentState.capacity - currentTapsLeft;
-            console.log("🚀 ~ update ~ remainingTaps:", remainingTaps)
   
             if (timeDifferenceInSeconds > remainingTaps) {
               currentTapsLeft = currentState.capacity;
@@ -99,7 +103,6 @@ useEffect(() => {
         const credited = await creditProfitPerHour(user);
         if (credited && typeof credited === 'object' && 'profit' in credited && credited.success) {
           toast.success("Profit Credited");
-          window.localStorage.setItem("points", (points + (credited.profit ?? 0)).toString());
         }
       }
     };

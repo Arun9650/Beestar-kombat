@@ -25,7 +25,7 @@ const TapGlobe = () => {
   } = usePointsStore();
   const { secondsLeft, decreaseSecondsLeft } = useBoostersStore();
   const { multiClickLevel } = useBoostersStore();
-  const {skin} = usePointsStore();
+  const { skin } = usePointsStore();
 
   useLocalPointsStorage();
   usePushPointsToDB();
@@ -80,15 +80,16 @@ const TapGlobe = () => {
     const intervalId = setInterval(() => {
       if (!isTapping) {
         increaseTapsLeft();
+        window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + 1).toString());
       }
     }, 1000); // Adjust interval as needed
-
+  
     return () => clearInterval(intervalId);
-  }, [isTapping]);
+  }, [isTapping, currentTapsLeft]);
 
   useEffect(() => {
-    const intervalId = setInterval(
-      () => secondsLeft > 0 && decreaseSecondsLeft(),
+    const intervalId = setInterval(() => {secondsLeft > 0 && decreaseSecondsLeft()
+    },
       1000
     );
     return () => clearInterval(intervalId);
@@ -102,22 +103,21 @@ const TapGlobe = () => {
           className="relative   rounded-full circle-outer"
         >
           <div className="circle-inner rounded-full  ">
-           
             {clicks.map((click) => (
               <div
                 key={click.id}
                 className=" text-5xl font-bold opacity-0 absolute  text-white pointer-events-none"
                 style={{
                   top: `${click.y - 250}px`,
-                  left: `${click.x - 28 }px`,
+                  left: `${click.x - 28}px`,
                   animation: `float 1s ease-out`,
                 }}
                 onAnimationEnd={() => handleAnimationEnd(click.id)}
               >
-                { (secondsLeft > 0 ? 7 : 1) *  multiClickLevel}
+                {(secondsLeft > 0 ? 7 : 1) * multiClickLevel}
               </div>
             ))}
-             <Image
+            <Image
               src={skin ?? "/assets/images/BeeMain.png"}
               height={200}
               width={200}

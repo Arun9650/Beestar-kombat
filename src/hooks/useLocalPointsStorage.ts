@@ -24,16 +24,11 @@ export const useLocalPointsStorage = () => {
     const authToken = window.localStorage.getItem("authToken");
     const preStorePoints = async () => {
       const user = await getUserConfig(`${authToken}`);
-      const prevStoredPoints = window.localStorage.getItem(`points`);
-      console.log("🚀 ~ preStorePoints ~ user:", user)
-
-    if (Number(prevStoredPoints)> 0) {
+      const prevStoredPoints = window.localStorage.getItem(`points`);      
+    if (Number(prevStoredPoints)> user?.user.points) {
       store(Number(prevStoredPoints));
     } else {
       store(user?.user.points);
-      // window.localStorage.setItem(`${authToken}${name}`, `${points}`);
-      //   console.log("set");
-
     }
     }
     preStorePoints();

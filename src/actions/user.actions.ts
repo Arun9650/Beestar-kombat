@@ -43,7 +43,7 @@ export async function creditProfitPerHour(id: string) {
     if (!user?.lastProfitDate) {
       await prisma.user.update({
         where: { chatId: id },
-        data: { lastProfitDate: Date.now() },
+        data: { lastProfitDate: Date.now(), lastLogin: new Date() },
       });
 
       return "success";
@@ -79,8 +79,8 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
     const purchaseCard = await prisma.userCard.findUnique({
       where: { id: selectedTeam.id },
     });
-    const increasedBaseCost = selectedTeam.baseCost * 1.2;
-    const increasedBasePPH = selectedTeam.basePPH * 1.05;
+    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 1.2);
+    const increasedBasePPH = Math.floor(selectedTeam.basePPH * 1.05);
     const remainingPoints = Math.max(user.points - selectedTeam.baseCost, 0);
     if (purchaseCard) {
       await prisma.user.update({
@@ -95,7 +95,7 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
         where: { id: selectedTeam.id },
         data: { baseLevel: { increment: 1 }, 
           basePPH:  increasedBasePPH ,
-          baseCost:  increasedBaseCost  },
+          baseCost:  (increasedBaseCost)  },
       });
 
 
@@ -171,4 +171,19 @@ export const DeleteUser = async (userId:string) => {
     return { success: false, error: 'Failed to fetch Delete Account' };
     
   }
+}
+
+
+export const UpdateUser = async (userId:string) => {
+try {
+  await prisma.user.update({
+    where : {chatId:userId},
+    data : {
+      lastLogin : new Date(),
+    }
+  })
+  return { success: true}
+} catch (error) {
+  return { success: false, error: 'Failed to fetch Update Account' };
+}
 }

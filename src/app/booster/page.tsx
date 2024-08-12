@@ -76,11 +76,14 @@ const Boosters = () => {
       reducePoints(energyCapacity * 2);
       const newEnergyCapacity = energyCapacity + 500;
       setEnergyCapacity(newEnergyCapacity);
+    const result =   await creditEnergy(userId!, energyCapacity * 2);
+    if(result.success){
+      window.localStorage.setItem("points", (points - (energyCapacity * 2)).toString());
       window.localStorage.setItem("energyCapacity", newEnergyCapacity.toString());
-      await creditEnergy(userId!);
       const boostersEnergy = 500;
       setIsDrawerOpen(false); 
       toast.success("Energy Capacity credited " + boostersEnergy);
+    }
     } else {
       toast.error("Not enough points");
     }
@@ -89,9 +92,11 @@ const Boosters = () => {
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
     const storedEnergyCapacity = window.localStorage.getItem("energyCapacity");
+    console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", storedEnergyCapacity)
     const storedRefill = window.localStorage.getItem("refill");
 
     if (storedEnergyCapacity) {
+      console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", (storedEnergyCapacity))
       setEnergyCapacity(parseInt(storedEnergyCapacity));
     } else {
       const fetchEnergy = async () => {

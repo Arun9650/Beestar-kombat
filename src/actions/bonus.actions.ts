@@ -236,17 +236,24 @@ export const getAchievementsWithStatus = async (userId:string) => {
 };
 
 
-export const creditEnergy = async (userId:string) => {
-  console.log("🚀 ~ creditEnergy ~ userId:", userId)
+export const creditEnergy = async (userId:string, amount:number) => {
   
   try {
     // Find the referrer by chatId
-    const user = prisma.user.findUnique({ where: { chatId: userId } });
-    console.log("🚀 ~ creditEnergy ~ user:", user)
+    const user = prisma.user.findUnique({ where: { chatId: userId } });    
 
     if (!user) {
       throw new Error('User not found');
     }
+
+    await prisma.user.update({
+      where: { chatId: userId },
+      data: {
+        points: {
+          decrement: amount,
+        },
+      },
+    });
 
     await prisma.bonuster.upsert({
       where: { chatId: userId },
