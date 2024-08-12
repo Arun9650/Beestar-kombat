@@ -88,32 +88,38 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
   const handleBuySkin = async (userId: string, selectedSkin: any) => {
     if (!selectedSkin) return;
-
+  
     if (selectedSkin.owned) {
       return;
     }
-
+  
+    if (points < selectedSkin.price) {
+      setIsDrawerOpen(false);
+      toast.error("Not enough points to buy this skin");
+      return;
+    }
+  
     setButtonLoading(true);
     const id = selectedSkin.id;
     const localBalance = points;
     const chatId = userId;
     const result = await skinBuy({ id, localBalance, chatId });
     setButtonLoading(false);
-
+  
     if (result.status === "success") {
       setSelectedSkin(selectedSkin);
       setIsDrawerOpen(false);
-
+  
       toast.success("Skin Purchased");
       const userSkins = await SkinsToShow(userId!);
       const data = userSkins.combinedSkins;
       if (data) {
         setSkinsData(data!);
-
+  
         const filter = data.filter((skin) => skin.id === id);
         setSelectedSkin(filter[0]);
         const { user } = await getUserConfig(userId!);
-
+  
         if (user?.points) {
           setPoints(user?.points);
         }

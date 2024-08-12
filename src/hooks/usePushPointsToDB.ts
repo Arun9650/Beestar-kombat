@@ -8,7 +8,9 @@ import { useCallback, useEffect } from "react";
 export const usePushPointsToDB =  () => {
   // const name = process.env.NEXT_PUBLIC_TAPPED_POINTS_KEYWORD!;
 
-  const { points } = usePointsStore();
+  // const { points } = usePointsStore();
+
+  const points = Number(window.localStorage.getItem("points"));
 
   const user = window.localStorage.getItem("authToken");
 
@@ -16,7 +18,8 @@ export const usePushPointsToDB =  () => {
 
 
   const push2db = useCallback(async () => {
-    const userConfig = await getUserConfig(`${user}`);  
+    const userConfig = await getUserConfig(`${user}`);
+    const points = Number(window.localStorage.getItem("points"));  
     const done = await updatePointsInDB({ points: points, id: user! });
     console.log({ status: done });
     return done;
