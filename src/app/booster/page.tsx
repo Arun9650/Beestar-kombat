@@ -125,7 +125,7 @@ const Boosters = () => {
       const newRefillValue = refill - 1;
       setRefill(newRefillValue);
       window.localStorage.setItem("refill", newRefillValue.toString());
-      window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
+      // window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
       setIsDrawerOpen(false);
       toast.success("Taps refilled " + energyCapacity);
     }

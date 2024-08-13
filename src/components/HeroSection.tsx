@@ -13,7 +13,8 @@ import PointsTracker from "./game/PointsTracker";
 import { getUserEnergy } from "@/actions/bonus.actions";
 
 const HeroSection = () => {
-  const { PPH } = usePointsStore();
+  const { PPH , points} = usePointsStore();
+  console.log("🚀 ~ HeroSection ~ points:", points)
   const { multiClickLevel,setEnergyCapacity } = useBoostersStore();
 
 

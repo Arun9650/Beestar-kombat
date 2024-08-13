@@ -26,6 +26,7 @@ const useUserPointsConfig = () => {
       let initialPoints = window.localStorage.getItem("points");
   
       const currentTapsLeftLocal = window.localStorage.getItem("currentTapsLeft");
+      console.log("🚀 ~ executeEffect ~ currentTapsLeftLocal:", currentTapsLeftLocal)
       const energyCapacityLocal = window.localStorage.getItem("energyCapacity");
   
       async function update() {
@@ -36,15 +37,11 @@ const useUserPointsConfig = () => {
             if (energyCapacity < currentState.capacity && currentState.capacity >= Number(energyCapacityLocal)) {
               setEnergyCapacity(currentState.capacity);
             }
+              console.log("🚀 ~ update ~ currentState.capacity:", currentState.capacity)
           }
-          if (rechargeVelocity < currentState.recharge) {
-            setRechargeVelocity(currentState.recharge);
-          }
-          if (multiClickLevel < currentState.clicks) {
-            setMultiClickLevel(currentState.clicks);
-          }
+         
   
-          if (currentTapsLeftLocal) {
+          if (!isNaN(Number(currentTapsLeftLocal))) {
             const lastLoginDate = config?.user?.lastLogin!;
             const now = new Date();
          
@@ -59,13 +56,23 @@ const useUserPointsConfig = () => {
   
             if (timeDifferenceInSeconds > remainingTaps) {
               currentTapsLeftcal = currentState.capacity ?? 0;
-              setCurrentTapsLeft(currentTapsLeftcal);
-              window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+              if(!isNaN(currentTapsLeftcal)){
+                setCurrentTapsLeft(currentTapsLeftcal);
+                console.log("🚀 ~ executeEffect ~ currentTapsLeftLocal:", currentTapsLeftLocal)
+                window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+                console.log("🚀 ~ update ~ currentTapsLeftcal:", currentTapsLeftcal)
+              }
               // setCurrentTapsLeft(async);
             } else {
               currentTapsLeftcal += timeDifferenceInSeconds;
-              setCurrentTapsLeft(currentTapsLeftcal);
-              window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+              console.log("🚀 ~ update ~ timeDifferenceInSeconds:", timeDifferenceInSeconds)
+              console.log("🚀 ~ update ~ currentTapsLeftcal:", currentTapsLeftcal)
+              if(!isNaN(currentTapsLeftcal)){
+                setCurrentTapsLeft(currentTapsLeftcal);
+                console.log("🚀 ~ executeEffect ~ currentTapsLeftLocal:", currentTapsLeftLocal)
+                window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+                console.log("🚀 ~ update ~ currentTapsLeftcal:", currentTapsLeftcal)
+              }
             }
   
           }

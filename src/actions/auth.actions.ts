@@ -27,12 +27,15 @@ export async function createAccount(
       const referredUser = await prisma.user.findUnique({ where: { chatId: referredByUser } });
       if (referredUser) {
         await prisma.user.update({ where: { chatId: referredByUser }, data: { points: { increment: 5000 } , referralCount: {increment : 1} } });
-
+        await prisma.bonuster.create({ data: { chatId: referredByUser, energy: 100 } });
         await prisma.user.create({ data: { chatId, points: 5000, name } });
+        await prisma.bonuster.create({ data: { chatId, energy: 100 } });
       }
       await prisma.user.create({ data: { chatId, points: 5000, name } });
+      await prisma.bonuster.create({ data: { chatId, energy: 100 } });
     }else {
       await prisma.user.create({ data: { chatId, points: 0, name } });
+      await prisma.bonuster.create({ data: { chatId, energy: 500 } });
     }
 
     return "success";

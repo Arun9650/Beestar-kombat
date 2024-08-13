@@ -53,7 +53,10 @@ const TapGlobe = () => {
       addPoints(multiClickLevel);
 
       decreaseTapsLeft(1);
-      window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
+      if(!isNaN(currentTapsLeft)){
+
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
+      }
 
       setIsTapping(true);
       setTimeout(() => setIsTapping(false), 2000);
@@ -80,7 +83,7 @@ const TapGlobe = () => {
         increaseTapsLeft();
        const local  =  parseInt(window.localStorage.getItem("currentTapsLeft") ?? "0")
      
-        if(local < currentTapsLeft){
+        if(local < currentTapsLeft && !isNaN(currentTapsLeft)){
           window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + 1).toString());
         } 
       }

@@ -23,21 +23,29 @@ const Settings = () => {
 
    const handleDeleteUser = async () => {
 
-    window.localStorage.removeItem("authToken");
     window.localStorage.removeItem("BoostersEnergy");
     window.localStorage.removeItem("exchange");
-    window.localStorage.removeItem("Points");
+    window.localStorage.removeItem("points");
     window.localStorage.removeItem("userName");
-    
+    window.localStorage.removeItem("currentTapsLeft");
+    window.localStorage.removeItem("energyCapacity");
+    window.localStorage.removeItem("lastLoginDate");
+    window.localStorage.removeItem("rechargeVelocity");
+    window.localStorage.removeItem("multiClickLevel");
+    window.localStorage.removeItem("refill");
+    window.localStorage.removeItem("PPH");  
+    window.localStorage.removeItem("currentTapLeft");  
     const userId = window.localStorage.getItem("authToken");
     setButtonLoading(true);
     const result = await DeleteUser(userId!);
+    console.log("🚀 ~ handleDeleteUser ~ result:", result)
     
+    window.localStorage.removeItem("authToken");
 
 
     if(result.success){
       setButtonLoading(false);
-      router.push('/')
+      router.push('/');
     }
 
    }

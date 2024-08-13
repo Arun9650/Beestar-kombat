@@ -56,14 +56,22 @@ export async function creditProfitPerHour(id: string) {
       const now = Date.now();
       const lastProfitDate = user.lastProfitDate;
       const timeDiffInMilliSeconds = Math.abs(now - lastProfitDate);
-      const hrs = timeDiffInMilliSeconds / (1000 * 60 * 60);
+      let hrs = timeDiffInMilliSeconds / (1000 * 60 * 60);
+
+      if (hrs > 3) {
+        hrs = 3;
+      }
+
 
       const profitMade = pph * hrs;
 
-      await prisma.user.update({
-        where: { chatId: id },
-        data: { points: {increment: profitMade}, lastProfitDate: now },
-      });
+      if(profitMade > 0){
+
+        await prisma.user.update({
+          where: { chatId: id },
+          data: { points: {increment: profitMade}, lastProfitDate: now },
+        });
+      }
       return { profit: profitMade, success: true };
     }
     
@@ -86,7 +94,8 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
     const increasedBaseCost = Math.floor(selectedTeam.baseCost * 1.2);
     const increasedBasePPH = Math.floor(selectedTeam.basePPH * 1.05);
     const remainingPoints = Math.max(user.points - selectedTeam.baseCost, 0);
-    if (purchaseCard) {
+
+    if (purchaseCard && remainingPoints > 0) {
       await prisma.user.update({
         where: { chatId: id },
         data: {
@@ -165,7 +174,30 @@ export const getLeaderboard = async () => {
 
 export const DeleteUser = async (userId:string) => {
   try {
-    const user = await prisma.user.delete({
+
+
+     await prisma.userAchievement.deleteMany({
+      where : {userId}
+    })
+
+    await prisma.userCard.deleteMany({
+      where : {userId}
+    })
+
+    await prisma.tasksCompletion.deleteMany({
+      where : {userId}
+    })
+
+    await prisma.bonuster.deleteMany({
+      where : {chatId:userId}
+    })
+
+    await prisma.userSkin.deleteMany({
+      where : {userId:userId}
+    })
+
+
+     await prisma.user.delete({
       where : {chatId:userId}
     })
 

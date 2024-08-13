@@ -47,15 +47,24 @@ const TaskList = () => {
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
-    const userId = window.localStorage.getItem("authToken");
-    setUser(userId);
-    const fetchCards = async () => {
-      const { combinedCards } = await allCards(userId!);
-      setCards(combinedCards);
-      setLoading(false);
+    const checkWindowDefined = () => {
+      if (typeof window !== 'undefined') {
+        const userId = window.localStorage.getItem("authToken");
+        console.log("🚀 ~ checkWindowDefined ~ userId:", userId)
+        setUser(userId);
+        const fetchCards = async () => {
+          const { combinedCards } = await allCards(userId!);
+          setCards(combinedCards);
+          setLoading(false);
+        };
+  
+        fetchCards();
+      } else {
+        setTimeout(checkWindowDefined, 100); // Check again after 100ms
+      }
     };
-
-    fetchCards();
+  
+    checkWindowDefined();
   }, []);
 
   const handleTeamClick = (team: Team) => {

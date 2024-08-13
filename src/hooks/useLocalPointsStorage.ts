@@ -20,6 +20,16 @@ export const useLocalPointsStorage = () => {
     // return window.localStorage.getItem(`${authToken}${name}`);
   };
 
+
+  
+  useEffect(() => {
+    // if (points % 10 == 0) {
+    store(points);
+    // console.log(get());
+    // }
+  }, [points]);
+
+  
   useEffect(() => {
     const authToken = window.localStorage.getItem("authToken");
     const preStorePoints = async () => {
@@ -34,10 +44,4 @@ export const useLocalPointsStorage = () => {
     preStorePoints();
   }, []);
 
-  useEffect(() => {
-    // if (points % 10 == 0) {
-    store(points);
-    // console.log(get());
-    // }
-  }, [points]);
 };
