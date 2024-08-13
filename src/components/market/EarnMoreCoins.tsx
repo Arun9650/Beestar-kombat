@@ -263,7 +263,7 @@ const EarnMoreCoins = () => {
                     width={50}
                     height={50}
                   />
-                  <Link href={task.link}>
+                  <Link href={task.link} target="_blank">
                     <p className="font-semibold">{task.name}</p>
                     <p className="text-yellow-400 flex items-center justify-start gap-1">
                       <Image src={dollarCoin} alt="Coin" className="w-4 h-4" />
