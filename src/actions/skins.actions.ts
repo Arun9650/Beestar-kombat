@@ -133,7 +133,7 @@ export const SkinsToShow = async (userId: string) => {
   try {
     const userSkins = await prisma.userSkin.findMany({
       where: { userId },
-    });
+    }) || []; 
 
 
     const allSkins = await prisma.skins.findMany();
