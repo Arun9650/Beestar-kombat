@@ -22,7 +22,11 @@ const Settings = () => {
 
 
    const handleDeleteUser = async () => {
-
+    if (typeof window === 'undefined') {
+      setTimeout(handleDeleteUser, 10);
+      return;
+    }
+  
     window.localStorage.removeItem("BoostersEnergy");
     window.localStorage.removeItem("exchange");
     window.localStorage.removeItem("points");
@@ -38,17 +42,15 @@ const Settings = () => {
     const userId = window.localStorage.getItem("authToken");
     setButtonLoading(true);
     const result = await DeleteUser(userId!);
-    console.log("🚀 ~ handleDeleteUser ~ result:", result)
+    console.log("🚀 ~ handleDeleteUser ~ result:", result);
     
     window.localStorage.removeItem("authToken");
-
-
-    if(result.success){
+  
+    if (result.success) {
       setButtonLoading(false);
       router.push('/');
     }
-
-   }
+  };
 
   return (
     <div className="h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] text-white">

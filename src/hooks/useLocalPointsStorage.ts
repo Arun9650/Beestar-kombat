@@ -38,7 +38,7 @@ export const useLocalPointsStorage = () => {
       const user = await getUserConfig(`${authToken}`);
       const prevStoredPoints = window.localStorage.getItem(`points`);      
       console.log("🚀 ~ preStorePoints ~ user:", user)
-    if (Number(prevStoredPoints)> user?.user.points) {
+    if (Number(prevStoredPoints) > user?.user.points) {
       store(Number(prevStoredPoints));
     } else {
       store(user?.user.points);
