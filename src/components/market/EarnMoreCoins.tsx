@@ -22,6 +22,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { completeTask, tasksList, TaskToShow } from "@/actions/tasks.actions";
 import { Skeleton } from "../ui/skeleton";
+import { usePointsStore } from "@/store/PointsStore";
 
 interface Reward {
   id?: string;
@@ -66,6 +67,7 @@ const EarnMoreCoins = () => {
 
   const [userId, setUserId] = useState<string | null>(null);
 
+  const { userId: user }  = usePointsStore();
 
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken"); // Ensure userId is properly handled
@@ -99,16 +101,26 @@ const EarnMoreCoins = () => {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   useEffect(() => {
-    const userId = window.localStorage.getItem("authToken");
-    const getAllTask = async () => {
-      const tasks = await TaskToShow(userId!);
-      if (tasks && tasks.length > 0) {
-        setTaskList(tasks);
-        setIsLoading(false);
-      }
-    };
+    const timeoutId = setTimeout(() => {
+      if (typeof window !== "undefined") {
+        const userId = window.localStorage.getItem("authToken");
 
-    getAllTask();
+        if(userId || user){
+
+          const getAllTask = async () => {
+            const tasks = await TaskToShow(userId!);
+            if (tasks && tasks.length > 0) {
+              setTaskList(tasks);
+              setIsLoading(false);
+            }
+          };
+          getAllTask();
+        }
+  
+      }
+    }, 100);
+  
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleCompleteTask = async (taskId: string) => {

@@ -196,6 +196,9 @@ export const DeleteUser = async (userId:string) => {
       where : {userId:userId}
     })
 
+    await prisma.dailyReward.deleteMany({
+      where : {userId:userId}
+    })
 
      await prisma.user.delete({
       where : {chatId:userId}

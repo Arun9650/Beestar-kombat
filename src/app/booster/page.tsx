@@ -92,11 +92,13 @@ const Boosters = () => {
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
     const storedEnergyCapacity = window.localStorage.getItem("energyCapacity");
-    console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", storedEnergyCapacity)
+    console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", storedEnergyCapacity);
     const storedRefill = window.localStorage.getItem("refill");
-
+    const storedDate = window.localStorage.getItem("refillDate");
+    const currentDate = new Date().toLocaleDateString();
+  
     if (storedEnergyCapacity) {
-      console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", (storedEnergyCapacity))
+      console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", storedEnergyCapacity);
       setEnergyCapacity(parseInt(storedEnergyCapacity));
     } else {
       const fetchEnergy = async () => {
@@ -111,8 +113,14 @@ const Boosters = () => {
       };
       fetchEnergy();
     }
-
-    if (storedRefill) {
+  
+    if (storedDate !== currentDate) {
+      // Reset refill value and update the stored date
+      const newRefillValue = 6; // Set this to the desired initial value
+      setRefill(newRefillValue);
+      window.localStorage.setItem("refill", newRefillValue.toString());
+      window.localStorage.setItem("refillDate", currentDate);
+    } else if (storedRefill) {
       setRefill(parseInt(storedRefill));
     }
   }, []);

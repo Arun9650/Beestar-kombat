@@ -1,4 +1,4 @@
-import { writeFile, readFile, unlink,rm } from "fs/promises";
+import { writeFile, unlink } from "fs/promises";
 import { NextResponse } from "next/server";
 import cloudinary from "cloudinary";
 import prisma from "@/lib/prisma";
@@ -10,67 +10,58 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(req:Request) {
+export async function POST(req: Request) {
   const data = await req.formData();
-  const { name, category, points, icon } = await req.json();
-  const file = data.get("file");
-
-  if (!file) {
-    return NextResponse.json({ message: "no image found", success: false });
+  const file = data.get("file") as File;
+  if (!file || !(file instanceof File)) {
+    return new Response(JSON.stringify({ message: "No image found or invalid file type", success: false }), { status: 400 });
   }
 
-  const byteData = await (file as Blob).arrayBuffer();
-  const buffer = Buffer.from(byteData);
-  let path;
-  if(file instanceof File){
-    
-     path = `./public/temp/${file.name}`;
+  const name = data.get("name") as string;
+  const category = data.get("category") as string;
+  const points = data.get("points") as string;
+  const link = data.get("link") as string;
+
+  if (!name || !category || !points || !link) {
+    return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
   }
+
+  const path = `./public/temp/${file.name}`;
+  const buffer = Buffer.from(await file.arrayBuffer());
 
   // Save the file to the local public directory
-  await writeFile(path!, buffer);
+  await writeFile(path, buffer);
 
-
-  // Upload the file to Cloudinary
   try {
-    const result = await cloudinary.v2.uploader.upload(path!);
+    const result = await cloudinary.v2.uploader.upload(path);
 
-    if(result.url){
-      await unlink(path!);
-    }
+    // Clean up the local file after upload
+    await unlink(path);
 
-    
-    if (!name || !category || !points || !icon) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
-    }
-
+    // Check for existing task with the same name and category
     const existingTask = await prisma.tasks.findFirst({
       where: { name, category },
     });
-  
     if (existingTask) {
-      throw new Error('A task with the same name and category already exists.');
+      return new Response(JSON.stringify({ error: 'A task with the same name and category already exists.' }), { status: 409 });
     }
-  
+
+    // Create a new task in the database
     const task = await prisma.tasks.create({
       data: {
         name,
         category,
-        points,
-        icon,
-        link: result.url,
+        points: parseInt(points),
+        icon : result.url,
+        link,
       },
     });
 
-
-
- return new Response(JSON.stringify({message: `Task '${task.name}' added successfully with ID: ${task.id}`}), { status: 201 });
-    
+    return new Response(JSON.stringify({ message: `Task '${task.name}' added successfully with ID: ${task.id}` }), { status: 201 });
   } catch (error) {
-    return NextResponse.json({
-      message: "cloudinary upload failed",
+    return new Response(JSON.stringify({
+      message: "An unknown error occurred",
       success: false,
-      error: error,
-    });
+    }), { status: 500 });
   }
 }

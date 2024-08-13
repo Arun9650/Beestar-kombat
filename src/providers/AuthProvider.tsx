@@ -4,6 +4,7 @@ import { authenticateUserOrCreateAccount } from '@/actions/auth.actions'
 import { useSearchParams } from 'next/navigation'
 import React, { Suspense, useEffect } from 'react'
 import randomName from '@scaleway/random-name'
+import { usePointsStore } from '@/store/PointsStore'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
@@ -20,6 +21,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userName = randomName()
     }
 
+    const {setUserId} = usePointsStore();
    
     // const id = '123456789'
 
@@ -36,6 +38,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 if (authenticate === 'success') {
                     window.localStorage.setItem('authToken', `${id}`);
                     window.localStorage.setItem('userName', `${userName}`);
+                    setUserId(id!);
                 }
                 else {
                     alert("Could not authenticate you")

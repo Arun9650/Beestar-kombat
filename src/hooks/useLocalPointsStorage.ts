@@ -24,7 +24,9 @@ export const useLocalPointsStorage = () => {
   
   useEffect(() => {
     // if (points % 10 == 0) {
-    store(points);
+    if(points > 0){
+      store(points);
+    }
     // console.log(get());
     // }
   }, [points]);
@@ -35,6 +37,7 @@ export const useLocalPointsStorage = () => {
     const preStorePoints = async () => {
       const user = await getUserConfig(`${authToken}`);
       const prevStoredPoints = window.localStorage.getItem(`points`);      
+      console.log("🚀 ~ preStorePoints ~ user:", user)
     if (Number(prevStoredPoints)> user?.user.points) {
       store(Number(prevStoredPoints));
     } else {

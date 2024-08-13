@@ -26,7 +26,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const [Loading, setLoading] = useState(true);
   const filteredSkins =
     tab === "featured" ? skinsData.filter((skin) => skin.featured) : skinsData;
-  const { points, setPoints, setSkin } = usePointsStore();
+  const { points, setPoints, setSkin, userId: user } = usePointsStore();
 
 
   
@@ -59,7 +59,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
 
   useEffect(() => {
-    const retryDelay = 1000; // Retry delay in milliseconds
+    const retryDelay = 100; // Retry delay in milliseconds
   
     const fetchSkins = async (userId: string) => {
       const userSkins = await SkinsToShow(userId);
@@ -75,7 +75,10 @@ const Skinmini = ({ tab }: { tab: string }) => {
       if (typeof window !== 'undefined') {
         const userId = window.localStorage.getItem('userId');
         setUserId(userId!);
-        fetchSkins(userId!);
+        if(userId || user){
+
+          fetchSkins(userId! || user);
+        }
       } else {
         setTimeout(retryFetchSkins, retryDelay);
       }
