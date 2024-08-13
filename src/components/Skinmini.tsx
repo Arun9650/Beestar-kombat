@@ -59,21 +59,29 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
 
   useEffect(() => {
-    // const userId = window.localStorage.getItem('userId');
-    const userId = "1277432329";
-    setUserId(userId!);
-    const fetchSkins = async () => {
-      //   const response = await getSkins();
-      const userSkins = await SkinsToShow(userId!);
+    const retryDelay = 1000; // Retry delay in milliseconds
+  
+    const fetchSkins = async (userId: string) => {
+      const userSkins = await SkinsToShow(userId);
       const data = userSkins.combinedSkins;
       if (data) {
-        setSkinsData(data!);
+        setSkinsData(data);
         setSelectedSkin(data[0]);
         setLoading(false);
       }
     };
-
-    fetchSkins();
+  
+    const retryFetchSkins = () => {
+      if (typeof window !== 'undefined') {
+        const userId = window.localStorage.getItem('userId');
+        setUserId(userId!);
+        fetchSkins(userId!);
+      } else {
+        setTimeout(retryFetchSkins, retryDelay);
+      }
+    };
+  
+    retryFetchSkins();
   }, []);
 
   useEffect(() => {

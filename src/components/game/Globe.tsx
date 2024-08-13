@@ -45,8 +45,6 @@ const TapGlobe = () => {
     setTimeout(() => {
       card.style.transform = "";
     }, 100);
-    // setCoins(coins + pointsToAdd);
-    // setUser((prevUser) => ({ ...prevUser, coins: prevUser.coins + pointsToAdd }));
     setClicks([...clicks, { id: Date.now(), x: e.pageX, y: e.pageY }]);
 
     if (secondsLeft > 0) {
@@ -80,7 +78,11 @@ const TapGlobe = () => {
     const intervalId = setInterval(() => {
       if (!isTapping) {
         increaseTapsLeft();
-        window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + 1).toString());
+       const local  =  parseInt(window.localStorage.getItem("currentTapsLeft") ?? "0")
+     
+        if(local < currentTapsLeft){
+          window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + 1).toString());
+        } 
       }
     }, 1000); // Adjust interval as needed
   

@@ -17,25 +17,30 @@ const HeroSection = () => {
   const { multiClickLevel,setEnergyCapacity } = useBoostersStore();
 
 
-  useEffect(() => {
-    let userId;
-    if (typeof window !== 'undefined') {
-    
-     userId = window.localStorage.getItem("authToken");
-    }
-      // const boostersEnergy = window.localStorage.getItem("BoostersEnergy");
-      const fetchEnergy = async () => {
-        const boostersEnergy = await getUserEnergy(userId!);
-        console.log("🚀 ~ fetchEnergy ~ boostersEnergy:", boostersEnergy)
-        if ( boostersEnergy) {
-          if(boostersEnergy.energy > 0){
-            setEnergyCapacity((boostersEnergy.energy));
-          }
-        }
-      }
-      
-    fetchEnergy();
-  },[]) 
+  // useEffect(() => {
+  //   const retryDelay = 100; // Retry delay in milliseconds
+  
+  //   const fetchEnergy = async (userId: string) => {
+  //     const boostersEnergy = await getUserEnergy(userId);
+  //     console.log("🚀 ~ fetchEnergy ~ boostersEnergy:", boostersEnergy);
+  //     if (boostersEnergy && boostersEnergy.energy > 0) {
+  //       // setEnergyCapacity(boostersEnergy.energy);
+  //     }
+  //   };
+  
+  //   const retryFetchEnergy = () => {
+  //     if (typeof window !== 'undefined') {
+  //       const userId = window.localStorage.getItem("authToken");
+  //       if (userId) {
+  //         fetchEnergy(userId);
+  //       }
+  //     } else {
+  //       setTimeout(retryFetchEnergy, retryDelay);
+  //     }
+  //   };
+  
+  //   retryFetchEnergy();
+  // }, []);
 
   return (
     <div className="bg-black h-full flex-grow pb-20  bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] flex flex-col justify-between  overflow-hidden">

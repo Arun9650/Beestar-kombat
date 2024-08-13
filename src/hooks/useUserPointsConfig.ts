@@ -16,7 +16,7 @@ const useUserPointsConfig = () => {
     setMultiClickLevel,
   } = useBoostersStore();
 
-  const { points, initializePoints, initializePPH, setCurrentTapsLeft } =
+  const { points, initializePoints, initializePPH, setCurrentTapsLeft, currentTapsLeft } =
     usePointsStore();
   const { isLoading } = useLoadingScreenStore();
 
@@ -32,15 +32,10 @@ const useUserPointsConfig = () => {
         const config = await getUserConfig(`${user}`);
         const currentState = config?.user;
         if (currentState) {
-          console.log("🚀 ~ update ~ energyCapacity:", energyCapacity)
-          console.log("🚀 ~ update ~ energyCapacity:", energyCapacityLocal)
-          if (
-            energyCapacity < currentState.capacity &&
-            currentState.capacity > Number(energyCapacityLocal)
-          ) {
-            console.log("🚀 ~ update ~ energyCapacity:", currentState.capacity)
-
-            setEnergyCapacity(currentState.capacity);
+          if (currentState && currentState.capacity) {
+            if (energyCapacity < currentState.capacity && currentState.capacity >= Number(energyCapacityLocal)) {
+              setEnergyCapacity(currentState.capacity);
+            }
           }
           if (rechargeVelocity < currentState.recharge) {
             setRechargeVelocity(currentState.recharge);
@@ -50,27 +45,29 @@ const useUserPointsConfig = () => {
           }
   
           if (currentTapsLeftLocal) {
-            const lastLoginDate = config.user.lastLogin;
+            const lastLoginDate = config?.user?.lastLogin!;
             const now = new Date();
-            const lastLoginDateObj = lastLoginDate
-            ? new Date(lastLoginDate)
-            : new Date();
+         
             const timeDifferenceInSeconds = Math.floor(
-              (now.getTime() - lastLoginDateObj.getTime()) / 1000
+              (now.getTime() - lastLoginDate?.getTime()) / 1000
             );
             
   
-            let currentTapsLeft = Number(currentTapsLeftLocal);
+            let currentTapsLeftcal = Number(currentTapsLeftLocal);
   
-            const remainingTaps =  currentState.capacity - currentTapsLeft;
+            const remainingTaps =  (currentState?.capacity ?? 0) - currentTapsLeftcal;
   
             if (timeDifferenceInSeconds > remainingTaps) {
-              currentTapsLeft = currentState.capacity;
+              currentTapsLeftcal = currentState.capacity ?? 0;
+              setCurrentTapsLeft(currentTapsLeftcal);
+              window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+              // setCurrentTapsLeft(async);
             } else {
-              currentTapsLeft += timeDifferenceInSeconds;
+              currentTapsLeftcal += timeDifferenceInSeconds;
+              setCurrentTapsLeft(currentTapsLeftcal);
+              window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
             }
   
-            setCurrentTapsLeft(currentTapsLeft);
           }
   
           const intPoints = initialPoints ? Number(initialPoints) : 0;

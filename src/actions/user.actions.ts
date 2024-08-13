@@ -7,6 +7,10 @@ export async function getUserConfig(id: string) {
 
   const user = await prisma.user.findUnique({ where: { chatId: id } });
 
+  const userEnergy = await prisma.bonuster.findUnique({
+    where: { chatId: id },
+  });
+
   if (!user)
     return {
       user: {
@@ -26,7 +30,7 @@ export async function getUserConfig(id: string) {
     user: {
       recharge: user.refillRate,
       clicks: user.pointPerTap,
-      capacity: user.rechargeLimit,
+      capacity: userEnergy?.energy,
       profit: user.profit,
       profitPerHour: user.profitPerHour,
       lastProfitDate: user.lastProfitDate,

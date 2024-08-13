@@ -1,4 +1,4 @@
-import { getCurrentSkin } from "@/actions/skins.actions";
+
 import { create } from "zustand";
 import { useBoostersStore } from "./useBoostrsStore";
 
@@ -85,5 +85,5 @@ export const usePointsStore = create<Points>((set, get) => ({
 
 // Subscribe to energyCapacity changes in useBoostersStore
 useBoostersStore.subscribe((newState) => {
-  usePointsStore.setState({ tapLimit: newState.energyCapacity , currentTapsLeft: newState.energyCapacity });
+  usePointsStore.setState({ tapLimit: newState.energyCapacity  });
 });
