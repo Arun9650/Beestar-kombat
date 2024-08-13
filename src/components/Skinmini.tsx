@@ -62,7 +62,9 @@ const Skinmini = ({ tab }: { tab: string }) => {
     const retryDelay = 100; // Retry delay in milliseconds
   
     const fetchSkins = async (userId: string) => {
+      console.log("🚀 ~ fetchSkins ~ userId:", userId)
       const userSkins = await SkinsToShow(userId);
+      console.log("🚀 ~ fetchSkins ~ userSkins:", userSkins)
       const data = userSkins.combinedSkins;
       if (data) {
         setSkinsData(data);
@@ -74,6 +76,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
     const retryFetchSkins = () => {
       if (typeof window !== 'undefined') {
         const userId = window.localStorage.getItem('userId');
+        console.log("🚀 ~ retryFetchSkins ~ userId:", userId)
         setUserId(userId!);
         if(userId || user){
 
