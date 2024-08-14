@@ -15,6 +15,7 @@ import { getUserConfig, updateProfitPerHour } from "@/actions/user.actions";
 import { allCards } from "@/actions/tasks.actions";
 import { usePointsStore } from "@/store/PointsStore";
 import { Skeleton } from "../ui/skeleton";
+import toast from "react-hot-toast";
 
 export interface Team {
   id: string;
@@ -116,6 +117,7 @@ const TaskList = () => {
         setPoints(user?.points);
         window.localStorage.setItem("points", user?.points.toString());
         setPPH(user?.profitPerHour);
+        toast.success(`upgrade is yours! ${selectedTeam.title} `);
         setIsDrawerOpen(false);
         setButtonLoading(false);
       } else {
