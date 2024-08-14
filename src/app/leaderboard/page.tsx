@@ -6,7 +6,8 @@ import Image from "next/image";
 import { getLeaderboard } from "@/actions/user.actions";
 import { usePointsStore } from "@/store/PointsStore";
 
-
+import { SlArrowRight } from "react-icons/sl";
+import { SlArrowLeft } from "react-icons/sl"; 
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState<
@@ -18,6 +19,8 @@ const Leaderboard = () => {
   const [userName , setUserName] = useState('Honey Collector');
   
   
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const levelNames = [
     "Bronze", // From 0 to 4999 coins
     "Silver", // From 5000 coins to 24,999 coins
@@ -43,6 +46,8 @@ const Leaderboard = () => {
     100000000, // GrandMaster
     1000000000, // Lord
   ];
+
+
 
   const calculateProgress = () => {
     if (levelIndex >= levelNames.length - 1) {
@@ -76,28 +81,50 @@ const Leaderboard = () => {
 
     fetchLeaderboard();
   }, []);
+  const filterUsersByLevel = () => {
+    const minPoints = levelMinPoints[currentIndex];
+    const maxPoints = levelMinPoints[currentIndex + 1] || Infinity;
+    return leaderboardData.filter(user => user.points >= minPoints && user.points < maxPoints);
+  };
+  
+  const handleArrowClick = (direction: 'left' | 'right') => {
+    if (direction === 'left' && currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else if (direction === 'right' && currentIndex < levelNames.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+
+  const getImageSrc = () => {
+    return `/newImages/bee_avatars/${currentIndex + 1}.png`;
+  };
+  
 
   return (
     <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  from-purple-800 to-black text-white">
       <div className="p-4 flex flex-col items-center">
-        <div className="relative">
+        <div className="relative flex items-center gap-6">
+        <SlArrowLeft onClick={() => handleArrowClick('left')} />
           <Image
-            src={MainBee}
-            alt="Epic Hamster"
+            src={getImageSrc()}
+            alt={getImageSrc()}
             className="w-32 h-32 mx-auto"
+            width={200}
+            height={200}
           />
-         
+         <SlArrowRight  onClick={() => handleArrowClick('right')} />
         </div>
-        <h1 className="text-4xl font-bold mt-4">{levelNames[levelIndex]}</h1>
-        <p className="text-xl">{levelIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>
+        <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
+        <p className="text-xl">{currentIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>
           <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
             <div
               className="progress-gradient h-2 rounded-full"
               style={{ width: `${calculateProgress()}%` }}
             ></div>
           </div>
-        <div className="mt-8 w-full  pb-40">
-          {leaderboardData.map((user, index) => (
+        <div className="mt-8 w-full pb-40">
+          {filterUsersByLevel().map((user, index) => (
             <div
               key={index}
               className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2"
