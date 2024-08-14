@@ -96,7 +96,7 @@ const Leaderboard = () => {
               style={{ width: `${calculateProgress()}%` }}
             ></div>
           </div>
-        <div className="mt-8 w-full">
+        <div className="mt-8 w-full  pb-40">
           {leaderboardData.map((user, index) => (
             <div
               key={index}
