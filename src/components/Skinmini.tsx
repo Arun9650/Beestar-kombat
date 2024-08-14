@@ -156,7 +156,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
   return (
     <div className="h-full flex-grow">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2 mb-4">
         {
           <>
             <div ref={leftContainerRef} className=" ">
