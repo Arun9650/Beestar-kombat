@@ -264,7 +264,6 @@ const Skinmini = ({ tab }: { tab: string }) => {
                   {selectedSkin.league !== levelNames[levelIndex] && (<span className="text-yellow-400">You need to be at {selectedSkin.league}</span>)}
                 </p>
                 <p className="text-white">
-                  Profit per hour:
                   <br />
                   <span className="text-white  flex max-w-fit mx-auto gap-2">
                     <Image src={dollarCoin} alt="coin" width={20} height={20} />
