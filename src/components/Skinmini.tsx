@@ -274,7 +274,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
               <DrawerFooter>
                 <Button
-                  disabled={points < selectedSkin.cost  || selectedSkin.league === levelNames[levelIndex]}
+                  disabled={points < selectedSkin.cost  || selectedSkin.league !== levelNames[levelIndex]}
                   onClick={() => handleBuySkin(userId!, selectedSkin)}
                   className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
                 >
