@@ -17,6 +17,8 @@ const Leaderboard = () => {
   const [levelIndex, setLevelIndex] = useState(6);
   const { points, PPH } = usePointsStore();
   const [userName , setUserName] = useState('Honey Collector');
+
+  const [userInfo, setUserInfo] = useState<any>({});
   
   
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -74,8 +76,16 @@ const Leaderboard = () => {
       const userName = window.localStorage.getItem("userName");
       setUserName(userName!);
       const response = await getLeaderboard();
+
       if (response.leaderboard) {
         setLeaderboardData(response.leaderboard);
+        const user = response.leaderboard.find(user => {
+          return user.chatId === userName
+        })
+        
+        if (user) {
+          setUserInfo(user);
+        }
       }
     };
 
@@ -109,7 +119,7 @@ const Leaderboard = () => {
       <div className="p-4 flex flex-col items-center">
         <div className="relative flex items-center gap-6">
         <SlArrowLeft onClick={() => handleArrowClick('left')} 
-        className={currentIndex === 0 ? 'text-gray-500' : ''} />
+        className={currentIndex === 0 ? 'text-gray-500 font-bold' : 'font-bold'} />
           <Image
             src={getImageSrc()}
             alt={getImageSrc()}
@@ -119,7 +129,7 @@ const Leaderboard = () => {
           />
          <SlArrowRight  onClick={() => handleArrowClick('right')}
          
-         className={currentIndex === levelNames.length - 1 ? 'text-gray-500' : ''}
+         className={currentIndex === levelNames.length - 1 ? 'text-gray-500 font-bold' : 'font-bold'}
          />
         </div>
         <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
@@ -132,7 +142,7 @@ const Leaderboard = () => {
           </div>
         <div className="mt-8 w-full pb-40">
         {filteredUsers.length === 0 ? (
-            <p>No user at this level</p>
+            <p className="w-full text-center h-60">No user at this level</p>
           ) : (
             filteredUsers.map((user, index) => (
               <div
@@ -163,9 +173,9 @@ const Leaderboard = () => {
             />
             <div className="flex-1">
               <p className="font-bold">{userName ? userName: "honey Collector"}</p>
-              <p className="text-yellow-500 flex gap-4">{PPH} <span className="text-white">{levelNames[levelIndex]}</span> </p>
+              <p className="text-yellow-500 flex gap-4">{userInfo.points} <span className="text-white">{levelNames[levelIndex]}</span> </p>
             </div>
-            <div className="text-lg">{points}</div>
+            <div className="text-lg">{userInfo.points}</div>
           </div>
         </div>
       </div>
