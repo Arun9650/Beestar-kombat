@@ -10,12 +10,14 @@ import Image from 'next/image';
 import { dollarCoin } from '../../../public/newImages';
 import { Button } from '@/components/ui/button';
 import { DeleteUser } from '@/actions/user.actions';
+import { usePointsStore } from '@/store/PointsStore';
 
 const Settings = () => {
 
   const {exchange} = useExchangeStore();
 
   const router = useRouter();
+   const {setPoints} = usePointsStore()
 
   const [buttonLoading, setButtonLoading] = useState(false);
    const [isDrawerOpen,setIsDrawerOpen] = useState(false);
@@ -31,6 +33,7 @@ const Settings = () => {
     window.localStorage.removeItem("exchange");
     window.localStorage.removeItem("points");
     window.localStorage.setItem("points", "0");
+    setPoints(0);
     window.localStorage.removeItem("userName");
     window.localStorage.removeItem("currentTapsLeft");
     window.localStorage.removeItem("energyCapacity");
