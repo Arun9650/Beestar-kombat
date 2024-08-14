@@ -262,7 +262,8 @@ const EarnMoreCoins = () => {
             taskList &&
             taskList.length > 0 &&
             taskList.map((task: Task, index) => (
-              <div
+              <button 
+                disabled={task.isUserTask || completedTasks.includes(task.id)}
                 onClick={() => handleCompleteTask(task.id)}
                 key={index}
                 className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl mt-2 flex items-center justify-between"
@@ -275,7 +276,7 @@ const EarnMoreCoins = () => {
                     width={50}
                     height={50}
                   />
-                  <Link href={task.link} target="_blank">
+                  <Link  href={task.link} target="_blank">
                     <p className="font-semibold">{task.name}</p>
                     <p className="text-yellow-400 flex items-center justify-start gap-1">
                       <Image src={dollarCoin} alt="Coin" className="w-4 h-4" />
@@ -283,14 +284,14 @@ const EarnMoreCoins = () => {
                     </p>
                   </Link>
                 </div>
-                {task.isUserTask && completedTasks.includes(task.id) && (
+                {task.isUserTask || completedTasks.includes(task.id) && (
                   <Image
                     src={approved}
                     alt="approved icon"
                     className="w-12 h-12"
                   />
                 )}
-              </div>
+              </button>
             ))
           )}
         </div>
