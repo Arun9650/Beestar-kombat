@@ -30,6 +30,7 @@ const Settings = () => {
     window.localStorage.removeItem("BoostersEnergy");
     window.localStorage.removeItem("exchange");
     window.localStorage.removeItem("points");
+    window.localStorage.setItem("points", "0");
     window.localStorage.removeItem("userName");
     window.localStorage.removeItem("currentTapsLeft");
     window.localStorage.removeItem("energyCapacity");
