@@ -21,6 +21,7 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
     if (typeof window !== 'undefined') {
     WebApp.ready()
     WebApp.expand()
+    WebApp.disableVerticalSwipes()
     } else {
     console.log('Telegram WebApp is undefined, retrying…');
     setTimeout(initTg, 500);
@@ -28,6 +29,8 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
     }
     initTg();
   }, []);
+
+  
 
 
 
