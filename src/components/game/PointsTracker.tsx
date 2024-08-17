@@ -17,7 +17,7 @@ const PointsTracker = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [PPH]);
+  }, [PPH, points]);
 
   return (
     <div className="font-bold text-3xl flex items-center gap-2 text-white">
