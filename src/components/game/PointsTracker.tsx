@@ -3,7 +3,7 @@
 import { usePointsStore } from "@/store/PointsStore";
 import Image from "next/image";
 import React, { useEffect } from "react";
-import { formatNumber } from "../../../utils/formatNumber";
+import { formatNumber, formatNumberWithCommas } from "../../../utils/formatNumber";
 
 const PointsTracker = () => {
   const { points, PPH, setPoints } = usePointsStore();
@@ -29,7 +29,7 @@ const PointsTracker = () => {
           alt=""
         />
       </span>
-      {formatNumber(points)}
+      {formatNumberWithCommas(points)}
     </div>
   );
 };
