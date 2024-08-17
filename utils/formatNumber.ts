@@ -1,15 +1,17 @@
-// utils/formatNumber.js
-
-export function formatNumber(num: number) {
-  if (num >= 1000000000) {
-    return (num / 1000000000).toFixed(3) + 'B';
+export  function formatNumber(number: number, locale = "en-US") {
+  if (number >= 1000000000) {
+    number = number / 1000000000;
+    return `${new Intl.NumberFormat(locale).format(number)}B`;
   }
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(3) + 'M';
+  else if (number >= 1000000) {
+    number = number / 1000000;
+    return `${new Intl.NumberFormat(locale).format(number)}M`;
   }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'k';
+  else if (number >= 1000) {
+    number = number / 1000;
+    return `${new Intl.NumberFormat(locale).format(number)}K`;
   }
-  return num.toFixed(0);
+  else {
+    return new Intl.NumberFormat(locale).format(number);
+  }
 }
-  
