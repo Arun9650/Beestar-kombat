@@ -15,3 +15,10 @@ export  function formatNumber(number: number, locale = "en-US") {
     return new Intl.NumberFormat(locale).format(number);
   }
 }
+
+// utils/formatNumber.ts
+// utils/formatNumber.ts
+export const formatNumberWithCommas = (number: number): string => {
+  const roundedNumber = Math.round(number);
+  return new Intl.NumberFormat('en-US').format(roundedNumber);
+};

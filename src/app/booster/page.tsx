@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { creditEnergy, getUserEnergy } from "@/actions/bonus.actions";
+import { formatNumberWithCommas } from "../../../utils/formatNumber";
 
 interface Booster {
   name: string;
@@ -164,7 +165,7 @@ const Boosters = () => {
           <p className="text-gray-400">Your balance</p>
           <div className="flex justify-center items-center">
             <Image src={dollarCoin} alt="Coin" className="w-6 h-6 mr-2" />
-            <p className="text-3xl font-bold">{points.toString()}</p>
+            <p className="text-3xl font-bold">{formatNumberWithCommas(points)}</p>
           </div>
           <p className="text-yellow-500 mt-2">How a boost works</p>
         </div>
