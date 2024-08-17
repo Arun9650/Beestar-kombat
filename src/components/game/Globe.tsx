@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePointsStore } from "@/store/PointsStore";
 import { useLocalPointsStorage } from "@/hooks/useLocalPointsStorage";
 import { usePushPointsToDB } from "@/hooks/usePushPointsToDB";
 import { useBoostersStore } from "@/store/useBoostrsStore";
+import { UpdateUser } from "@/actions/user.actions";
 
 interface ClickCoords {
   x: number;
@@ -22,6 +23,7 @@ const TapGlobe = () => {
     currentTapsLeft,
     increaseTapsLeft,
     tapInBoostMode,
+    points,
   } = usePointsStore();
   const { secondsLeft, decreaseSecondsLeft } = useBoostersStore();
   const { multiClickLevel } = useBoostersStore();
@@ -34,38 +36,59 @@ const TapGlobe = () => {
     []
   );
 
-  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    card.style.transform = `perspective(1000px) rotateX(${
-      -y / 10
-    }deg) rotateY(${x / 10}deg)`;
-    setTimeout(() => {
-      card.style.transform = "";
-    }, 100);
-    setClicks([...clicks, { id: Date.now(), x: e.pageX, y: e.pageY }]);
+  const bodyRef = useRef<HTMLDivElement | null>(null);
 
-    if (secondsLeft > 0) {
-      tapInBoostMode(7 * multiClickLevel);
-    } else {
-      addPoints(multiClickLevel);
+  const handleCardClick = (event: any) => {
+    // if (secondsLeft > 0) {
+    //   tapInBoostMode(7 * multiClickLevel);
+    // } else {
 
-      decreaseTapsLeft(1);
-      if(!isNaN(currentTapsLeft)){
+    // decreaseTapsLeft(1);
+    // if(!isNaN(currentTapsLeft)){
 
-        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
-      }
+    // window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
 
-      setIsTapping(true);
-      setTimeout(() => setIsTapping(false), 2000);
-    }
+    //   }
+
+    //   const userId  = window.localStorage.getItem("authToken");
+    //   setIsTapping(true);
+    //   setTimeout(() => {setIsTapping(false), UpdateUser(userId!) }, 400);
+    // }
+
+    // addPoints(multiClickLevel + event.touch.length);
+
+    event.preventDefault();
+    const rect = event.target.getBoundingClientRect();
+    const x = event.clientX - rect.left; // x position within the target
+    const y = event.clientY - rect.top; // y position within the target
+
+    // Step 1: Create and append a <style> element
+    const styleElement = document.createElement("style");
+    document.head.appendChild(styleElement);
+    
+
+    // Create a new div element
+
+    const newDiv = document.createElement("div");
+    newDiv.textContent = "+1";
+    newDiv.style.position = "absolute";
+    newDiv.style.left = `${x}px`;
+    newDiv.style.top = `${y - 50}px`;
+    newDiv.style.color = "white";
+    newDiv.draggable = false;
+    newDiv.className =
+      "dynamic-div animate-fadeOutTopRight z-20 transform max-sm:text-3xl text-5xl font-extrabold transition not-selectable"; // You can add Tailwind classes here if needed
+
+    // Append the new div to the body
+
+    bodyRef.current && bodyRef.current.appendChild(newDiv);
+    // remove the div after 400ms
+    const interval = setTimeout(() => newDiv && newDiv.remove(), 400);
+
+    return () => clearTimeout(interval);
   };
 
-  const handleAnimationEnd = (id: number) => {
-    setClicks((prevClicks) => prevClicks.filter((click) => click.id !== id));
-  };
+
 
   useEffect(() => {
     const timers = clickCoordinate.map((coords, index) =>
@@ -81,47 +104,114 @@ const TapGlobe = () => {
     const intervalId = setInterval(() => {
       if (!isTapping) {
         increaseTapsLeft();
-       const local  =  parseInt(window.localStorage.getItem("currentTapsLeft") ?? "0")
-     
-        if(local < currentTapsLeft && !isNaN(currentTapsLeft)){
-          window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + 1).toString());
-        } 
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + 1).toString()
+          );
+        }
       }
     }, 1000); // Adjust interval as needed
-  
+
     return () => clearInterval(intervalId);
   }, [isTapping, currentTapsLeft]);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {secondsLeft > 0 && decreaseSecondsLeft()
-    },
-      1000
-    );
+    const intervalId = setInterval(() => {
+      secondsLeft > 0 && decreaseSecondsLeft();
+    }, 1000);
     return () => clearInterval(intervalId);
   }, [secondsLeft]);
+
+  const handleMultiTouchStart = (event: TouchEvent) => {
+    // Iterate over each touch point
+    Array.from(event.touches).forEach((touch) => {
+      console.log("Touch's current position:", touch);
+      // Call handleClick for each touch point
+      handleCardClick({
+        ...touch,
+        target: event.target,
+        preventDefault: () => {}, // Mock preventDefault for non-MouseEvent
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        touches: [],
+        targetTouches: [],
+        changedTouches: [],
+      });
+    });
+  };
+
+  const handleTouch = (event: any) => {
+    const length = event.touches.length;
+    console.log("🚀 ~ handleTouch ~ length:", length);
+    console.log(event, length);
+
+    if(length === 1){
+      if (points - length >= 0 && length >= 1) {
+        window.localStorage.setItem("points", String(length));
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
+        handleMultiTouchStart(event);
+        addPoints(length);
+        decreaseTapsLeft(1);
+      }
+    }
+
+    if (length === 2) {
+      if (points - length >= 0 && length >= 1) {
+        window.localStorage.setItem("points", String(length));
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 2}`);
+        handleMultiTouchStart(event);
+        addPoints(length-1);
+        decreaseTapsLeft(length-1 );
+      }
+    }
+
+    if (length === 3) {
+      if (points - length >= 0 && length >= 1) {
+        window.localStorage.setItem("points", String(length));
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 3}`);
+        handleMultiTouchStart(event);
+        addPoints(length - 2);
+        decreaseTapsLeft(length - 2);
+      }
+    }
+
+    if (length === 4) {
+      if (points - length >= 0 && length >= 1) {
+        window.localStorage.setItem("points", String(length));
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 4}`);
+        handleMultiTouchStart(event);
+        addPoints(length - 3);
+        decreaseTapsLeft(length - 3);
+      }
+    }
+    if(length === 5){
+      if (points - length >= 0 && length >= 1) {
+        window.localStorage.setItem("points", String(length));
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 5}`);
+        handleMultiTouchStart(event);
+        addPoints(length - 4);
+        decreaseTapsLeft(length - 4);
+      }
+    }
+  };
 
   return (
     <div className="relative ">
       <div className=" mx-auto  w-fit ">
         <div
-          onClick={handleCardClick}
-          className="relative   rounded-full circle-outer"
+          ref={bodyRef}
+          onTouchStart={(e) => {
+            e.stopPropagation();
+            handleTouch(e);
+          }}
+          className="relative rounded-full circle-outer"
         >
           <div className="circle-inner rounded-full  ">
-            {clicks.map((click) => (
-              <div
-                key={click.id}
-                className=" text-5xl font-bold opacity-0 absolute  text-white pointer-events-none"
-                style={{
-                  top: `${click.y - 250}px`,
-                  left: `${click.x - 28}px`,
-                  animation: `float 1s ease-out`,
-                }}
-                onAnimationEnd={() => handleAnimationEnd(click.id)}
-              >
-                {(secondsLeft > 0 ? 7 : 1) * multiClickLevel}
-              </div>
-            ))}
             <Image
               src={skin ?? "/assets/images/BeeMain.png"}
               height={200}
