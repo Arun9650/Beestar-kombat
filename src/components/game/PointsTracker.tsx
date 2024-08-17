@@ -13,7 +13,7 @@ const PointsTracker = () => {
             <span className='text-6xl'>
                 <Image src="/assets/images/dollar-coin.png" height={40} width={40} alt="" />
             </span>
-            {formatNumber(points)}
+            {(points)}
         </div>
     )
 }
