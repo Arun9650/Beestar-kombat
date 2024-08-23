@@ -16,6 +16,8 @@ import { allCards } from "@/actions/tasks.actions";
 import { usePointsStore } from "@/store/PointsStore";
 import { Skeleton } from "../ui/skeleton";
 import toast from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
+import { updatePointsInDB } from "@/actions/points.actions";
 
 export interface Team {
   id: string;
@@ -47,26 +49,37 @@ const TaskList = () => {
 
   const [user, setUser] = useState<string | null>(null);
 
+  const searchParams = useSearchParams()
+ 
+  const id = searchParams.get('id')
+
   useEffect(() => {
-    const checkWindowDefined = () => {
-      if (typeof window !== 'undefined') {
-        const userId = window.localStorage.getItem("authToken");
-        console.log("🚀 ~ checkWindowDefined ~ userId:", userId)
-        setUser(userId);
-        const fetchCards = async () => {
-          const { combinedCards } = await allCards(userId!);
-          setCards(combinedCards);
-          setLoading(false);
-        };
+    // const checkWindowDefined = () => {
+    //   if (typeof window !== 'undefined') {
+    //     const userId = window.localStorage.getItem("authToken");
+    //     console.log("🚀 ~ checkWindowDefined ~ userId:", userId)
+    //     setUser(userId);
+        
+    //   } else {
+    //     setTimeout(checkWindowDefined, 100); // Check again after 100ms
+    //   }
+    // };
   
-        fetchCards();
-      } else {
-        setTimeout(checkWindowDefined, 100); // Check again after 100ms
+    // checkWindowDefined();
+
+    const fetchCards = async () => {
+      if(id !== null){
+
+        const combinedCards  = await allCards(id);
+        console.log("🚀 ~ fetchCards ~ combinedCards:", combinedCards)
+        console.log("🚀 ~ fetchCards ~ combinedCards:",typeof combinedCards)
+        setCards(combinedCards);
+        setLoading(false);
       }
     };
-  
-    checkWindowDefined();
-  }, []);
+
+    fetchCards();
+  }, [id]);
 
   const handleTeamClick = (team: Team) => {
     setSelectedTeam(team);
@@ -101,6 +114,13 @@ const TaskList = () => {
         toast.promise(
           (async () => {
             const userConfig = await getUserConfig(user);
+
+
+            if(userConfig.user.points < points){
+              await updatePointsInDB({points: points, id: user})
+            }
+
+
             if (userConfig?.user.points < selectedTeam.baseCost) {
               throw new Error("Insufficient points to update the profit per hour.");
             }
@@ -111,7 +131,7 @@ const TaskList = () => {
             }
   
             const authToken = window.localStorage.getItem("authToken");
-            const { combinedCards } = await allCards(authToken!);
+            const combinedCards  = await allCards(authToken!);
             setCards(combinedCards);
   
             const updatedUser = await getUserConfig(authToken!);
