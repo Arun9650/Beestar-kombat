@@ -175,8 +175,8 @@ const TapGlobe = () => {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 2}`);
         handleMultiTouchStart(event);
-        addPoints(length-1 * multiClickLevel);
-        decreaseTapsLeft(length-1  * multiClickLevel);
+        addPoints((length-1) * multiClickLevel);
+        decreaseTapsLeft((length-1)  * multiClickLevel);
       }
     }
 
