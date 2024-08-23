@@ -2,10 +2,12 @@
 // pages/boosters.js
 import React, { useEffect, useState } from "react";
 import {
+  Click,
   dollarCoin,
   honeycomb,
   recharge,
   rocket,
+  Tab,
 } from "../../../public/newImages";
 import Image, { StaticImageData } from "next/image";
 import { usePointsStore } from "@/store/PointsStore";
@@ -19,7 +21,7 @@ import {
   DrawerHeader,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { creditEnergy, getUserEnergy } from "@/actions/bonus.actions";
+import { creditEnergy, creditMultiClickLevel, getUserEnergy } from "@/actions/bonus.actions";
 import { formatNumberWithCommas } from "../../../utils/formatNumber";
 
 interface Booster {
@@ -43,9 +45,11 @@ const Boosters = () => {
     setRechargeVelocity,
     setMultiClickLevel,
     setEnergyCapacity,
+    setMultiClickCost,
     refill,
     setRefill,
     decreaseRefill,
+    multiClickCost,
   } = useBoostersStore();
   const { points, reducePoints, currentTapsLeft, increaseTapsLeft } =
     usePointsStore();
@@ -69,6 +73,13 @@ const Boosters = () => {
       icon: recharge,
       discription: "Increase the amount of energy",
     },
+    {
+      name:"Multi Tap",
+      cost: multiClickCost * 2,
+      level: multiClickCost / 500,
+      icon: Click,
+      discription: "Increase the Earn Per Tab",
+    }
   ];
 
   const handleEnergyCapacityIncrease = async () => {
@@ -140,6 +151,29 @@ const Boosters = () => {
     }
   };
 
+  const handleMultiTapIncrease = async () => {
+    const userId = window.localStorage.getItem("authToken");
+    if( multiClickCost * 2 <= points){
+      reducePoints(multiClickCost * 2);
+      const newMultiClickCost = multiClickCost + 500;
+      setMultiClickCost(newMultiClickCost);
+      const newMultiClickLevel = multiClickLevel + 1;
+      setMultiClickLevel(newMultiClickLevel);
+
+     
+      const result  = await creditMultiClickLevel(userId!, multiClickCost * 2);
+      if(result.success){
+      window.localStorage.setItem("points", (points - (multiClickCost * 2)).toString());
+      window.localStorage.setItem("multiClickCost", newMultiClickCost.toString());
+      window.localStorage.setItem("multiClickLevel", newMultiClickLevel.toString());
+      setIsDrawerOpen(false);
+      toast.success("Multiplier increased to " + newMultiClickLevel);
+      }
+    }else {
+      toast.error("Not enough points");
+    }
+  }
+
   const handleBoosterSelection = (boosterName: string) => {
     switch (boosterName) {
       case "Full energy":
@@ -147,6 +181,8 @@ const Boosters = () => {
         break;
       case "Energy limit":
         handleEnergyCapacityIncrease();
+      case "Multi Tap":
+        handleMultiTapIncrease();  
         break;
       default:
         toast.error("Booster not recognized or not available");
@@ -263,13 +299,17 @@ const Boosters = () => {
                   <div className="flex items-center gap-2">
                     <Image src={dollarCoin} alt="coin" width={30} height={30} />
                     {selectedBooster.name === "Energy limit"
-                      ? energyCapacity * 2
-                      : "Free"}
+        ? energyCapacity * 2
+        : selectedBooster.name === "Multi Tap"
+        ? multiClickCost * 2
+        : "Free"}
                   </div>
                   <div className="flex gap-4">
-                    {selectedBooster.name === "Energy limit" && (
-                      <div>lvl {selectedBooster.level}</div>
-                    )}
+                  {selectedBooster.name === "Energy limit" ? (
+        <div>lvl {selectedBooster.level}</div>
+      ) : selectedBooster.name === "Multi Tap" ? (
+        <div>lvl {selectedBooster.level }</div>
+      ) : null}
                   </div>
                 </div>
               </div>

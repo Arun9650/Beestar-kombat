@@ -279,6 +279,49 @@ export const creditEnergy = async (userId:string, amount:number) => {
 
 }
 
+
+export const creditMultiClickLevel = async (userId:string, amount:number) => {
+  try{
+    const user = await prisma.user.findUnique({ where: { chatId: userId } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    await prisma.user.update({
+      where: { chatId: userId },
+      data: {
+        points: {
+          decrement: amount,
+        },
+      },
+    });
+
+    await prisma.bonuster.upsert({
+      where: { chatId: userId },
+      update: {
+        multiClickLevel: {
+          increment: 1,
+
+        },
+        multiClickCost: {
+          increment: 500,
+        }
+      },
+      create: {
+        chatId: userId,
+        energy: 500,
+        multiClickLevel: 1,
+        multiClickCost: 500,
+      },
+    });
+
+    return { success: true ,message: 'MultiClickLevel credited successfully' };
+  }catch(error){
+    console.error(error);
+    return { success: false, error: 'Failed to credit MultiClickLevel' };
+  }
+}
+
 export const getUserEnergy = async (userId:string) =>{
   try {
     const user = await prisma.bonuster.findUnique({ where: { chatId: userId } });

@@ -45,6 +45,8 @@ import recharge from './recharge.png'
 import rocket from './rocket.png'
 import coolBee from './cool_bee.png'
 import SponsorImage from './sponsorImage.png'
+import Tab from './tap.jpg'
+import Click from './clicks.png'
 export {
     binanceLogo,
     dollarCoin,
@@ -92,5 +94,7 @@ export {
      recharge,
      rocket,
      coolBee,
-     SponsorImage
+     SponsorImage,
+     Tab,
+     Click
 };

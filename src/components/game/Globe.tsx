@@ -24,6 +24,8 @@ const TapGlobe = () => {
     increaseTapsLeft,
     tapInBoostMode,
     points,
+    setPoints,
+    PPH
   } = usePointsStore();
   const { secondsLeft, decreaseSecondsLeft } = useBoostersStore();
   const { multiClickLevel } = useBoostersStore();
@@ -70,7 +72,7 @@ const TapGlobe = () => {
     // Create a new div element
 
     const newDiv = document.createElement("div");
-    newDiv.textContent = "+1";
+    newDiv.textContent = `+${multiClickLevel.toString()}`;
     newDiv.style.position = "absolute";
     newDiv.style.left = `${x}px`;
     newDiv.style.top = `${y - 50}px`;
@@ -87,6 +89,11 @@ const TapGlobe = () => {
 
     return () => clearTimeout(interval);
   };
+
+
+
+
+ 
 
 
 
@@ -111,7 +118,7 @@ const TapGlobe = () => {
         if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
           window.localStorage.setItem(
             "currentTapsLeft",
-            (currentTapsLeft + 1).toString()
+            (currentTapsLeft + multiClickLevel).toString()
           );
         }
       }
@@ -153,17 +160,17 @@ const TapGlobe = () => {
     if(length === 1){
       if (points - length >= 0 && length >= 1) {
         window.localStorage.setItem("points", String(length));
-        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel}`);
         handleMultiTouchStart(event);
-        addPoints(length);
-        decreaseTapsLeft(1);
+        addPoints(multiClickLevel);
+        decreaseTapsLeft(multiClickLevel);
       }
     }
 
     if (length === 2) {
       if (points - length >= 0 && length >= 1) {
         window.localStorage.setItem("points", String(length));
-        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 2}`);
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 2}`);
         handleMultiTouchStart(event);
         addPoints(length-1);
         decreaseTapsLeft(length-1 );
@@ -173,7 +180,7 @@ const TapGlobe = () => {
     if (length === 3) {
       if (points - length >= 0 && length >= 1) {
         window.localStorage.setItem("points", String(length));
-        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 3}`);
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 3}`);
         handleMultiTouchStart(event);
         addPoints(length - 2);
         decreaseTapsLeft(length - 2);
@@ -183,7 +190,7 @@ const TapGlobe = () => {
     if (length === 4) {
       if (points - length >= 0 && length >= 1) {
         window.localStorage.setItem("points", String(length));
-        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 4}`);
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 4}`);
         handleMultiTouchStart(event);
         addPoints(length - 3);
         decreaseTapsLeft(length - 3);
@@ -192,7 +199,7 @@ const TapGlobe = () => {
     if(length === 5){
       if (points - length >= 0 && length >= 1) {
         window.localStorage.setItem("points", String(length));
-        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 5}`);
+        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 5}`);
         handleMultiTouchStart(event);
         addPoints(length - 4);
         decreaseTapsLeft(length - 4);
