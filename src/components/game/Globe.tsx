@@ -185,8 +185,8 @@ const TapGlobe = () => {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 3}`);
         handleMultiTouchStart(event);
-        addPoints(length - 2 * multiClickLevel);
-        decreaseTapsLeft(length - 2 * multiClickLevel);
+        addPoints((length-2) * multiClickLevel);
+        decreaseTapsLeft((length-2)  * multiClickLevel);
       }
     }
 
@@ -195,8 +195,8 @@ const TapGlobe = () => {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 4}`);
         handleMultiTouchStart(event);
-        addPoints(length - 3 * multiClickLevel);
-        decreaseTapsLeft(length - 3 * multiClickLevel);
+        addPoints((length-3) * multiClickLevel);
+        decreaseTapsLeft((length-3)  * multiClickLevel);
       }
     }
     if(length === 5){
@@ -204,8 +204,8 @@ const TapGlobe = () => {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 5}`);
         handleMultiTouchStart(event);
-        addPoints(length - 4 * multiClickLevel);
-        decreaseTapsLeft(length - 4 * multiClickLevel);
+        addPoints((length-4) * multiClickLevel);
+        decreaseTapsLeft((length-4)  * multiClickLevel);
       }
     }
   }
