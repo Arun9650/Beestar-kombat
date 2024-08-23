@@ -157,16 +157,19 @@ const TapGlobe = () => {
     console.log("🚀 ~ handleTouch ~ length:", length);
     console.log(event, length);
 
-    if(length === 1){
-      if (points - length >= 0 && length >= 1) {
-        window.localStorage.setItem("points", String(length));
-        window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel}`);
-        handleMultiTouchStart(event);
+    if(currentTapsLeft > multiClickLevel){
+
+      
+      if(length === 1){
+        if (points - length >= 0 && length >= 1) {
+          window.localStorage.setItem("points", String(length));
+          window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel}`);
+          handleMultiTouchStart(event);
         addPoints(multiClickLevel);
         decreaseTapsLeft(multiClickLevel);
       }
     }
-
+    
     if (length === 2) {
       if (points - length >= 0 && length >= 1) {
         window.localStorage.setItem("points", String(length));
@@ -205,8 +208,9 @@ const TapGlobe = () => {
         decreaseTapsLeft(length - 4);
       }
     }
+  }
   };
-
+  
   return (
     <div className="relative ">
       <div className=" mx-auto  w-fit ">
