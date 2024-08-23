@@ -49,37 +49,35 @@ const TaskList = () => {
 
   const [user, setUser] = useState<string | null>(null);
 
-  const searchParams = useSearchParams()
- 
-  const id = searchParams.get('id')
+
 
   useEffect(() => {
-    // const checkWindowDefined = () => {
-    //   if (typeof window !== 'undefined') {
-    //     const userId = window.localStorage.getItem("authToken");
-    //     console.log("🚀 ~ checkWindowDefined ~ userId:", userId)
-    //     setUser(userId);
+    const checkWindowDefined = () => {
+      if (typeof window !== 'undefined') {
+        const userId = window.localStorage.getItem("authToken");
+        console.log("🚀 ~ checkWindowDefined ~ userId:", userId)
+        setUser(userId);
         
-    //   } else {
-    //     setTimeout(checkWindowDefined, 100); // Check again after 100ms
-    //   }
-    // };
+      } else {
+        setTimeout(checkWindowDefined, 100); // Check again after 100ms
+      }
+    };
   
-    // checkWindowDefined();
+    checkWindowDefined();
 
     const fetchCards = async () => {
-      if(id !== null){
-
-        const combinedCards  = await allCards(id);
+      if(user !== null){
+        const combinedCards  = await allCards(user);
         console.log("🚀 ~ fetchCards ~ combinedCards:", combinedCards)
         console.log("🚀 ~ fetchCards ~ combinedCards:",typeof combinedCards)
         setCards(combinedCards.combinedCards);
         setLoading(false);
+
       }
     };
 
     fetchCards();
-  }, [id]);
+  }, [user]);
 
   const handleTeamClick = (team: Team) => {
     setSelectedTeam(team);
