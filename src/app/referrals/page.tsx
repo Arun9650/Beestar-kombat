@@ -4,9 +4,11 @@ import { Button } from '@/components/ui/button';
 import Copy from '../../../public/icons/Copy';
 import {  Gift } from '../../../public/newImages';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TelegramShareButton } from 'react-share'
 import { IoCheckmarkDoneSharp } from 'react-icons/io5';
+import { usePointsStore } from '@/store/PointsStore';
+import { useBoostersStore } from '@/store/useBoostrsStore';
 const ReferralPage = () => {
 
 
@@ -18,6 +20,28 @@ const ReferralPage = () => {
     setTimeout(() => setIsTapped(false), 2000); // Reset the tap animation after 200ms
   };
 
+
+  const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
+  const {multiClickLevel} = useBoostersStore()
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
 
   return (
     <div className="px-4 flex-grow bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  text-white  flex flex-col gap-16 ">

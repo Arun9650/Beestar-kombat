@@ -1,8 +1,34 @@
+'use client';
+import { usePointsStore } from "@/store/PointsStore";
 import { BeeCoin, SponsorImage, tonWallet } from "../../../public/newImages";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
+import { useBoostersStore } from "@/store/useBoostrsStore";
 
 const AirDrop = () => {
+  
+  const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
+  const {multiClickLevel} = useBoostersStore()
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
+  
   return (
     <div className="p-4 flex-grow bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]   max-w-xl mx-auto text-white ">
       <div className="flex flex-col items-center mb-6">

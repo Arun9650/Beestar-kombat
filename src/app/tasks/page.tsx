@@ -6,7 +6,7 @@ import CurrentPoints from "@/components/tasks/CurrentPoints";
 import TaskList from "@/components/tasks/TaskList";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { dollarCoin } from "../../../public/newImages";
 import { formatNumber } from "../../../utils/formatNumber";
 import Info from "../../../public/icons/Info";
@@ -14,8 +14,29 @@ import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 
 const TasksPage =  () => {
-  const { PPH } = usePointsStore();
+  const { PPH, currentTapsLeft, increaseTapsLeft } = usePointsStore();
   const { multiClickLevel } = useBoostersStore();
+
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
 
 
   return (

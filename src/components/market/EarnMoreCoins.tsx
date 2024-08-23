@@ -23,6 +23,7 @@ import toast from "react-hot-toast";
 import { completeTask, tasksList, TaskToShow } from "@/actions/tasks.actions";
 import { Skeleton } from "../ui/skeleton";
 import { usePointsStore } from "@/store/PointsStore";
+import { useBoostersStore } from "@/store/useBoostrsStore";
 
 interface Reward {
   id?: string;
@@ -67,7 +68,35 @@ const EarnMoreCoins = () => {
 
   const [userId, setUserId] = useState<string | null>(null);
 
-  const { userId: user }  = usePointsStore();
+  const { userId: user , increaseTapsLeft, currentTapsLeft}  = usePointsStore();
+
+  const {multiClickLevel} = useBoostersStore();
+
+
+
+
+
+useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
+
+
 
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken"); // Ensure userId is properly handled

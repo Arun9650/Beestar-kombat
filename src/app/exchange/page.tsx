@@ -1,12 +1,14 @@
 'use client'
 
 // pages/exchange.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SlArrowRight } from 'react-icons/sl';
 
 import Image, { StaticImageData } from 'next/image';
 import useExchangeStore, { TExchange } from '@/store/useExchangeStore';
 import { FaCheck } from "react-icons/fa";
+import { useBoostersStore } from '@/store/useBoostrsStore';
+import { usePointsStore } from '@/store/PointsStore';
 
 
 
@@ -16,6 +18,30 @@ const Exchange = () => {
     setExchange(exchange);
     window.localStorage.setItem('exchange', exchange.name);
   };
+
+  const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
+  const {multiClickLevel} = useBoostersStore()
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
+
+
   return (
     <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  text-white">
       <header className="p-4  ">
