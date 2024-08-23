@@ -73,7 +73,7 @@ const TaskList = () => {
         const combinedCards  = await allCards(id);
         console.log("🚀 ~ fetchCards ~ combinedCards:", combinedCards)
         console.log("🚀 ~ fetchCards ~ combinedCards:",typeof combinedCards)
-        setCards(combinedCards);
+        setCards(combinedCards.combinedCards);
         setLoading(false);
       }
     };
@@ -132,7 +132,7 @@ const TaskList = () => {
   
             const authToken = window.localStorage.getItem("authToken");
             const combinedCards  = await allCards(authToken!);
-            setCards(combinedCards);
+            setCards(combinedCards.combinedCards);
   
             const updatedUser = await getUserConfig(authToken!);
             console.log("🚀 ~ TaskList ~ user:", updatedUser.user.points)
