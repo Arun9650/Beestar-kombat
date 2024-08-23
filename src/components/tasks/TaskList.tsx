@@ -114,14 +114,10 @@ const TaskList = () => {
             const userConfig = await getUserConfig(user);
 
 
-            if(userConfig.user.points < points){
+            if(userConfig.user.points < points && points > selectedTeam.baseCost){
               await updatePointsInDB({points: points, id: user})
             }
 
-
-            if (userConfig?.user.points < selectedTeam.baseCost) {
-              throw new Error("Insufficient points to update the profit per hour.");
-            }
   
             const result = await updateProfitPerHour(user, selectedTeam);
             if (!result.success) {
