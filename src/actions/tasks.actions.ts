@@ -147,6 +147,13 @@ export async function allCards(userId: string) {
     where: { userId },
   });
 
+    await prisma.user.update({
+      where: { chatId: userId },
+      data: {
+        lastProfitDate: Date.now(),
+        lastLogin: new Date(),
+      },
+    });
   // Create a map of userCards for quick lookup
   const userCardsMap = new Map(userCards.map((card) => [card.cardId, card]));
 

@@ -105,6 +105,7 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
         data: {
           profitPerHour: { increment: selectedTeam.basePPH },
           points:  remainingPoints ,
+       lastProfitDate: Date.now(), lastLogin: new Date() 
         },
       });
 

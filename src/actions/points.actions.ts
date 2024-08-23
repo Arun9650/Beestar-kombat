@@ -63,9 +63,9 @@ export async function updatePointsInDB({
     if (!user) return "userNotExist";
 
     if (points > 0){
-
+ 
       
-      await prisma.user.update({ where: { chatId: id }, data: { points:  points } });
+      await prisma.user.update({ where: { chatId: id }, data: { points:  points,  lastProfitDate: Date.now(), lastLogin: new Date()  } });
       
     }
     

@@ -46,15 +46,46 @@ const useUserPointsConfig = () => {
 
 
           }
-         
+         // Retrieve the last login time from local storage
+const  getLastLoginTimeFromLocalStorage = (): number | null =>  {
+  const lastLogin = window.localStorage.getItem('lastLoginTime');
+  return lastLogin ? parseInt(lastLogin, 10) : null;
+}
+
   
           if (!isNaN(Number(currentTapsLeftLocal))) {
-            const lastLoginDate = config?.user?.lastLogin!;
-            const now = new Date();
+            const lastLoginTimeFromConfig = config?.user?.lastLogin ? new Date(config.user.lastLogin).getTime() : null;
+
+            // Get the last login time from local storage
+            const lastLoginTimeFromLocalStorage = getLastLoginTimeFromLocalStorage();
+            
+            // Compare the two times and get the latest one
+             
+           // Compare the two times and get the latest one
+           let lastLoginTime: number;
+           if (lastLoginTimeFromConfig !== null) {
+               lastLoginTime = lastLoginTimeFromLocalStorage !== null
+                   ? Math.max(lastLoginTimeFromConfig, lastLoginTimeFromLocalStorage)
+                   : lastLoginTimeFromConfig;
+           } else {
+               lastLoginTime = lastLoginTimeFromLocalStorage !== null
+                   ? lastLoginTimeFromLocalStorage
+                   : Date.now(); // Fallback to current time if both are null
+           }
+
+            
+            // Update the local storage with the latest login time
+            window.localStorage.setItem('lastLoginTime', lastLoginTime.toString());
+
+            
+            
+            // const lastLoginDate = config?.user?.lastLogin!;
+            const now = Date.now();
          
             const timeDifferenceInSeconds = Math.floor(
-              (now.getTime() - lastLoginDate?.getTime()) / 1000
+              (now - lastLoginTime) / 1000
             );
+            console.log("🚀 ~ update ~ timeDifferenceInSeconds:", timeDifferenceInSeconds)
             
   
             let currentTapsLeftcal = Number(currentTapsLeftLocal);
