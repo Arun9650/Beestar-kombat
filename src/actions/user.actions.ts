@@ -22,6 +22,8 @@ export async function getUserConfig(id: string) {
         lastProfitDate: 0,
         points: 0,
         name: '',
+        multiClickLevel: 1,
+        multiClickCost: 500,
         
       },
     };
@@ -31,6 +33,8 @@ export async function getUserConfig(id: string) {
       recharge: user.refillRate,
       clicks: user.pointPerTap,
       capacity: userEnergy?.energy,
+      multiClickLevel: userEnergy?.multiClickLevel,
+      multiClickCost: userEnergy?.multiClickCost,
       profit: user.profit,
       profitPerHour: user.profitPerHour,
       lastProfitDate: user.lastProfitDate,
@@ -160,6 +164,7 @@ export const getLeaderboard = async () => {
         points: true,
         chatId: true,
         name: true,
+        profitPerHour: true,
       },
       take: 10, // Adjust this number to get more or fewer users
     });
