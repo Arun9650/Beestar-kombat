@@ -301,17 +301,16 @@ export const creditMultiClickLevel = async (userId:string, amount:number) => {
       update: {
         multiClickLevel: {
           increment: 1,
-
         },
         multiClickCost: {
-          increment: 500,
+          increment: amount,
         }
       },
       create: {
         chatId: userId,
         energy: 500,
-        multiClickLevel: 1,
-        multiClickCost: 500,
+        multiClickLevel: 2,
+        multiClickCost: 1000,
       },
     });
 
