@@ -106,48 +106,45 @@ const TaskList = () => {
 
 
   const handleUpdateProfitPerHour = async (user: string, selectedTeam: Team) => {
-    if (selectedTeam) {
-      try {
-        setButtonLoading(true);
-        toast.promise(
-          (async () => {
-            const userConfig = await getUserConfig(user);
-
-
-            if(userConfig.user.points < points && points > selectedTeam.baseCost){
-              await updatePointsInDB({points: points, id: user})
-            }
-
-  
-            const result = await updateProfitPerHour(user, selectedTeam);
-            if (!result.success) {
-              throw new Error(result.message || "something went wrong");
-            }
-  
-            const authToken = window.localStorage.getItem("authToken");
-            const combinedCards  = await allCards(authToken!);
-            setCards(combinedCards.combinedCards);
-  
-            const updatedUser = await getUserConfig(authToken!);
-            console.log("🚀 ~ TaskList ~ user:", updatedUser.user.points)
-            setPoints(updatedUser?.user.points);
-            window.localStorage.setItem("points", updatedUser?.user.points.toString());
-            setPPH(updatedUser?.user.profitPerHour);
-  
-            setIsDrawerOpen(false);
-          })(),
-          {
-            loading: 'Updating profit per hour...',
-            success: `Upgrade is yours! ${selectedTeam.title}`,
-            error: (err) => err.toString(),
-          }
-        );
-      } catch (error) {
-        console.error("Failed to update profit per hour:", error);
-      } finally {
-        setButtonLoading(false);
-      }
+    if (!selectedTeam) {
+      toast.error("Please select a team");
+      return;
     }
+  
+    setButtonLoading(true);
+    toast.promise(
+      (async () => {
+        const userConfig = await getUserConfig(user);
+  
+        if (userConfig.user.points < points && points > selectedTeam.baseCost) {
+          await updatePointsInDB({ points: points, id: user });
+        }
+  
+        const result = await updateProfitPerHour(user, selectedTeam);
+        if (!result.success) {
+          throw new Error(result.message || "something went wrong");
+        }
+  
+        const authToken = window.localStorage.getItem("authToken");
+        const combinedCards = await allCards(authToken!);
+        setCards(combinedCards.combinedCards);
+  
+        const updatedUser = await getUserConfig(authToken!);
+        console.log("🚀 ~ TaskList ~ user:", updatedUser.user.points);
+        setPoints(updatedUser?.user.points);
+        window.localStorage.setItem("points", updatedUser?.user.points.toString());
+        setPPH(updatedUser?.user.profitPerHour);
+  
+        setIsDrawerOpen(false);
+      })(),
+      {
+        loading: 'Updating profit per hour...',
+        success: `Upgrade is yours! ${selectedTeam.title}`,
+        error: (err) => err.toString(),
+      }
+    ).finally(() => {
+      setButtonLoading(false);
+    });
   };
   
 

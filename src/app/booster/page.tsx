@@ -113,7 +113,7 @@ const Boosters = () => {
         {
           loading: 'Crediting energy...',
           success: (data) => data,
-          error: (err) => err.toString(),
+          error: 'something went wrong...',
         }
       ).finally(() => {
         setButtonLoading(false);
