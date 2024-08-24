@@ -105,6 +105,8 @@ const Boosters = () => {
     const intervalId = setInterval(() => {
     
         increaseTapsLeft();
+        let time = Date.now();
+        window.localStorage.setItem("lastLoginTime", time.toString() );
         const local = parseInt(
           window.localStorage.getItem("currentTapsLeft") ?? "0"
         );
