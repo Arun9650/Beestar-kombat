@@ -23,6 +23,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { creditEnergy, creditMultiClickLevel, getUserEnergy } from "@/actions/bonus.actions";
 import { formatNumberWithCommas } from "../../../utils/formatNumber";
+import { updatePointsInDB } from "@/actions/points.actions";
+import { getUserConfig } from "@/actions/user.actions";
 
 interface Booster {
   name: string;
@@ -82,24 +84,45 @@ const Boosters = () => {
     }
   ];
 
+
   const handleEnergyCapacityIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
     if (energyCapacity * 2 <= points) {
-      reducePoints(energyCapacity * 2);
-      const newEnergyCapacity = energyCapacity + 500;
-      setEnergyCapacity(newEnergyCapacity);
-    const result =   await creditEnergy(userId!, energyCapacity * 2);
-    if(result.success){
-      window.localStorage.setItem("points", (points - (energyCapacity * 2)).toString());
-      window.localStorage.setItem("energyCapacity", newEnergyCapacity.toString());
-      const boostersEnergy = 500;
-      setIsDrawerOpen(false); 
-      toast.success("Energy Capacity credited " + boostersEnergy);
-    }
+      setButtonLoading(true);
+      toast.promise(
+        (async () => {
+          
+          // Update points in the database
+          await updatePointsInDB({ points: points - (energyCapacity * 2), id: userId! });
+         
+          reducePoints(energyCapacity * 2);
+          const newEnergyCapacity = energyCapacity + 500;
+          setEnergyCapacity(newEnergyCapacity);
+  
+          const result = await creditEnergy(userId!, energyCapacity * 2);
+          if (!result.success) {
+            throw new Error(result.message || "Credit failed");
+          }
+  
+          window.localStorage.setItem("points", (points - (energyCapacity * 2)).toString());
+          window.localStorage.setItem("energyCapacity", newEnergyCapacity.toString());
+          setIsDrawerOpen(false);
+  
+          return `Energy Capacity credited ${500}`;
+        })(),
+        {
+          loading: 'Crediting energy...',
+          success: (data) => data,
+          error: (err) => err.toString(),
+        }
+      ).finally(() => {
+        setButtonLoading(false);
+      });
     } else {
       toast.error("Not enough points");
     }
   };
+
 
   useEffect(() => {
     const intervalId = setInterval(() => {
