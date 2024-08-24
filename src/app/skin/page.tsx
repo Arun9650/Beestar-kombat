@@ -116,7 +116,7 @@ useEffect(() => {
        
       </div> */}
       <div className="h-full">
-      <header className="p-4 pt-0  grid grid-cols-2   ">
+      <header className="p-4 pt-10  grid grid-cols-2   ">
         <h1 className="text-lg  font-bold">Skin</h1>
         <div className="grid grid-cols-2 text-sm space-x-2  border border-yellow-400 bg-[#1d2025] bg-opacity-85 shadow-xl p-2 rounded-2xl">
           <button
@@ -133,7 +133,7 @@ useEffect(() => {
           </button>
         </div>
       </header>
-      <main className="p-4 mb-16 bg-[#1d2025] bg-opacity-85 shadow-xl border border-yellow-400  h-full  rounded-3xl">
+      <main className="p-4  bg-[#1d2025] bg-opacity-85 shadow-xl border border-yellow-400  h-full  rounded-3xl">
        <Skinmini tab={tab} />
       </main>
       </div>

@@ -77,6 +77,7 @@ const Settings = () => {
     window.localStorage.removeItem("authToken");
     
     window.localStorage.setItem("currentTapsLeft", "500"); 
+    window.localStorage.setItem("energyCapacity", "500"); 
     setCurrentTapsLeft(500); 
     if (result.success) {
       setButtonLoading(false);
