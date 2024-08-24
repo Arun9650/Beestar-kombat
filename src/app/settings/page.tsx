@@ -24,7 +24,7 @@ const Settings = () => {
    const [isDrawerOpen,setIsDrawerOpen] = useState(false);
 
 
-   const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
+   const {currentTapsLeft, increaseTapsLeft, setCurrentTapsLeft} = usePointsStore()
    const {multiClickLevel} = useBoostersStore()
    
    useEffect(() => {
@@ -69,13 +69,14 @@ const Settings = () => {
     window.localStorage.removeItem("refill");
     window.localStorage.removeItem("PPH");  
     window.localStorage.removeItem("currentTapLeft");  
+    window.localStorage.removeItem("lastLoginTime");
+
     const userId = window.localStorage.getItem("authToken");
     setButtonLoading(true);
     const result = await DeleteUser(userId!);
-    console.log("🚀 ~ handleDeleteUser ~ result:", result);
     
-    window.localStorage.removeItem("authToken");
-  
+    window.localStorage.setItem("currentTapLeft", "500"); 
+    setCurrentTapsLeft(500); 
     if (result.success) {
       setButtonLoading(false);
       router.push('/');
