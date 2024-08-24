@@ -8,6 +8,7 @@ import { usePointsStore } from "@/store/PointsStore";
 
 import { SlArrowRight } from "react-icons/sl";
 import { SlArrowLeft } from "react-icons/sl"; 
+import { useBoostersStore } from "@/store/useBoostrsStore";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState<
@@ -60,6 +61,30 @@ const Leaderboard = () => {
     const progress = ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
     return Math.min(progress, 100);
   };
+
+
+  const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
+  const {multiClickLevel} = useBoostersStore()
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
 
   useEffect(() => {
     const currentLevelMin = levelMinPoints[levelIndex];

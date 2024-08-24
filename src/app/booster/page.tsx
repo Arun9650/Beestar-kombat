@@ -102,6 +102,28 @@ const Boosters = () => {
   };
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
+
+  
+
+  useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
     const storedEnergyCapacity = window.localStorage.getItem("energyCapacity");
     console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", storedEnergyCapacity);

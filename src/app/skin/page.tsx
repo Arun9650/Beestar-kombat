@@ -8,6 +8,8 @@ import { beeAvatar, coolBee, Diamond, dollarCoin, MainBee } from "../../../publi
 import { useRouter  } from "next/navigation";
 import Skinmini from "@/components/Skinmini";
 import { getUserConfig } from "@/actions/user.actions";
+import { useBoostersStore } from "@/store/useBoostrsStore";
+import { usePointsStore } from "@/store/PointsStore";
 
 
 
@@ -24,6 +26,29 @@ const SkinPage = () => {
   
 
   const achievements = [{ name: "10 cards", icon: Diamond, unlocked: true }];
+
+  const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
+  const {multiClickLevel} = useBoostersStore()
+  
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+    
+        increaseTapsLeft();
+        const local = parseInt(
+          window.localStorage.getItem("currentTapsLeft") ?? "0"
+        );
+
+        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + multiClickLevel).toString()
+          );
+        }
+      
+    }, 1000); // Adjust interval as needed
+
+    return () => clearInterval(intervalId);
+  }, [ currentTapsLeft]);
 
 
 useEffect(() => {

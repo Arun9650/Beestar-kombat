@@ -1,6 +1,6 @@
 
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { SlArrowRight } from "react-icons/sl";
 import { useRouter } from 'next/navigation';
@@ -11,6 +11,7 @@ import { dollarCoin } from '../../../public/newImages';
 import { Button } from '@/components/ui/button';
 import { DeleteUser } from '@/actions/user.actions';
 import { usePointsStore } from '@/store/PointsStore';
+import { useBoostersStore } from '@/store/useBoostrsStore';
 
 const Settings = () => {
 
@@ -22,6 +23,29 @@ const Settings = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
    const [isDrawerOpen,setIsDrawerOpen] = useState(false);
 
+
+   const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
+   const {multiClickLevel} = useBoostersStore()
+   
+   useEffect(() => {
+     const intervalId = setInterval(() => {
+     
+         increaseTapsLeft();
+         const local = parseInt(
+           window.localStorage.getItem("currentTapsLeft") ?? "0"
+         );
+ 
+         if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+           window.localStorage.setItem(
+             "currentTapsLeft",
+             (currentTapsLeft + multiClickLevel).toString()
+           );
+         }
+       
+     }, 1000); // Adjust interval as needed
+ 
+     return () => clearInterval(intervalId);
+   }, [ currentTapsLeft]);
 
    const handleDeleteUser = async () => {
     if (typeof window === 'undefined') {
