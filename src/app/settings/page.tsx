@@ -68,12 +68,12 @@ const Settings = () => {
     window.localStorage.removeItem("multiClickLevel");
     window.localStorage.removeItem("refill");
     window.localStorage.removeItem("PPH");  
-    window.localStorage.removeItem("currentTapLeft");  
     window.localStorage.removeItem("lastLoginTime");
 
     const userId = window.localStorage.getItem("authToken");
     setButtonLoading(true);
     const result = await DeleteUser(userId!);
+    window.localStorage.removeItem("authToken");
     
     window.localStorage.setItem("currentTapLeft", "500"); 
     setCurrentTapsLeft(500); 
