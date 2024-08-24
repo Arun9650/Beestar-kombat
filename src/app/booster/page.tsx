@@ -201,6 +201,10 @@ const Boosters = () => {
   const handleMultiTapIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
     if( multiClickCost * 2 <= points){
+
+
+      await updatePointsInDB({ points: points , id: userId! });
+
       reducePoints(multiClickCost * 2);
       const newMultiClickCost = multiClickCost + 500;
       setMultiClickCost(newMultiClickCost);
