@@ -306,10 +306,11 @@ const TaskList = () => {
 
                 <DrawerFooter>
                   <Button
-                    disabled={points < selectedTeam.baseCost}
+                    disabled={points < selectedTeam.baseCost  || buttonLoading}
                     onClick={() =>
                       handleUpdateProfitPerHour(user!, selectedTeam)
                     }
+                    
                     className="w-full py-8 bg-yellow-600 text-white text-xl rounded-lg hover:bg-yellow-700"
                   >
                     {buttonLoading ? (
