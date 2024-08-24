@@ -66,6 +66,7 @@ const Settings = () => {
     window.localStorage.removeItem("lastLoginDate");
     window.localStorage.removeItem("rechargeVelocity");
     window.localStorage.removeItem("multiClickLevel");
+    window.localStorage.removeItem("multiClickCost");
     window.localStorage.removeItem("refill");
     window.localStorage.removeItem("PPH");  
     window.localStorage.removeItem("lastLoginTime");
