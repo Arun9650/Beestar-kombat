@@ -75,7 +75,7 @@ const Settings = () => {
     const result = await DeleteUser(userId!);
     window.localStorage.removeItem("authToken");
     
-    window.localStorage.setItem("currentTapLeft", "500"); 
+    window.localStorage.setItem("currentTapsLeft", "500"); 
     setCurrentTapsLeft(500); 
     if (result.success) {
       setButtonLoading(false);

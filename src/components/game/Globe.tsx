@@ -117,7 +117,8 @@ const TapGlobe = () => {
           window.localStorage.getItem("currentTapsLeft") ?? "0"
         );
 
-        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+        if ( points !== 0  && local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+          console.log("🚀 ~ intervalId ~ currentTapsLeft:", currentTapsLeft)
           window.localStorage.setItem(
             "currentTapsLeft",
             (currentTapsLeft + multiClickLevel).toString()
@@ -163,7 +164,7 @@ const TapGlobe = () => {
 
       
       if(length === 1){
-        if (points - length >= 0 && length >= 1) {
+        if ( length >= 1) {
           window.localStorage.setItem("points", String(length));
           window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel}`);
           handleMultiTouchStart(event);
@@ -173,7 +174,7 @@ const TapGlobe = () => {
     }
     
     if (length === 2) {
-      if (points - length >= 0 && length >= 1) {
+      if ( length >= 1) {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 2}`);
         handleMultiTouchStart(event);
@@ -183,7 +184,7 @@ const TapGlobe = () => {
     }
 
     if (length === 3) {
-      if (points - length >= 0 && length >= 1) {
+      if ( length >= 1) {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 3}`);
         handleMultiTouchStart(event);
@@ -193,7 +194,7 @@ const TapGlobe = () => {
     }
 
     if (length === 4) {
-      if (points - length >= 0 && length >= 1) {
+      if ( length >= 1) {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 4}`);
         handleMultiTouchStart(event);
@@ -202,7 +203,7 @@ const TapGlobe = () => {
       }
     }
     if(length === 5){
-      if (points - length >= 0 && length >= 1) {
+      if ( length >= 1) {
         window.localStorage.setItem("points", String(length));
         window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - multiClickLevel * 5}`);
         handleMultiTouchStart(event);

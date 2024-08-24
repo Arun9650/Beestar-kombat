@@ -92,18 +92,20 @@ const  getLastLoginTimeFromLocalStorage = (): number | null =>  {
   
             const remainingTaps =  (currentState?.capacity ?? 0) - currentTapsLeftcal;
   
-            if (timeDifferenceInSeconds > remainingTaps) {
-              currentTapsLeftcal = currentState.capacity ?? 0;
-              if(!isNaN(currentTapsLeftcal)){
-                setCurrentTapsLeft(currentTapsLeftcal);
-                window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
-              }
-              // setCurrentTapsLeft(async);
-            } else {
-              currentTapsLeftcal += timeDifferenceInSeconds;
-              if(!isNaN(currentTapsLeftcal)){
-                setCurrentTapsLeft(currentTapsLeftcal);
-                window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+            if (Number(initialPoints) !== 0) {
+              if (timeDifferenceInSeconds > remainingTaps) {
+                currentTapsLeftcal = currentState.capacity ?? 0;
+                if (!isNaN(currentTapsLeftcal)) {
+                  setCurrentTapsLeft(currentTapsLeftcal);
+                  window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+                }
+                // setCurrentTapsLeft(async);
+              } else {
+                currentTapsLeftcal += timeDifferenceInSeconds;
+                if (!isNaN(currentTapsLeftcal)) {
+                  setCurrentTapsLeft(currentTapsLeftcal);
+                  window.localStorage.setItem("currentTapsLeft", currentTapsLeftcal.toString());
+                }
               }
             }
   

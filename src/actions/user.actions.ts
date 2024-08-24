@@ -48,6 +48,10 @@ export async function getUserConfig(id: string) {
 export async function creditProfitPerHour(id: string) {
   const user = await prisma.user.findUnique({ where: { chatId: id } });
   try {
+
+    if(!user) return;
+
+
     if (!user?.lastProfitDate) {
       await prisma.user.update({
         where: { chatId: id },

@@ -21,36 +21,47 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userName = randomName()
     }
 
-    const {setUserId} = usePointsStore();
-   
-    // const id = '123456789'
-
-    // const pointsInLocalStorage = window.localStorage.getItem("points")
+    const { setUserId, setCurrentTapsLeft } = usePointsStore();
 
     useEffect(() => {
         const authToken = window.localStorage.getItem('authToken')
+        console.log("🚀 ~ useEffect ~ authToken:", authToken)
         const authentication = async () => {
             if (!authToken && authToken != id) {
                 const referredByUserValue = referredByUser ?? undefined; 
 
-                const authenticate = await authenticateUserOrCreateAccount({ chatId: id! , userName: userName!, referredByUser: referredByUserValue  })
+                const authenticate = await authenticateUserOrCreateAccount({ chatId: id!, userName: userName!, referredByUser: referredByUserValue })
                 console.log("🚀 ~ authentication ~ authenticate:", authenticate)
-                if (authenticate === 'success') {
-                    window.localStorage.setItem('authToken', `${id}`);
-                    window.localStorage.setItem('userName', `${userName}`);
-                    setUserId(id!);
-                }
-                else {
-                    alert("Could not authenticate you")
-                }
+                
+                switch (authenticate) {
+                    case 'createdNewAccount':
+                        console.log("Account created successfully");
+                        window.localStorage.setItem('authToken', `${id}`);
+                        window.localStorage.setItem('userName', `${userName}`);
+                        window.localStorage.setItem("currentTapsLeft", '500');
+                        setCurrentTapsLeft(500);
 
+                        setUserId(id!);
+                        break;
+                    case 'userAlreadyExists':
+                        console.log("User already exists, authenticated successfully");
+                        window.localStorage.setItem('authToken', `${id}`);
+                        window.localStorage.setItem('userName', `${userName}`);
+                        setUserId(id!);
+                        break;
+                    case 'unknownError':
+                    default:
+                        alert("Could not authenticate you");
+                        break;
+                }
+            } else { 
+                console.log("Already authenticated", authToken);
+                setUserId(id!); // Ensure the user ID is set even if already authenticated
             }
-            else { console.log("Authenticated", authToken) }
         }
 
         authentication()
     }, [])
-
 
     return (
         <div>
@@ -58,6 +69,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         </div>
     )
 }
+
 const AuthProviderWithSuspense = ({ children }: { children: React.ReactNode }) => (
     <Suspense fallback={<div>Loading...</div>}>
         <AuthProvider>{children}</AuthProvider>
