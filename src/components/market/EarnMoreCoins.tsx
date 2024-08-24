@@ -183,7 +183,7 @@ useEffect(() => {
         <div>
           <h2 className="text-lg font-semibold mb-2">Beestar Youtube</h2>
           <div className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between">
-              <Link href="https://youtube.com/channel/UCQyXoMQxQBdZSrBiRfDdZoQ">
+              <Link href="https://youtube.com/channel/UCQyXoMQxQBdZSrBiRfDdZoQ"  target="_blank">
             <div className="flex items-center">
               <Image src={Youtube} alt="YouTube" className="w-12 h-12 mr-4" />
               <div>
