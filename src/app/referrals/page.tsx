@@ -98,9 +98,13 @@ useEffect(() => {
       <div className='flex  gap-3 '>
           {/* button */}
           <Button className="bg-black/80 shadow-2xl border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full py-4 px-4  semi-bold text-sm ">
-          <TelegramShareButton url={`https://t.me/BeestarKombat_bot/?referredByUser=${id}`} >
+          {id ? (
+        <TelegramShareButton url={`https://t.me/BeestarKombat_bot/?referredByUser=${id}`}>
           Invite a friend
-          </TelegramShareButton>
+        </TelegramShareButton>
+      ) : (
+        <div className='loading'></div> // Placeholder while id is being set
+      )}
           </Button>
         <button onClick={handleTap} className={`bg-yellow-400 border border-black  py-2 px-4 rounded-2xl ${isTapped ? 'scale-95' : ''} transition-transform duration-200`}>
      
