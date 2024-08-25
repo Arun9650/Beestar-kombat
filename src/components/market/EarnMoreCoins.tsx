@@ -72,6 +72,8 @@ const EarnMoreCoins = () => {
 
   const {multiClickLevel} = useBoostersStore();
 
+  const [buttonLoading, setButtonLoading] = useState(false);
+
 
 
 
@@ -113,17 +115,20 @@ useEffect(() => {
 
   const handleClaimReward = async () => {
     if (!userId) return;
+    setButtonLoading(true);
     const data = await claimReward(userId);
     if (data.success && data.reward) {
       setNextRewardAvailable(false);
-      ``;
       setReward((prev) => ({
         day: (prev?.day || 0) + 1,
         coins: data.reward || 0,
       }));
       toast.success(`Reward claimed successfully! ${data.reward} `);
+
+      setButtonLoading(false);
     } else {
       console.log(data.error);
+      setButtonLoading(false);
     }
   };
 
@@ -271,10 +276,10 @@ useEffect(() => {
                   <DrawerFooter className=" p-0">
                     <Button
                       onClick={handleClaimReward}
-                      disabled={!nextRewardAvailable}
+                      disabled={!nextRewardAvailable || buttonLoading}
                       className="w-full p-7 my-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700"
                     >
-                      Claim
+                     { buttonLoading  ? <div className="loading"></div>: "Claim"}
                     </Button>
                   </DrawerFooter>
                 </DrawerContent>
