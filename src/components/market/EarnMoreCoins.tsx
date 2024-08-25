@@ -68,7 +68,7 @@ const EarnMoreCoins = () => {
 
   const [userId, setUserId] = useState<string | null>(null);
 
-  const { userId: user , increaseTapsLeft, currentTapsLeft}  = usePointsStore();
+  const { userId: user , increaseTapsLeft, currentTapsLeft, addPoints}  = usePointsStore();
 
   const {multiClickLevel} = useBoostersStore();
 
@@ -116,6 +116,7 @@ useEffect(() => {
   const handleClaimReward = async () => {
     if (!userId) return;
     setButtonLoading(true);
+    toast.loading("Claiming reward...");
     const data = await claimReward(userId);
     if (data.success && data.reward) {
       setNextRewardAvailable(false);
@@ -123,11 +124,15 @@ useEffect(() => {
         day: (prev?.day || 0) + 1,
         coins: data.reward || 0,
       }));
+
+      addPoints(data.reward);
+
       toast.success(`Reward claimed successfully! ${data.reward} `);
 
       setButtonLoading(false);
     } else {
       console.log(data.error);
+      toast.error('Something went wrong!');
       setButtonLoading(false);
     }
   };
