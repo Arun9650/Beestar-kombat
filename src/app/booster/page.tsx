@@ -21,12 +21,17 @@ import {
   DrawerHeader,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { creditEnergy, creditMultiClickLevel, getUserEnergy } from "@/actions/bonus.actions";
+import {
+  creditEnergy,
+  creditMultiClickLevel,
+  getUserEnergy,
+} from "@/actions/bonus.actions";
 import { formatNumberWithCommas } from "../../../utils/formatNumber";
 import { updatePointsInDB } from "@/actions/points.actions";
 import { getUserConfig } from "@/actions/user.actions";
 
 interface Booster {
+  id:number;
   name: string;
   status?: string;
   icon: StaticImageData;
@@ -58,17 +63,19 @@ const Boosters = () => {
 
   const freeBoosters = [
     {
+      id: 1,
       name: "Full energy",
       status: refill.toString(),
       icon: honeycomb,
       discription:
         "Reacharge your energy to the maximum and do another round of mining.",
     },
-    { name: "Turbo", status: "Coming soon", icon: rocket },
+    { id:4, name: "Turbo", status: "Coming soon", icon: rocket },
   ];
 
   const boosters = [
     {
+      id: 2,
       name: "Energy limit",
       cost: energyCapacity * 2,
       level: energyCapacity / 500,
@@ -76,113 +83,82 @@ const Boosters = () => {
       discription: "Increase the amount of energy",
     },
     {
-      name:"Multi Tap",
+      id: 3,
+      name: "Multi Tap",
       cost: multiClickCost * 2,
       level: multiClickCost / 500,
       icon: Click,
       discription: "Increase the Earn Per Tab",
-    }
+    },
   ];
-
 
   const handleEnergyCapacityIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
     if (energyCapacity * 2 <= points) {
       setButtonLoading(true);
-      toast.promise(
-        (async () => {
-          
-          // Update points in the database
-          await updatePointsInDB({ points: points - (energyCapacity * 2), id: userId! });
-         
-          reducePoints(energyCapacity * 2);
-          const newEnergyCapacity = energyCapacity + 500;
-          setEnergyCapacity(newEnergyCapacity);
-  
-          const result = await creditEnergy(userId!, energyCapacity * 2);
-          if (!result.success) {
-            throw new Error(result.message || "Credit failed");
+      toast
+        .promise(
+          (async () => {
+            // Update points in the database
+            await updatePointsInDB({
+              points: points,
+              id: userId!,
+            });
+
+            reducePoints(energyCapacity * 2);
+            const newEnergyCapacity = energyCapacity + 500;
+            setEnergyCapacity(newEnergyCapacity);
+
+            const result = await creditEnergy(userId!, energyCapacity * 2);
+            if (!result.success) {
+              throw new Error(result.message || "Credit failed");
+            }
+
+            window.localStorage.setItem(
+              "points",
+              (points).toString()
+            );
+            window.localStorage.setItem(
+              "energyCapacity",
+              newEnergyCapacity.toString()
+            );
+            setIsDrawerOpen(false);
+
+            return `Energy Capacity credited ${500}`;
+          })(),
+          {
+            loading: "Crediting energy...",
+            success: (data) => data,
+            error: "something went wrong...",
           }
-  
-          window.localStorage.setItem("points", (points - (energyCapacity * 2)).toString());
-          window.localStorage.setItem("energyCapacity", newEnergyCapacity.toString());
-          setIsDrawerOpen(false);
-  
-          return `Energy Capacity credited ${500}`;
-        })(),
-        {
-          loading: 'Crediting energy...',
-          success: (data) => data,
-          error: 'something went wrong...',
-        }
-      ).finally(() => {
-        setButtonLoading(false);
-      });
+        )
+        .finally(() => {
+          setButtonLoading(false);
+        });
     } else {
       toast.error("Not enough points");
     }
   };
 
-
   useEffect(() => {
     const intervalId = setInterval(() => {
-    
-        increaseTapsLeft();
-        let time = Date.now();
-        window.localStorage.setItem("lastLoginTime", time.toString() );
-        const local = parseInt(
-          window.localStorage.getItem("currentTapsLeft") ?? "0"
-        );
+      increaseTapsLeft();
+      let time = Date.now();
+      window.localStorage.setItem("lastLoginTime", time.toString());
+      const local = parseInt(
+        window.localStorage.getItem("currentTapsLeft") ?? "0"
+      );
 
-        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
-          window.localStorage.setItem(
-            "currentTapsLeft",
-            (currentTapsLeft + multiClickLevel).toString()
-          );
-        }
-      
+      if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+        window.localStorage.setItem(
+          "currentTapsLeft",
+          (currentTapsLeft + multiClickLevel).toString()
+        );
+      }
     }, 1000); // Adjust interval as needed
 
     return () => clearInterval(intervalId);
-  }, [ currentTapsLeft]);
-
-  
-
-  // useEffect(() => {
-  //   const userId = window.localStorage.getItem("authToken");
-  //   const storedEnergyCapacity = window.localStorage.getItem("energyCapacity");
-  //   console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", storedEnergyCapacity);
-  //   const storedRefill = window.localStorage.getItem("refill");
-  //   const storedDate = window.localStorage.getItem("refillDate");
-  //   const currentDate = new Date().toLocaleDateString();
-  
-  //   if (storedEnergyCapacity) {
-  //     console.log("🚀 ~ useEffect ~ storedEnergyCapacity:", storedEnergyCapacity);
-  //     setEnergyCapacity(parseInt(storedEnergyCapacity));
-  //   } else {
-  //     const fetchEnergy = async () => {
-  //       const boostersEnergy = await getUserEnergy(userId!);
-  //       if (boostersEnergy.energy && boostersEnergy.success) {
-  //         setEnergyCapacity(boostersEnergy.energy);
-  //         window.localStorage.setItem(
-  //           "energyCapacity",
-  //           boostersEnergy.energy.toString()
-  //         );
-  //       }
-  //     };
-  //     fetchEnergy();
-  //   }
-  
-  //   if (storedDate !== currentDate) {
-  //     // Reset refill value and update the stored date
-  //     const newRefillValue = 6; // Set this to the desired initial value
-  //     setRefill(newRefillValue);
-  //     window.localStorage.setItem("refill", newRefillValue.toString());
-  //     window.localStorage.setItem("refillDate", currentDate);
-  //   } else if (storedRefill) {
-  //     setRefill(parseInt(storedRefill));
-  //   }
-  // }, []);
+  }, [currentTapsLeft]);
 
   const handleFuelRefill = () => {
     if (refill > 0) {
@@ -200,10 +176,8 @@ const Boosters = () => {
 
   const handleMultiTapIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
-    if( multiClickCost * 2 <= points){
-
-
-      await updatePointsInDB({ points: points , id: userId! });
+    if (multiClickCost * 2 <= points) {
+      await updatePointsInDB({ points: points, id: userId! });
 
       reducePoints(multiClickCost * 2);
       const newMultiClickCost = multiClickCost + 500;
@@ -211,29 +185,37 @@ const Boosters = () => {
       const newMultiClickLevel = multiClickLevel + 1;
       setMultiClickLevel(newMultiClickLevel);
 
-     
-      const result  = await creditMultiClickLevel(userId!, multiClickCost * 2);
-      if(result.success){
-      window.localStorage.setItem("points", (points - (multiClickCost * 2)).toString());
-      window.localStorage.setItem("multiClickCost", newMultiClickCost.toString());
-      window.localStorage.setItem("multiClickLevel", newMultiClickLevel.toString());
-      setIsDrawerOpen(false);
-      toast.success("Multiplier increased to " + newMultiClickLevel);
+      const result = await creditMultiClickLevel(userId!, multiClickCost * 2);
+      if (result.success) {
+        window.localStorage.setItem(
+          "points",
+          (points - multiClickCost * 2).toString()
+        );
+        window.localStorage.setItem(
+          "multiClickCost",
+          newMultiClickCost.toString()
+        );
+        window.localStorage.setItem(
+          "multiClickLevel",
+          newMultiClickLevel.toString()
+        );
+        setIsDrawerOpen(false);
+        toast.success("Multiplier increased to " + newMultiClickLevel);
       }
-    }else {
+    } else {
       toast.error("Not enough points");
     }
-  }
+  };
 
-  const handleBoosterSelection = (boosterName: string) => {
-    switch (boosterName) {
-      case "Full energy":
+  const handleBoosterSelection = (id: number) => {
+    switch (id) {
+      case  1 :
         handleFuelRefill();
         break;
-      case "Energy limit":
+      case 2:
         handleEnergyCapacityIncrease();
-      case "Multi Tap":
-        handleMultiTapIncrease();  
+      case 3:
+        handleMultiTapIncrease();
         break;
       default:
         toast.error("Booster not recognized or not available");
@@ -252,7 +234,9 @@ const Boosters = () => {
           <p className="text-gray-400">Your balance</p>
           <div className="flex justify-center items-center">
             <Image src={dollarCoin} alt="Coin" className="w-6 h-6 mr-2" />
-            <p className="text-3xl font-bold">{formatNumberWithCommas(points)}</p>
+            <p className="text-3xl font-bold">
+              {formatNumberWithCommas(points)}
+            </p>
           </div>
           <p className="text-yellow-500 mt-2">How a boost works</p>
         </div>
@@ -338,11 +322,14 @@ const Boosters = () => {
                   <h2 className="text-2xl font-medium text-white mb-2">
                     {selectedBooster?.name}
                   </h2>
-                  <p className="text-gray-400">{selectedBooster?.discription}</p>
+                  <p className="text-gray-400">
+                    {selectedBooster?.discription}
+                  </p>
                 </div>
                 {selectedBooster?.name === "Full energy" && (
                   <p className="text-sm text-yellow-500">
-                    You will recharge full energy points for level {selectedBooster.level}
+                    You will recharge full energy points for level{" "}
+                    {selectedBooster.level}
                   </p>
                 )}
 
@@ -350,23 +337,23 @@ const Boosters = () => {
                   <div className="flex items-center gap-2">
                     <Image src={dollarCoin} alt="coin" width={30} height={30} />
                     {selectedBooster.name === "Energy limit"
-        ? energyCapacity * 2
-        : selectedBooster.name === "Multi Tap"
-        ? multiClickCost * 2
-        : "Free"}
+                      ? energyCapacity * 2
+                      : selectedBooster.name === "Multi Tap"
+                      ? multiClickCost * 2
+                      : "Free"}
                   </div>
                   <div className="flex gap-4">
-                  {selectedBooster.name === "Energy limit" ? (
-        <div>lvl {selectedBooster.level}</div>
-      ) : selectedBooster.name === "Multi Tap" ? (
-        <div>lvl {selectedBooster.level }</div>
-      ) : null}
+                    {selectedBooster.name === "Energy limit" ? (
+                      <div>lvl {selectedBooster.level}</div>
+                    ) : selectedBooster.name === "Multi Tap" ? (
+                      <div>lvl {selectedBooster.level}</div>
+                    ) : null}
                   </div>
                 </div>
               </div>
               <DrawerFooter>
                 <Button
-                  onClick={() => handleBoosterSelection(selectedBooster.name)}
+                  onClick={() => handleBoosterSelection(selectedBooster.id)}
                   className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
                 >
                   {buttonLoading ? <div className="loader"></div> : "Go ahead"}
