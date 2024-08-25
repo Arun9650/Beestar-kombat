@@ -208,17 +208,14 @@ const Boosters = () => {
   };
 
   const handleBoosterSelection = (id: number) => {
-    switch (id) {
-      case  1 :
-        handleFuelRefill();
-        break;
-      case 2:
-        handleEnergyCapacityIncrease();
-      case 3:
-        handleMultiTapIncrease();
-        break;
-      default:
-        toast.error("Booster not recognized or not available");
+    if (id === 1) {
+      handleFuelRefill();
+    } else if (id === 2) {
+      handleEnergyCapacityIncrease();
+    } else if (id === 3) {
+      handleMultiTapIncrease();
+    } else {
+      toast.error("Booster not recognized or not available");
     }
   };
 
