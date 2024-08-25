@@ -13,19 +13,41 @@ const ReferralPage = () => {
 
 
   const [isTapped, setIsTapped] = useState(false);
+  const [id, setId] = useState('');
 
   const handleTap = () => {
     setIsTapped(true);
-    navigator.clipboard.writeText("https://tonswap.io/referrals");
+    navigator.clipboard.writeText(`https://t.me/BeestarKombat_bot/?referredByUser=${id}`);
     setTimeout(() => setIsTapped(false), 2000); // Reset the tap animation after 200ms
   };
 
 
   const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
   const {multiClickLevel} = useBoostersStore()
+
+
+
+
+useEffect(() => {
+  const checkWindowAndSetId = () => {
+    if (typeof window !== 'undefined') {
+      const user = window.localStorage.getItem("authToken");
+      if(user){
+        setId(user);
+      }
+    } else {
+      setTimeout(checkWindowAndSetId, 1000); // Retry after 1 second
+    }
+  };
+
+  checkWindowAndSetId();
+}, []);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
-    
+      
+
+
         increaseTapsLeft();
         let time = Date.now();
         window.localStorage.setItem("lastLoginTime", time.toString() );
@@ -76,7 +98,7 @@ const ReferralPage = () => {
       <div className='flex  gap-3 '>
           {/* button */}
           <Button className="bg-black/80 shadow-2xl border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full py-4 px-4  semi-bold text-sm ">
-          <TelegramShareButton url="https://tonswap.io/referrals" >
+          <TelegramShareButton url={`https://t.me/BeestarKombat_bot/?referredByUser=${id}`} >
           Invite a friend
           </TelegramShareButton>
           </Button>
