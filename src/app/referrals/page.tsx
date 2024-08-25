@@ -103,7 +103,7 @@ useEffect(() => {
           Invite a friend
         </TelegramShareButton>  
       ) : (
-        <div className='loading'></div> // Placeholder while id is being set
+        <div className='loader'></div> // Placeholder while id is being set
       )}
           </Button>
         <button onClick={handleTap} className={`bg-yellow-400 border border-black  py-2 px-4 rounded-2xl ${isTapped ? 'scale-95' : ''} transition-transform duration-200`}>
