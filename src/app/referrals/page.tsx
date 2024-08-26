@@ -17,7 +17,7 @@ const ReferralPage = () => {
 
   const handleTap = () => {
     setIsTapped(true);
-    navigator.clipboard.writeText(`https://t.me/beestar_devbot/start?start=${id}`);
+    navigator.clipboard.writeText(`http://t.me/BeestarKombat_bot/start?start=${id}`);
     setTimeout(() => setIsTapped(false), 2000); // Reset the tap animation after 200ms
   };
 
@@ -99,7 +99,7 @@ useEffect(() => {
           {/* button */}
           <Button className="bg-black/80 shadow-2xl border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full py-4 px-4  semi-bold text-sm ">
           {id ? (
-        <TelegramShareButton style={{width: '100%' }} url={`https://t.me/beestar_devbot/start?start=${id}`}>
+        <TelegramShareButton style={{width: '100%' }} url={`http://t.me/BeestarKombat_bot/start?start=${id}`}>
           Invite a friend
         </TelegramShareButton>  
       ) : (
