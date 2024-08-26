@@ -70,6 +70,8 @@ const Settings = () => {
     window.localStorage.removeItem("refill");
     window.localStorage.removeItem("PPH");  
     window.localStorage.removeItem("lastLoginTime");
+    window.localStorage.removeItem("freeEnergy");
+    window.localStorage.removeItem("lastDateFreeEnergy");
 
     const userId = window.localStorage.getItem("authToken");
     setButtonLoading(true);
