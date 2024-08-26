@@ -221,6 +221,7 @@ const Boosters = () => {
   const handleMultiTapIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
     if (multiClickCost * 2 <= points) {
+      setButtonLoading(true);
       await updatePointsInDB({ points: points, id: userId! });
 
       reducePoints(multiClickCost * 2);
@@ -243,11 +244,13 @@ const Boosters = () => {
           "multiClickLevel",
           newMultiClickLevel.toString()
         );
+        setButtonLoading(false); 
         setIsDrawerOpen(false);
         toast.success("Multiplier increased to " + newMultiClickLevel);
       }
     } else {
       toast.error("Not enough points");
+      setButtonLoading(false); 
     }
   };
 
