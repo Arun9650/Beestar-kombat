@@ -147,9 +147,13 @@ useEffect(() => {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   useEffect(() => {
-        if(id){
+    const checkWindowDefined = () => {
+      if (typeof window !== 'undefined') {
+        const authToken = window.localStorage.getItem("authToken");
+  
+        if ( authToken) {
           const getAllTask = async () => {
-            const tasks = await TaskToShow(id!);
+            const tasks = await TaskToShow(authToken);
             if (tasks && tasks.length > 0) {
               setTaskList(tasks);
               setIsLoading(false);
@@ -157,8 +161,13 @@ useEffect(() => {
           };
           getAllTask();
         }
+      } else {
+        setTimeout(checkWindowDefined, 100); // Retry after 100ms
+      }
+    };
   
-  }, [id]);
+    checkWindowDefined();
+  }, []);
 
   const handleCompleteTask = async (task: Task) => {
 
