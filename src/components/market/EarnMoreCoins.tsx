@@ -24,6 +24,7 @@ import { completeTask, tasksList, TaskToShow } from "@/actions/tasks.actions";
 import { Skeleton } from "../ui/skeleton";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
+import { useSearchParams } from "next/navigation";
 
 interface Reward {
   id?: string;
@@ -75,6 +76,9 @@ const EarnMoreCoins = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
 
 
+
+  const search = useSearchParams();
+  const id  = search.get('id');
 
 
 
@@ -143,14 +147,9 @@ useEffect(() => {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (typeof window !== "undefined") {
-        const userId = window.localStorage.getItem("authToken");
-
-        if(userId || user){
-
+        if(id){
           const getAllTask = async () => {
-            const tasks = await TaskToShow(userId!);
+            const tasks = await TaskToShow(id!);
             if (tasks && tasks.length > 0) {
               setTaskList(tasks);
               setIsLoading(false);
@@ -159,21 +158,19 @@ useEffect(() => {
           getAllTask();
         }
   
-      }
-    }, 100);
-  
-    return () => clearTimeout(timeoutId);
-  }, []);
+  }, [id]);
 
-  const handleCompleteTask = async (taskId: string) => {
+  const handleCompleteTask = async (task: Task) => {
 
     if (!userId) return;
-    const result = await completeTask({ userId, taskId });
+    const result = await completeTask({ userId, taskId: task.id });
 
     if (result === "success") {
-      setCompletedTasks((prev) => [...prev, taskId]);
+      setCompletedTasks((prev) => [...prev,  task.id]);
       toast.success("Task completed successfully!");
       setIsLoading(true);
+      addPoints(task.points);
+      window.localStorage.setItem("points", `${parseInt(window.localStorage.getItem("points") || "0") + task.points}`)
       const tasks = await TaskToShow(userId!);
       if (tasks && tasks.length > 0) {
         setTaskList(tasks);
@@ -306,7 +303,7 @@ useEffect(() => {
             taskList.map((task: Task, index) => (
               <button 
                 disabled={task.isUserTask}
-                onClick={() => handleCompleteTask(task.id)}
+                onClick={() => handleCompleteTask(task)}
                 key={index}
                 className="p-4 bg-[#1d2025] shadow-xl w-full border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl mt-2 flex items-center justify-between"
               >
@@ -322,7 +319,7 @@ useEffect(() => {
                     <p className="font-semibold text-start">{task.name}</p>
                     <p className="text-yellow-400 flex items-center justify-start gap-1">
                       <Image src={dollarCoin} alt="Coin" className="w-4 h-4" />
-                      +5,000
+                      +{task.points}
                     </p>
                   </Link>
                 </div>

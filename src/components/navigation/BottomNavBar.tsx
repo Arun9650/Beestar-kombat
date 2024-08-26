@@ -6,7 +6,7 @@ import Image from "next/image";
 import { FaGamepad } from "react-icons/fa6";
 import Coins from "../../../public/icons/Coins";
 import { BeeCoin, SponsorImage } from "../../../public/newImages";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const BottomNavBar = () => {
   const NavigationItems = [
@@ -40,9 +40,15 @@ const BottomNavBar = () => {
   const route = useRouter();
   const pathname = usePathname();
 
+  const search = useSearchParams();
+
+  const id  = search.get('id');
+
   const handleRoute = (link: string) => {
-    route.push(link);
+    const linkWithId = id ? `${link}?id=${id}` : link;
+    route.push(linkWithId);
   };
+
 
   return (
     <div
