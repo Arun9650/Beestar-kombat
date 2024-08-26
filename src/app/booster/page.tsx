@@ -29,6 +29,7 @@ import {
 import { formatNumberWithCommas } from "../../../utils/formatNumber";
 import { updatePointsInDB } from "@/actions/points.actions";
 import { getUserConfig } from "@/actions/user.actions";
+import { useFreeEnergy } from "@/store/useFreeEnergy";
 
 interface Booster {
   id:number;
@@ -61,11 +62,13 @@ const Boosters = () => {
   const { points, reducePoints, currentTapsLeft, increaseTapsLeft } =
     usePointsStore();
 
+    const {decreaseFreeEnergy, freeEnergy, setFreeEnergy} = useFreeEnergy();
+
   const freeBoosters = [
     {
       id: 1,
       name: "Full energy",
-      status: refill.toString(),
+      status: freeEnergy.toString(),
       icon: honeycomb,
       discription:
         "Reacharge your energy to the maximum and do another round of mining.",
@@ -160,19 +163,60 @@ const Boosters = () => {
     return () => clearInterval(intervalId);
   }, [currentTapsLeft]);
 
-  const handleFuelRefill = () => {
-    if (refill > 0) {
+  // const handleFuelRefill = () => {
+  //   if (refill > 0) {
+  //     const tapsToAdd = energyCapacity - currentTapsLeft;
+  //     increaseTapsLeft(tapsToAdd);
+  //     decreaseRefill();
+  //     const newRefillValue = refill - 1;
+  //     setRefill(newRefillValue);
+  //     window.localStorage.setItem("refill", newRefillValue.toString());
+  //     // window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
+  //     setIsDrawerOpen(false);
+  //     toast.success("Taps refilled " + energyCapacity);
+  //   }
+  // };
+
+  const handleFuelRefill = async () => {
+    if(freeEnergy > 0){
       const tapsToAdd = energyCapacity - currentTapsLeft;
       increaseTapsLeft(tapsToAdd);
-      decreaseRefill();
-      const newRefillValue = refill - 1;
-      setRefill(newRefillValue);
-      window.localStorage.setItem("refill", newRefillValue.toString());
-      // window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
+      decreaseFreeEnergy();
+      const newRefillValue = freeEnergy - 1;
+      setFreeEnergy(newRefillValue);
+      window.localStorage.setItem("freeEnergy", newRefillValue.toString());
+      window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
       setIsDrawerOpen(false);
       toast.success("Taps refilled " + energyCapacity);
+    }else{
+      toast.error("Not enough free energy");
     }
-  };
+  }
+
+  useEffect(() => {
+    const checkWindowDefined = () => {
+      if (typeof window !== 'undefined') {
+        const currentDate = new Date().toLocaleDateString();
+        console.log("🚀 ~ checkWindowDefined ~ currentDate:", currentDate)
+        const lastDate = window.localStorage.getItem("lastDateFreeEnergy");
+        console.log("🚀 ~ checkWindowDefined ~ lastDate:", lastDate)
+        let freeEnergyValue = parseInt(window.localStorage.getItem("freeEnergy") ?? "6");
+  
+        if (lastDate !== currentDate) {
+          freeEnergyValue = 6; // Set to full value
+          window.localStorage.setItem("freeEnergy", freeEnergyValue.toString());
+          window.localStorage.setItem("lastDateFreeEnergy", currentDate);
+        }
+  
+        setFreeEnergy(freeEnergyValue);
+      } else {
+        setTimeout(checkWindowDefined, 100); // Retry after 100ms
+      }
+    };
+  
+    checkWindowDefined();
+  }, []);
+
 
   const handleMultiTapIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
