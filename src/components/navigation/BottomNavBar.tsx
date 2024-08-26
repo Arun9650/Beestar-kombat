@@ -43,6 +43,7 @@ const BottomNavBar = () => {
   const search = useSearchParams();
 
   const id  = search.get('id');
+  console.log("🚀 ~ BottomNavBar ~ id:", id)
 
   const handleRoute = (link: string) => {
     const linkWithId = id ? `${link}?id=${id}` : link;

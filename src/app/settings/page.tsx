@@ -24,7 +24,7 @@ const Settings = () => {
    const [isDrawerOpen,setIsDrawerOpen] = useState(false);
 
 
-   const {currentTapsLeft, increaseTapsLeft, setCurrentTapsLeft} = usePointsStore()
+   const {currentTapsLeft, increaseTapsLeft, setCurrentTapsLeft, setPPH} = usePointsStore()
    const {multiClickLevel} = useBoostersStore()
    
    useEffect(() => {
@@ -60,6 +60,8 @@ const Settings = () => {
     window.localStorage.removeItem("points");
     window.localStorage.setItem("points", "0");
     setPoints(0);
+    setPPH(0);
+    
     window.localStorage.removeItem("userName");
     window.localStorage.removeItem("currentTapsLeft");
     window.localStorage.removeItem("energyCapacity");
