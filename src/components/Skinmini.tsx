@@ -9,7 +9,17 @@ import { usePointsStore } from "@/store/PointsStore";
 import { skinBuy, SkinsToShow, SkinType } from "@/actions/skins.actions";
 import { getUserConfig } from "@/actions/user.actions";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import axios from "axios";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import useSetCurrentSkin from "@/hooks/mutation/useSetCurrentSkin";
+import { setCurrentSkin } from "@/services/apis/axiosFucntions";
+import useFetchAllSkin from "@/hooks/query/userFetchAllSkin";
+import { useBuySkinMutation } from "@/hooks/mutation/useBuySkinMutation";
 
 const Skinmini = ({ tab }: { tab: string }) => {
   const [selectedSkin, setSelectedSkin] = useState<SkinType>();
@@ -21,15 +31,13 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const leftContainerRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState<string | null>();
 
   const [Loading, setLoading] = useState(true);
   const filteredSkins =
-    tab === "featured" ? skinsData.filter((skin) => skin.featured) : skinsData;
+    tab === "featured" ? skinsData?.filter((skin) => skin.featured) : skinsData;
   const { points, setPoints, setSkin, userId: user } = usePointsStore();
 
-
-  
   const levelNames = [
     "Bronze", // From 0 to 4999 coins
     "Silver", // From 5000 coins to 24,999 coins
@@ -42,7 +50,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
     "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
     "Lord", // From 1,000,000,000 coins to ∞
   ];
-  
+
   const levelMinPoints = [
     0, // Bronze
     5000, // Silver
@@ -58,34 +66,23 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
 
 
-  useEffect(() => {
-    const retryDelay = 100; // Retry delay in milliseconds
-  
-    const fetchSkins = async (userId: string) => {
-      const userSkins = await SkinsToShow(userId);
-      const data = userSkins.combinedSkins;
-      if (data) {
-        setSkinsData(data);
-        setSelectedSkin(data[0]);
-        setLoading(false);
-      }
-    };
-  
-    const retryFetchSkins = () => {
-      if (typeof window !== 'undefined') {
-        const userId = window.localStorage.getItem('authToken');
-        setUserId(userId!);
-        if(userId || user){
 
-          fetchSkins(userId! || user);
-        }
-      } else {
-        setTimeout(retryFetchSkins, retryDelay);
-      }
-    };
+  const search = useSearchParams();
+  const id = search.get("id");
+
+  const {data , isLoading} = useFetchAllSkin(id!);
+
+  useEffect(() => {
+    const user = window.localStorage.getItem("authToken");
+    setUserId(user || id);
+    if(data){
+
+      setSkinsData(data);
+      setSelectedSkin(data[0]);
+    }
+  },[data])
   
-    retryFetchSkins();
-  }, [user]);
+
 
   useEffect(() => {
     const currentLevelMin = levelMinPoints[levelIndex];
@@ -97,54 +94,92 @@ const Skinmini = ({ tab }: { tab: string }) => {
     }
   }, [points, levelIndex, levelMinPoints, levelNames.length]);
 
+
+  const buySkinMutation = useBuySkinMutation();
+
   const handleBuySkin = async (userId: string, selectedSkin: any) => {
     if (!selectedSkin) return;
-  
+
     if (selectedSkin.owned) {
       return;
     }
-  
+
     if (points < selectedSkin.price) {
       setIsDrawerOpen(false);
       toast.error("Not enough points to buy this skin");
       return;
     }
-  
+
     setButtonLoading(true);
     const id = selectedSkin.id;
     const localBalance = points;
     const chatId = userId;
-    const result = await skinBuy({ id, localBalance, chatId });
-    setButtonLoading(false);
-  
-    if (result.status === "success") {
-      setSelectedSkin(selectedSkin);
-      setIsDrawerOpen(false);
-  
-      toast.success("Skin Purchased");
-      const userSkins = await SkinsToShow(userId!);
-      const data = userSkins.combinedSkins;
-      if (data) {
-        setSkinsData(data!);
-  
-        const filter = data.filter((skin) => skin.id === id);
-        setSelectedSkin(filter[0]);
+
+    buySkinMutation.mutate({
+      skinId:id,
+      localBalance,
+      chatId,
+    }, {
+      onSuccess: async () => {
+        setSelectedSkin(selectedSkin);
+        setIsDrawerOpen(false);
         const { user } = await getUserConfig(userId!);
-  
+
         if (user?.points) {
           setPoints(user?.points);
         }
+        setButtonLoading(false);
+      },
+      onError: (error) => {
+        setButtonLoading(false);
+        console.error("Error buying skin:", error);
+        toast.error("Error buying skin");
       }
-    }
+    });
   };
+
+  const queryClient = useQueryClient();
+
+  const mutate = useMutation({
+    mutationFn: ({ id, skin }: { id: any; skin: string }) =>
+      setCurrentSkin(id, skin),
+
+    onMutate: () => {
+      toast.loading("Setting skin...");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Skin set successfully!");
+      router.push("/");
+    },
+    onError: (error) => {
+      toast.dismiss();
+      toast.error("Failed to set skin.");
+      console.error("Error setting skin:", error);
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-main-skin"] });
+    },
+  });
 
   const handleChooseSkin = (skin: SkinType) => {
     if (!skin.owned) {
       setIsDrawerOpen(true);
     } else {
       setIsDrawerOpen(false);
-      router.push("/");
-      setSkin(skin.image);
+      mutate.mutate(
+        { id: user, skin: skin.image },
+        {
+          onSuccess: () => {
+            const linkWithId = user ? `/?id=${user}` : "/";
+            router.push(linkWithId);
+          },
+          onError: (error) => {
+            console.error("Error updating skin:", error);
+          },
+        }
+      );
     }
   };
 
@@ -161,7 +196,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
           <>
             <div ref={leftContainerRef} className=" ">
               <figure>
-                {Loading ? (
+                {isLoading ? (
                   <>
                     <Skeleton className="w-40 h-40" />
                   </>
@@ -200,7 +235,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
               style={{ maxHeight: leftContainerHeight }}
             >
               <div className="grid grid-cols-2 gap-2   grid-flow-row  overflow-y-auto ">
-                {filteredSkins.map((skin, index) => (
+                {filteredSkins?.map((skin, index) => (
                   <div
                     key={index}
                     className={`relative  py-2 px-2 h-full rounded-lg bg-[#1d2025] ${
@@ -229,7 +264,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
                           🔒
                         </div>
 
-                        {skin.league !== levelNames[levelIndex]  && (
+                        {skin.league !== levelNames[levelIndex] && (
                           <div className="absolute top-0 left-0 w-full h-full rounded-lg bg-black/50"></div>
                         )}
                       </>
@@ -261,7 +296,11 @@ const Skinmini = ({ tab }: { tab: string }) => {
                   {selectedSkin.name}
                 </h2>
                 <p className="text-white">
-                  {selectedSkin.league !== levelNames[levelIndex] && (<span className="text-yellow-400">You need to be at {selectedSkin.league}</span>)}
+                  {selectedSkin.league !== levelNames[levelIndex] && (
+                    <span className="text-yellow-400">
+                      You need to be at {selectedSkin.league}
+                    </span>
+                  )}
                 </p>
                 <p className="text-white">
                   <br />
@@ -274,7 +313,10 @@ const Skinmini = ({ tab }: { tab: string }) => {
 
               <DrawerFooter>
                 <Button
-                  disabled={points < selectedSkin.cost  || selectedSkin.league !== levelNames[levelIndex]}
+                  disabled={
+                    points < selectedSkin.cost ||
+                    selectedSkin.league !== levelNames[levelIndex]
+                  }
                   onClick={() => handleBuySkin(userId!, selectedSkin)}
                   className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
                 >

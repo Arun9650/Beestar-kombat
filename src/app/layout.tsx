@@ -8,6 +8,7 @@ import AuthProviderWithSuspense from "@/providers/AuthProvider";
 import toast, { Toaster } from "react-hot-toast";
 import TopNavBar from "@/components/navigation/TopNavBar";
 import BottomNavBar from "@/components/navigation/BottomNavBar";
+import ReactQueryProvider from "@/providers/react-query-provider";
 
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--montserat" });
 
@@ -26,13 +27,17 @@ export default function RootLayout({
       <body className={`${montserrat.className} min-h-screen   h-screen  `}>
         {/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
         <AuthProviderWithSuspense>
+          <ReactQueryProvider>
+
           <LoadingScreenProvider>
+
             <main className=" min-h-screen relative  flex flex-col  text-white/80">
             <TopNavBar/>
               {children}
               <BottomNavBar/>
             </main>
           </LoadingScreenProvider>
+          </ReactQueryProvider>
         </AuthProviderWithSuspense>
         <Toaster
           toastOptions={{

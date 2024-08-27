@@ -7,6 +7,11 @@ import { useLocalPointsStorage } from "@/hooks/useLocalPointsStorage";
 import { usePushPointsToDB } from "@/hooks/usePushPointsToDB";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { UpdateUser } from "@/actions/user.actions";
+import toast from "react-hot-toast";
+import { getCurrentSkin } from "@/actions/skins.actions";
+import useFetchNFTSwap from "@/hooks/query/useFetchUserSkin";
+import useFetchUserSkin from "@/hooks/query/useFetchUserSkin";
+import { useSearchParams } from "next/navigation";
 
 interface ClickCoords {
   x: number;
@@ -39,6 +44,9 @@ const TapGlobe = () => {
   );
 
   const bodyRef = useRef<HTMLDivElement | null>(null);
+
+
+ 
 
   const handleCardClick = (event: any) => {
     // if (secondsLeft > 0) {
@@ -92,7 +100,31 @@ const TapGlobe = () => {
 
 
 
+  const search  = useSearchParams();
+  const id = search.get("id");
 
+  const {data: userSkin} = useFetchUserSkin(id!);
+
+  // useEffect(() => {
+  //   const getUserSkin = async () => {
+  //     try {
+  //       const authToken = window.localStorage.getItem("authToken");
+  //       if (!authToken) {
+  //         throw new Error("No auth token found");
+  //       }
+
+  //       const response = await getCurrentSkin({user: authToken});
+  //       console.log("🚀 ~ getUserSkin ~ response:", response)
+
+  //       setUserSkin(response || null);
+  //     } catch (error) {
+  //       toast.error("Failed to fetch user skin");
+  //       console.error("Error fetching user skin:", error);
+  //     }
+  //   };
+
+  //   getUserSkin();
+  // }, []);
  
 
 
@@ -213,7 +245,7 @@ const TapGlobe = () => {
     }
   }
   };
-  
+  // console.log(skin);
   return (
     <div className="relative ">
       <div className=" mx-auto  w-fit ">
@@ -227,7 +259,7 @@ const TapGlobe = () => {
         >
           <div className="circle-inner rounded-full  ">
             <Image
-              src={skin ?? "/assets/images/BeeMain.png"}
+              src={userSkin?.data ?? "/newImage/BeeMain.png"}
               height={200}
               width={200}
               alt=""

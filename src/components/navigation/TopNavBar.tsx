@@ -4,7 +4,7 @@ import { beeAvatar } from "../../../public/newImages";
 import Image from "next/image";
 import { IoSettings } from "react-icons/io5";
 import { FaCartShopping } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { usePointsStore } from "@/store/PointsStore";
 import useExchangeStore from "@/store/useExchangeStore";
 
@@ -35,7 +35,7 @@ const TopNavBar = () => {
     1000000000, // Lord
   ];
 
-  const router = useRouter();
+  
 
   const userName = window.localStorage.getItem("userName");
   const { PPH, points } = usePointsStore();
@@ -65,6 +65,19 @@ const TopNavBar = () => {
   }, [points, levelIndex, levelMinPoints, levelNames.length]);
 
 
+  const route = useRouter();
+
+
+  const search = useSearchParams();
+
+  const id  = search.get('id');
+
+  const handleRoute = (link: string) => {
+    const linkWithId = id ? `${link}?id=${id}` : link;
+    route.push(linkWithId);
+  };
+
+
   return (
     <div className="w-full">
       <div className="flex justify-between p-2 bg-black bg-opacity-60 border border-yellow-500 backdrop-blur-lg rounded-xl m-2">
@@ -83,7 +96,7 @@ const TopNavBar = () => {
           </p>
           <div className="flex items-center justify-between space-x-4">
           <div className="flex items-center w-full">
-            <div onClick={() => router.push("leaderboard")} className="w-full ">
+            <div onClick={() => route.push("leaderboard")} className="w-full ">
               <div className="flex items-baseline  justify-between">
                 <p className="text-[8px]">{levelNames[levelIndex]}</p>
                 <p className="text-[8px]">
@@ -106,11 +119,11 @@ const TopNavBar = () => {
 
         </div>
         <div className="flex items-center justify-between gap-2 ">
-            <div onClick={() => router.push('/skin')} className="flex items-center h-full  gap-2 text-white bg-orange-700 px-2 py-1 rounded-xl text-xs">
+            <div onClick={() => handleRoute("/skin")} className="flex items-center h-full  gap-2 text-white bg-orange-700 px-2 py-1 rounded-xl text-xs">
           <FaCartShopping className="w-4 h-4"  />
             <span>Buy Skin</span>
             </div>
-          <IoSettings onClick={() => router.push("/settings")} className="w-8 h-8 text-white px-2 py-1 bg-zinc-700 rounded-xl" />
+          <IoSettings onClick={() => route.push("/settings")} className="w-8 h-8 text-white px-2 py-1 bg-zinc-700 rounded-xl" />
         </div>
       </div>
     </div>
