@@ -32,6 +32,11 @@ export async function GET(request: NextRequest, res: NextResponse) {
       owned: userSkinsMap.has(skin.id),
     }));
 
+    
+
+// Sort combinedSkins in ascending order by 'league'
+combinedSkins.sort((a, b) => a.cost - b.cost);
+
     return NextResponse.json(combinedSkins, { status: 200 });
   } catch (error) {
     console.error('Error fetching user skin:', error);
