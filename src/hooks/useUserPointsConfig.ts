@@ -23,6 +23,7 @@ const useUserPointsConfig = () => {
     initializePPH,
     setCurrentTapsLeft,
     currentTapsLeft,
+    addPoints
   } = usePointsStore();
   const { isLoading } = useLoadingScreenStore();
 
@@ -169,9 +170,11 @@ const useUserPointsConfig = () => {
             credited &&
             typeof credited === "object" &&
             "profit" in credited &&
-            credited.success
+            credited.success && credited.profit
           ) {
             toast.success("Profit Credited");
+            window.localStorage.setItem("points", (points + credited?.profit).toString());
+            addPoints(credited.profit);
           }
         }
       };
