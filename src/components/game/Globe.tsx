@@ -259,7 +259,7 @@ const TapGlobe = () => {
         >
           <div className="circle-inner rounded-full  ">
             <Image
-              src={userSkin?.data ?? "/newImage/BeeMain.png"}
+              src={userSkin?.data ?? "/newImages/BeeMain.png"}
               height={200}
               width={200}
               alt=""

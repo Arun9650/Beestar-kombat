@@ -167,15 +167,18 @@ const Skinmini = ({ tab }: { tab: string }) => {
     if (!skin.owned) {
       setIsDrawerOpen(true);
     } else {
+      setButtonLoading(true);
       setIsDrawerOpen(false);
       mutate.mutate(
         { id: user, skin: skin.image },
         {
           onSuccess: () => {
+            setButtonLoading(false);
             const linkWithId = user ? `/?id=${user}` : "/";
             router.push(linkWithId);
           },
           onError: (error) => {
+            setButtonLoading(false);
             console.error("Error updating skin:", error);
           },
         }
@@ -225,6 +228,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
               </p>
               <button
                 onClick={() => handleChooseSkin(selectedSkin!)}
+                
                 className="mt-4 w-full py-2 bg-yellow-400 text-zinc-700 rounded-xl font-medium"
               >
                 {selectedSkin?.owned ? "Choose" : "Unlock"}
