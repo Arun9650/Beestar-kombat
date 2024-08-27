@@ -21,7 +21,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userName = randomName()
     }
 
-    const { setUserId, setCurrentTapsLeft } = usePointsStore();
+    const { setUserId, setCurrentTapsLeft , addPoints} = usePointsStore();
 
     useEffect(() => {
         const authToken = window.localStorage.getItem('authToken')
@@ -34,6 +34,19 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 console.log("🚀 ~ authentication ~ authenticate:", authenticate)
                 
                 switch (authenticate) {
+                    
+                    case  'createdByReferral': 
+                        console.log("Account by referral created successfully");
+                        window.localStorage.setItem('authToken', `${id}`);
+                        window.localStorage.setItem('userName', `${userName}`);
+                        window.localStorage.setItem("currentTapsLeft", '500');
+                        window.localStorage.setItem("points", "5000");
+                        setCurrentTapsLeft(500);
+                        addPoints(5000);
+
+                        setUserId(id!);
+
+
                     case 'createdNewAccount':
                         console.log("Account created successfully");
                         window.localStorage.setItem('authToken', `${id}`);

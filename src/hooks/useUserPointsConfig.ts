@@ -150,7 +150,7 @@ const useUserPointsConfig = () => {
     } else {
       executeEffect();
     }
-  }, []);
+  }, [energyCapacity, initializePPH, initializePoints, points, setCurrentTapsLeft, setEnergyCapacity, setMultiClickCost, setMultiClickLevel]);
 
   useEffect(() => {
     const executeEffect = () => {
