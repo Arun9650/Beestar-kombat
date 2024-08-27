@@ -45,7 +45,7 @@ export async function getUserConfig(id: string) {
   };
 }
 
-export async function creditProfitPerHour(id: string) {
+export async function creditProfitPerHour(id: string, lastLoginTime: number | null) {
   const user = await prisma.user.findUnique({ where: { chatId: id } });
   try {
 
@@ -62,7 +62,7 @@ export async function creditProfitPerHour(id: string) {
     } else {
       const pph = user.profitPerHour;
       const now = Date.now();
-      const lastProfitDate = user.lastProfitDate;
+      const lastProfitDate = lastLoginTime || user.lastLogin.getTime();
       const timeDiffInMilliSeconds = Math.abs(now - lastProfitDate);
       let hrs = timeDiffInMilliSeconds / (1000 * 60 * 60);
 
@@ -77,7 +77,7 @@ export async function creditProfitPerHour(id: string) {
 
         await prisma.user.update({
           where: { chatId: id },
-          data: { points: {increment: profitMade}, lastProfitDate: now },
+          data: { points: {increment: profitMade}, lastProfitDate: now , lastLogin: new Date() },
         });
       }
       return { profit: profitMade, success: true };

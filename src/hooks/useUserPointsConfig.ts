@@ -146,18 +146,25 @@ const useUserPointsConfig = () => {
     };
 
     if (typeof window === "undefined") {
-      setTimeout(executeEffect, 100);
+      setTimeout(executeEffect, 10);
     } else {
       executeEffect();
     }
-  }, [energyCapacity, initializePPH, initializePoints, points, setCurrentTapsLeft, setEnergyCapacity, setMultiClickCost, setMultiClickLevel]);
+  }, []);
 
   useEffect(() => {
     const executeEffect = () => {
+      const getLastLoginTimeFromLocalStorage = (): number | null => {
+        const lastLogin = window.localStorage.getItem("lastLoginTime");
+        return lastLogin ? parseInt(lastLogin, 10) : null;
+      };
+
+      const lastLoginTimeFromLocalStorage =
+      getLastLoginTimeFromLocalStorage();
       const user = window.localStorage.getItem("authToken");
       const pphReward = async () => {
         if (user) {
-          const credited = await creditProfitPerHour(user);
+          const credited = await creditProfitPerHour(user, lastLoginTimeFromLocalStorage);
           if (
             credited &&
             typeof credited === "object" &&
@@ -173,7 +180,7 @@ const useUserPointsConfig = () => {
     };
 
     if (typeof window === "undefined") {
-      setTimeout(executeEffect, 100);
+      setTimeout(executeEffect, 10);
     } else {
       executeEffect();
     }
