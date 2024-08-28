@@ -28,7 +28,11 @@ const useUserPointsConfig = () => {
   const { isLoading } = useLoadingScreenStore();
 
   useEffect(() => {
+    let effectCalled = false;
     const executeEffect = () => {
+      if (effectCalled) return;
+      effectCalled = true;
+      
       const user = window.localStorage.getItem("authToken");
       let initialPoints = window.localStorage.getItem("points");
 
