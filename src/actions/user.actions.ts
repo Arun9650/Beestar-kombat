@@ -188,6 +188,17 @@ export const DeleteUser = async (userId:string) => {
   try {
 
 
+    const user = await prisma.user.findUnique({ where: { chatId: userId } });
+
+    await prisma.user.updateMany({
+      where: {
+        referredById: user?.id,  // The user ID you want to delete
+      },
+      data: {
+        referredById: null,
+      },
+    });
+
      await prisma.userAchievement.deleteMany({
       where : {userId}
     })
