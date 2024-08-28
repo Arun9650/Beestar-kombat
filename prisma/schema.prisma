@@ -9,92 +9,79 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
-  chatId         String   @unique
-  taps           Int      @default(0)
-  points         Int      @default(0)
-  profit         Int      @default(0)
+  chatId         String          @unique
+  taps           Int             @default(0)
+  points         Int             @default(0)
+  profit         Int             @default(0)
   lastProfitDate Int?
-  rechargeLimit  Int      @default(500)
-  pointPerTap    Int      @default(1)
-  profitPerHour  Int      @default(0)
-  refillRate     Int      @default(1)
-  bonus          Int      @default(0)
-  active         Boolean  @default(true)
-  skin           String   @default("/newImages/BeeMain.png")
-  lastLogin      DateTime @default(now())
- skins       UserSkin[]
-  league         String?  @default("beginner")
+  rechargeLimit  Int             @default(500)
+  pointPerTap    Int             @default(1)
+  profitPerHour  Int             @default(0)
+  refillRate     Int             @default(1)
+  bonus          Int             @default(0)
+  active         Boolean         @default(true)
+  skin           String          @default("/newImages/BeeMain.png")
+  lastLogin      DateTime        @default(now())
+  skins          UserSkin[]
+  league         String?         @default("beginner")
   referralCount  Int             @default(0) // Field to count referrals
   accounts       Account[]
   sessions       Session[]
   authenticators Authenticator[]
   loginStreak    Int             @default(0)
 
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userCard UserCard[]
-  Bonuster Bonuster[]
+  userCard     UserCard[]
+  Bonuster     Bonuster[]
   dailyRewards DailyReward[]
+  // Referral system fields
+  referredById String?           @db.ObjectId
+  referredBy   User?             @relation("UserReferrals", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  referrals    User[]            @relation("UserReferrals")
+  
+  achievements UserAchievement[]
 
-  referrals    Referral[] @relation("UserReferrer")
-  referredBy   Referral?  @relation("UserReferred")
-  referredById String?    @db.ObjectId
- achievements  UserAchievement[]
-
- userTasks TasksCompletion[]
+  userTasks TasksCompletion[]
 }
 
-
 model AchievementCategory {
-  id        String       @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
+  id         String                 @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
   milestones AchievementMilestone[]
 }
 
 model AchievementMilestone {
-  id        String       @id @default(auto()) @map("_id") @db.ObjectId
-  categoryId String       @db.ObjectId
-  name      String
-  icon      String
-  unlocked  Boolean      @default(false)
-  category  AchievementCategory @relation(fields: [categoryId], references: [id])
+  id               String              @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId       String              @db.ObjectId
+  name             String
+  icon             String
+  unlocked         Boolean             @default(false)
+  category         AchievementCategory @relation(fields: [categoryId], references: [id])
   userAchievements UserAchievement[]
 }
 
 model UserAchievement {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  userId          String      
-  milestoneId     String      @db.ObjectId
-  user            User        @relation(fields: [userId], references: [chatId])
-  milestone       AchievementMilestone @relation(fields: [milestoneId], references: [id])
-}
-
-
-
-model Referral {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  referrerId String   @db.ObjectId
-  referredId String   @db.ObjectId @unique
-  referrer   User     @relation("UserReferrer", fields: [referrerId], references: [id])
-  referred   User     @relation("UserReferred", fields: [referredId], references: [id])
-  createdAt  DateTime @default(now())
+  id          String               @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  milestoneId String               @db.ObjectId
+  user        User                 @relation(fields: [userId], references: [chatId])
+  milestone   AchievementMilestone @relation(fields: [milestoneId], references: [id])
 }
 
 
 
 model DailyReward {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   
-  day       Int      // Day of the reward streak
+  userId    String
+  day       Int // Day of the reward streak
   coins     Int
   user      User     @relation(fields: [userId], references: [chatId])
   createdAt DateTime @default(now())
 }
-
 
 model Card {
   id                String     @id @default(auto()) @map("_id") @db.ObjectId
@@ -112,24 +99,19 @@ model Card {
 }
 
 model UserCard {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   image       String
   baseCost    Float
   basePPH     Float
-  baseLevel   Int    @default(0)
+  baseLevel   Int     @default(0)
   userId      String
-  cardId      String @db.ObjectId
-  user        User   @relation(fields: [userId], references: [chatId])
-  card        Card   @relation(fields: [cardId], references: [id])
+  cardId      String  @db.ObjectId
+  user        User    @relation(fields: [userId], references: [chatId])
+  card        Card    @relation(fields: [cardId], references: [id])
   category    String
   discription String?
 }
-
-
-
-
-
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -204,12 +186,12 @@ model Points {
 }
 
 model Bonuster {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  chatId String @unique
-  energy Int
-    multiClickLevel Int            @default(1)
-  multiClickCost  Int            @default(500)
-  user User @relation(fields: [chatId], references: [chatId])
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  chatId          String @unique
+  energy          Int
+  multiClickLevel Int    @default(1)
+  multiClickCost  Int    @default(500)
+  user            User   @relation(fields: [chatId], references: [chatId])
 }
 
 model DailyBoosters {
@@ -225,7 +207,7 @@ model TaskCategories {
 }
 
 model Tasks {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String            @id @default(auto()) @map("_id") @db.ObjectId
   category String
   name     String
   points   Int
@@ -238,26 +220,25 @@ model TasksCompletion {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   taskId String @db.ObjectId
   userId String
-  user  User @relation(fields: [userId], references: [chatId])
-  task  Tasks @relation(fields: [taskId], references: [id])
+  user   User   @relation(fields: [userId], references: [chatId])
+  task   Tasks  @relation(fields: [taskId], references: [id])
   points Int
 }
+
 model Skins {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  image         String @default("/newImages/BeeMain.png")
-  cost          Int
-  featured    Boolean @default(false)
-  league        String @default("Bronze")
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  image    String     @default("/newImages/BeeMain.png")
+  cost     Int
+  featured Boolean    @default(false)
+  league   String     @default("Bronze")
   users    UserSkin[]
 }
 
 model UserSkin {
-  id     String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId String   
-  skinId String   @db.ObjectId
-  user   User     @relation(fields: [userId], references: [chatId])
-  skin   Skins     @relation(fields: [skinId], references: [id])
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  skinId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [chatId])
+  skin   Skins  @relation(fields: [skinId], references: [id])
 }
-
-

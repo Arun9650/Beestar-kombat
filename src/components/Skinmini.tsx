@@ -50,6 +50,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
     "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
     "Lord", // From 1,000,000,000 coins to ∞
   ];
+  console.log(levelNames[5])
 
   const levelMinPoints = [
     0, // Bronze
@@ -186,6 +187,20 @@ const Skinmini = ({ tab }: { tab: string }) => {
     }
   };
 
+
+  // Function to determine the league based on points
+const getLeague = (points: number): number => {
+  for (let i = levelMinPoints.length - 1; i >= 0; i--) {
+    if (points >= levelMinPoints[i]) {
+      return levelMinPoints[i];
+    }
+  }
+  return 0; // Default to Bronze if no match
+};
+
+
+
+
   useEffect(() => {
     if (leftContainerRef.current) {
       setLeftContainerHeight(leftContainerRef.current.clientHeight);
@@ -268,7 +283,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
                           🔒
                         </div>
 
-                        {skin.league !== levelNames[levelIndex] && (
+                        {getLeague(points) <= skin.cost && (
                           <div className="absolute top-0 left-0 w-full h-full rounded-lg bg-black/50"></div>
                         )}
                       </>

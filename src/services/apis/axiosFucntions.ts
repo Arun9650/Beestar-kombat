@@ -54,3 +54,9 @@ export const  BuySkin = async (id: string, localBalance: number,chatId: string) 
     throw error;
   }
 }
+
+
+export  async function fetchReferrals(userId: string) {
+  const { data } = await axios.get(`/api/user/referrals?id=${userId}`);
+  return data;
+}

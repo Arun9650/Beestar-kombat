@@ -9,6 +9,8 @@ import { TelegramShareButton } from 'react-share'
 import { IoCheckmarkDoneSharp } from 'react-icons/io5';
 import { usePointsStore } from '@/store/PointsStore';
 import { useBoostersStore } from '@/store/useBoostrsStore';
+import { useQuery } from '@tanstack/react-query';
+import useFetchUserReferred from '@/hooks/query/useFetchUserReferred';
 const ReferralPage = () => {
 
 
@@ -25,6 +27,9 @@ const ReferralPage = () => {
   const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
   const {multiClickLevel} = useBoostersStore()
 
+
+const {data}  = useFetchUserReferred(id);
+console.log("🚀 ~ ReferralPage ~ data:", data)
 
 
 
@@ -93,6 +98,18 @@ useEffect(() => {
             </div>
         </div>
         
+      </div>
+
+      <div>
+        {
+          data.map((item) => (
+            <div key={item.id} className='flex items-center justify-between p-4 '>
+              <p>{item.name}</p>
+
+              <p>{item.points}</p>
+            </div>
+          ))
+        }
       </div>
 
       <div className='flex  gap-3 '>

@@ -6,10 +6,12 @@ import prisma from "@/lib/prisma";
 export async function getUserConfig(id: string) {
 
   const user = await prisma.user.findUnique({ where: { chatId: id } });
+  console.log("🚀 ~ getUserConfig ~ user:", user)
 
   const userEnergy = await prisma.bonuster.findUnique({
     where: { chatId: id },
   });
+  console.log("🚀 ~ getUserConfig ~ userEnergy:", userEnergy)
 
   if (!user)
     return {
@@ -58,7 +60,7 @@ export async function creditProfitPerHour(id: string, lastLoginTime: number | nu
         data: { lastProfitDate: Date.now(), lastLogin: new Date() },
       });
 
-      return "success";
+      return { profit: 0, success: true };
     } else {
       const pph = user.profitPerHour;
       const now = Date.now();
