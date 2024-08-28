@@ -28,7 +28,7 @@ const ReferralPage = () => {
   const {multiClickLevel} = useBoostersStore()
 
 
-const {data}  = useFetchUserReferred(id);
+const {data,isLoading}  = useFetchUserReferred(id);
 console.log("🚀 ~ ReferralPage ~ data:", data)
 
 
@@ -100,15 +100,15 @@ useEffect(() => {
         
       </div>
 
-      <div>
+      <div className='flex items-center justify-center w-full'>
         {
-          data.map((item) => (
+          isLoading ? <div className='loader'></div> : <>{ data?.map((item:any) => (
             <div key={item.id} className='flex items-center justify-between p-4 '>
               <p>{item.name}</p>
 
               <p>{item.points}</p>
             </div>
-          ))
+          ))}</>
         }
       </div>
 
