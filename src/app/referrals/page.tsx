@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import Copy from '../../../public/icons/Copy';
-import {  Gift } from '../../../public/newImages';
+import {  dollarCoin, Gift } from '../../../public/newImages';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { TelegramShareButton } from 'react-share'
@@ -100,17 +100,19 @@ useEffect(() => {
         
       </div>
 
-      <div className='flex items-center justify-center w-full'>
+      {/* <div className='flex items-center justify-center w-full  bg-opacity-85   '> */}
         {
-          isLoading ? <div className='loader'></div> : <>{ data?.map((item:any) => (
-            <div key={item.id} className='flex items-center justify-between p-4 '>
+          isLoading ? <div className='loader mx-auto'></div> : <>{ data?.map((item:any) => (
+            <div key={item.id} className='flex items-center justify-between p-4 border rounded-2xl border-yellow-400 w-full'>
               <p>{item.name}</p>
 
-              <p>{item.points}</p>
+              <p className='flex items-center gap-3'>
+                <Image src={dollarCoin} width={20} height={20} alt='coin' />
+                {item.points}</p>
             </div>
           ))}</>
         }
-      </div>
+      {/* </div> */}
 
       <div className='flex  gap-3 '>
           {/* button */}
