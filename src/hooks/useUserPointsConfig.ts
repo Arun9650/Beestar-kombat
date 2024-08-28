@@ -163,9 +163,9 @@ const useUserPointsConfig = () => {
     };
 
     if (typeof window !== "undefined") {
-      setTimeout(executeEffect, 10);
-    } else {
       executeEffect();
+    } else {
+      setTimeout(executeEffect, 10);
     }
   }, []);
 
@@ -210,9 +210,9 @@ const useUserPointsConfig = () => {
     };
 
     if (typeof window !== "undefined") {
-      setTimeout(executeEffect, 10);
-    } else {
       executeEffect();
+    } else {
+      setTimeout(executeEffect, 10);
     }
   }, []);
   return points;
