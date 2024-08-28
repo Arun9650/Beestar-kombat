@@ -79,7 +79,6 @@ const Settings = () => {
     setButtonLoading(true);
     const result = await DeleteUser(userId!);
     window.localStorage.removeItem("authToken");
-    window.localStorage.clear();
     
     window.localStorage.setItem("currentTapsLeft", "500"); 
     window.localStorage.setItem("energyCapacity", "500"); 
