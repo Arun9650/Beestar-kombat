@@ -23,7 +23,7 @@ const useUserPointsConfig = () => {
     initializePPH,
     setCurrentTapsLeft,
     currentTapsLeft,
-    addPoints
+    addPoints,
   } = usePointsStore();
   const { isLoading } = useLoadingScreenStore();
 
@@ -34,11 +34,17 @@ const useUserPointsConfig = () => {
 
       const currentTapsLeftLocal =
         window.localStorage.getItem("currentTapsLeft");
+      console.log(
+        "🚀 ~ executeEffect ~ currentTapsLeftLocal:",
+        currentTapsLeftLocal
+      );
       const energyCapacityLocal = window.localStorage.getItem("energyCapacity");
 
       async function update() {
+        console.log(user);
         const config = await getUserConfig(`${user}`);
         const currentState = config?.user;
+        console.log("🚀 ~ update ~ currentState:", currentState);
         if (currentState) {
           if (currentState && currentState.capacity) {
             if (
@@ -56,6 +62,7 @@ const useUserPointsConfig = () => {
           // Retrieve the last login time from local storage
           const getLastLoginTimeFromLocalStorage = (): number | null => {
             const lastLogin = window.localStorage.getItem("lastLoginTime");
+            console.log("🚀lastLogin:", lastLogin)
             return lastLogin ? parseInt(lastLogin, 10) : null;
           };
 
@@ -65,26 +72,18 @@ const useUserPointsConfig = () => {
               : null;
 
             // Get the last login time from local storage
-            const lastLoginTimeFromLocalStorage =
-              getLastLoginTimeFromLocalStorage();
+            const lastLoginTimeFromLocalStorage =  getLastLoginTimeFromLocalStorage();
 
             // Compare the two times and get the latest one
 
             // Compare the two times and get the latest one
             let lastLoginTime: number;
             if (lastLoginTimeFromConfig !== null) {
-              lastLoginTime =
-                lastLoginTimeFromLocalStorage !== null
-                  ? Math.max(
-                      lastLoginTimeFromConfig,
-                      lastLoginTimeFromLocalStorage
-                    )
-                  : lastLoginTimeFromConfig;
+              lastLoginTime =  lastLoginTimeFromLocalStorage !== null ? Math.max(lastLoginTimeFromConfig,lastLoginTimeFromLocalStorage) : lastLoginTimeFromConfig;
+              console.log("🚀 ~ update ~ lastLoginTime:", lastLoginTime)
             } else {
-              lastLoginTime =
-                lastLoginTimeFromLocalStorage !== null
-                  ? lastLoginTimeFromLocalStorage
-                  : Date.now(); // Fallback to current time if both are null
+              lastLoginTime = lastLoginTimeFromLocalStorage !== null ? lastLoginTimeFromLocalStorage : Date.now(); // Fallback to current time if both are null
+              console.log("🚀 ~ update ~ lastLoginTime:", lastLoginTime)
             }
 
             // Update the local storage with the latest login time
@@ -105,14 +104,24 @@ const useUserPointsConfig = () => {
             );
 
             let currentTapsLeftcal = Number(currentTapsLeftLocal);
+            console.log(
+              "🚀 ~ update ~ currentTapsLeftcal:",
+              currentTapsLeftcal
+            );
 
             const remainingTaps =
               (currentState?.capacity ?? 0) - currentTapsLeftcal;
+            console.log("🚀 ~ update ~ remainingTaps:", remainingTaps);
 
             if (Number(initialPoints) != 0) {
               if (timeDifferenceInSeconds > remainingTaps) {
                 currentTapsLeftcal = currentState.capacity ?? 0;
+                console.log(currentState.capacity);
                 if (!isNaN(currentTapsLeftcal)) {
+                  console.log(
+                    "🚀 ~ update ~ currentTapsLeftcal:",
+                    currentTapsLeftcal
+                  );
                   setCurrentTapsLeft(currentTapsLeftcal);
                   window.localStorage.setItem(
                     "currentTapsLeft",
@@ -122,7 +131,11 @@ const useUserPointsConfig = () => {
                 // setCurrentTapsLeft(async);
               } else {
                 currentTapsLeftcal += timeDifferenceInSeconds;
-                if (!isNaN(currentTapsLeftcal)) {
+                if (!isNaN(Number(currentTapsLeftcal))) {
+                  console.log(
+                    "🚀 ~ update ~ currentTapsLeftcal:",
+                    currentTapsLeftcal
+                  );
                   setCurrentTapsLeft(currentTapsLeftcal);
                   window.localStorage.setItem(
                     "currentTapsLeft",
@@ -154,26 +167,34 @@ const useUserPointsConfig = () => {
   }, []);
 
   useEffect(() => {
+
+
     const executeEffect = () => {
       const getLastLoginTimeFromLocalStorage = (): number | null => {
         const lastLogin = window.localStorage.getItem("lastLoginTime");
         return lastLogin ? parseInt(lastLogin, 10) : null;
       };
 
-      const lastLoginTimeFromLocalStorage =
-      getLastLoginTimeFromLocalStorage();
+      const lastLoginTimeFromLocalStorage = getLastLoginTimeFromLocalStorage();
       const user = window.localStorage.getItem("authToken");
       const pphReward = async () => {
         if (user) {
-          const credited = await creditProfitPerHour(user, lastLoginTimeFromLocalStorage);
+          const credited = await creditProfitPerHour(
+            user,
+            lastLoginTimeFromLocalStorage
+          );
           if (
             credited &&
             typeof credited === "object" &&
             "profit" in credited &&
-            credited.success && credited.profit
+            credited.success &&
+            credited.profit
           ) {
             toast.success("Profit Credited");
-            window.localStorage.setItem("points", (points + credited?.profit).toString());
+            window.localStorage.setItem(
+              "points",
+              (points + credited?.profit).toString()
+            );
             addPoints(credited.profit);
           }
         }
