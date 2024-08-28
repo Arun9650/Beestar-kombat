@@ -100,7 +100,7 @@ useEffect(() => {
         
       </div>
 
-      {/* <div className='flex items-center justify-center w-full  bg-opacity-85   '> */}
+      <div className='flex flex-col gap-4 items-center justify-center w-full  bg-opacity-85   '>
         {
           isLoading ? <div className='loader mx-auto'></div> : <>{ data?.map((item:any) => (
             <div key={item.id} className='flex items-center justify-between p-4 border rounded-2xl border-yellow-400 w-full'>
@@ -112,9 +112,9 @@ useEffect(() => {
             </div>
           ))}</>
         }
-      {/* </div> */}
+      </div>
 
-      <div className='flex  gap-3 '>
+      <div className='flex  gap-3 mb-24'>
           {/* button */}
           <Button className="bg-black/80 shadow-2xl border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full py-4 px-4  semi-bold text-sm ">
           {id ? (
