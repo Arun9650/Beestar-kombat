@@ -71,14 +71,16 @@ export async function creditProfitPerHour(id: string, lastLoginTime: number | nu
       const now = Date.now();
       const lastProfitDate = lastLoginTime || user.lastLogin.getTime();
       const timeDiffInMilliSeconds = Math.abs(now - lastProfitDate);
-      let hrs = timeDiffInMilliSeconds / (1000 * 60 * 60);
-
-      if (hrs > 3) {
-        hrs = 3;
-      }
-
-
-      const profitMade = pph * hrs;
+     // Convert the time difference to seconds
+      let seconds = timeDiffInMilliSeconds / 1000;
+      
+      // Cap the seconds to the equivalent of 3 hours (3 hours * 3600 seconds/hour)
+      const maxSeconds = 3 * 60 * 60;
+      seconds = Math.min(seconds, maxSeconds);
+      
+      // Calculate the profit made per second
+      const profitPerSecond = pph / 3600; // since pph is profit per hour, divide by 3600 to get profit per second
+      const profitMade = profitPerSecond * seconds;
 
       if(profitMade > 0){
 
