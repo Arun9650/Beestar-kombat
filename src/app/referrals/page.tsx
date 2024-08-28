@@ -101,17 +101,27 @@ useEffect(() => {
       </div>
 
       <div className='flex flex-col gap-4 items-center justify-center w-full  bg-opacity-85   '>
-        {
-          isLoading ? <div className='loader mx-auto'></div> : <>{ data?.map((item:any) => (
-            <div key={item.id} className='flex items-center justify-between p-4 border rounded-2xl border-yellow-400 w-full'>
-              <p>{item.name}</p>
-
-              <p className='flex items-center gap-3'>
-                <Image src={dollarCoin} width={20} height={20} alt='coin' />
-                {item.points}</p>
-            </div>
-          ))}</>
-        }
+      {
+  isLoading ? (
+    <div className='loader mx-auto'></div>
+  ) : (
+    <>
+      {data?.length === 0 ? (
+        <p>No referrals found</p>
+      ) : (
+        data?.map((item: any) => (
+          <div key={item.id} className='flex items-center justify-between p-4 border rounded-2xl border-yellow-400 w-full'>
+            <p>{item.name}</p>
+            <p className='flex items-center gap-3'>
+              <Image src={dollarCoin} width={20} height={20} alt='coin' />
+              {item.points}
+            </p>
+          </div>
+        ))
+      )}
+    </>
+  )
+}
       </div>
 
       <div className='flex  gap-3 mb-24'>

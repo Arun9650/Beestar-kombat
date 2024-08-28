@@ -1,6 +1,6 @@
 "use client";
 // pages/leaderboard.js
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { beeAvatar, MainBee } from "../../../public/newImages";
 import Image from "next/image";
 import { getLeaderboard } from "@/actions/user.actions";
@@ -9,6 +9,7 @@ import { usePointsStore } from "@/store/PointsStore";
 import { SlArrowRight } from "react-icons/sl";
 import { SlArrowLeft } from "react-icons/sl"; 
 import { useBoostersStore } from "@/store/useBoostrsStore";
+import { useUserStore } from "@/store/userUserStore";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState<
@@ -141,6 +142,8 @@ const Leaderboard = () => {
 
   
 
+  const {user} = useUserStore();
+
   return (
     <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  from-purple-800 to-black text-white">
       <div className="p-4 flex flex-col items-center">
@@ -200,7 +203,7 @@ const Leaderboard = () => {
             />
             <div className="flex-1">
               <p className="font-bold">{userName ? userName: "honey Collector"}</p>
-              <p className="text-yellow-500 flex gap-4">{userInfo.points} <span className="text-white">{levelNames[levelIndex]}</span> </p>
+              <p className="text-yellow-500 flex gap-4">{userInfo.points} <span className="text-white">{ user ?  user.league : levelNames[currentIndex]}</span> </p>
             </div>
             <div className="text-lg">{userInfo.points}</div>
           </div>

@@ -3,6 +3,7 @@ import { creditProfitPerHour, getUserConfig } from "@/actions/user.actions";
 import useLoadingScreenStore from "@/store/loadingScreenStore";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
+import { useUserStore } from "@/store/userUserStore";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
@@ -27,6 +28,8 @@ const useUserPointsConfig = () => {
   } = usePointsStore();
   const { isLoading } = useLoadingScreenStore();
 
+  const {setUser} = useUserStore();
+
   useEffect(() => {
     const executeEffect = () => {
 
@@ -44,7 +47,11 @@ const useUserPointsConfig = () => {
       async function update() {
         console.log(user);
         const config = await getUserConfig(`${user}`);
+        
         const currentState = config?.user;
+        if (config?.userDetails && config ) {
+          setUser(config.userDetails);
+        }
         console.log("🚀 ~ update ~ currentState:", currentState);
         if (currentState) {
           if (currentState && currentState.capacity) {

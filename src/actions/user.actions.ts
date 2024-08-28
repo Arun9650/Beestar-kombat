@@ -26,8 +26,10 @@ export async function getUserConfig(id: string) {
         name: '',
         multiClickLevel: 1,
         multiClickCost: 500,
+        league: 'Bronze',
         
       },
+      userDetails: null,
     };
 
   return {
@@ -42,8 +44,11 @@ export async function getUserConfig(id: string) {
       lastProfitDate: user.lastProfitDate,
       points: user.points,
       name: user.name,
-      lastLogin: user.lastLogin
+      lastLogin: user.lastLogin,
+      league: user.league,
+      
     },
+    userDetails: user,
   };
 }
 

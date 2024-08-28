@@ -7,6 +7,7 @@ import { FaCartShopping } from "react-icons/fa6";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { usePointsStore } from "@/store/PointsStore";
 import useExchangeStore from "@/store/useExchangeStore";
+import { useUserStore } from "@/store/userUserStore";
 
 const TopNavBar = () => {
   const levelNames = [
@@ -43,6 +44,14 @@ const TopNavBar = () => {
   const { exchange } = useExchangeStore();
   const [levelIndex, setLevelIndex] = useState(6);
 
+
+  interface User {
+    league: string;
+    // Add other properties as needed
+  }
+  
+  const {user} = useUserStore();
+
   const calculateProgress = () => {
     if (levelIndex >= levelNames.length - 1) {
       return 100;
@@ -54,15 +63,43 @@ const TopNavBar = () => {
     return Math.min(progress, 100);
   };
 
-  useEffect(() => {
+  const updateLevelInDB = async (newLevel: string) => {
+    const userId = window.localStorage.getItem("userId");
+    if (!userId) return;
+
+    try {
+     const data =  await fetch("/api/updateLevel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, newLevel }),
+      });
+
+
+      if (!data.ok) {
+        throw new Error("Failed to update level in DB");
+      }
+    } catch (error) {
+      console.error("Failed to update level in DB:", error);
+    }
+  };
+
+
+
+   useEffect(() => {
     const currentLevelMin = levelMinPoints[levelIndex];
     const nextLevelMin = levelMinPoints[levelIndex + 1];
     if (points >= nextLevelMin && levelIndex < levelNames.length - 1) {
-      setLevelIndex(levelIndex + 1);
+      setLevelIndex((prevIndex) => {
+        const newIndex = prevIndex + 1;
+        updateLevelInDB(levelNames[newIndex]);
+        return newIndex;
+      });
     } else if (points < currentLevelMin && levelIndex > 0) {
-      setLevelIndex(levelIndex - 1);
+      setLevelIndex((prevIndex) => prevIndex - 1);
     }
-  }, [points, levelIndex, levelMinPoints, levelNames.length]);
+  }, [points, levelIndex, levelMinPoints, levelNames]);
 
 
   const route = useRouter();
@@ -98,7 +135,7 @@ const TopNavBar = () => {
           <div className="flex items-center w-full">
             <div onClick={() => route.push("leaderboard")} className="w-full ">
               <div className="flex items-baseline  justify-between">
-                <p className="text-[8px]">{levelNames[levelIndex]}</p>
+                <p className="text-[8px]">{ user ? user.league :  levelNames[levelIndex]}</p>
                 <p className="text-[8px]">
                   {levelIndex + 1}{" "}
                   <span className="text-[#95908a]">/ {levelNames.length}</span>
