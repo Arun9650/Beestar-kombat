@@ -191,11 +191,14 @@ const useUserPointsConfig = () => {
             credited.profit
           ) {
             toast.success("Profit Credited");
-            window.localStorage.setItem(
-              "points",
-              (points + credited?.profit).toString()
-            );
-            addPoints(credited.profit);
+            if(points != 0) {
+
+              window.localStorage.setItem(
+                "points",
+                (points + credited?.profit).toString()
+              );
+              addPoints(credited.profit);
+            }
           }
         }
       };
