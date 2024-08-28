@@ -236,14 +236,6 @@ const Boosters = () => {
           "points",
           (points - multiClickCost * 2).toString()
         );
-        window.localStorage.setItem(
-          "multiClickCost",
-          newMultiClickCost.toString()
-        );
-        window.localStorage.setItem(
-          "multiClickLevel",
-          newMultiClickLevel.toString()
-        );
         setButtonLoading(false); 
         setIsDrawerOpen(false);
         toast.success("Multiplier increased to " + newMultiClickLevel);
