@@ -11,9 +11,6 @@ const useUserPointsConfig = () => {
   const {
     energyCapacity,
     setEnergyCapacity,
-    rechargeVelocity,
-    setRechargeVelocity,
-    multiClickLevel,
     setMultiClickLevel,
     setMultiClickCost,
   } = useBoostersStore();
@@ -23,7 +20,6 @@ const useUserPointsConfig = () => {
     initializePoints,
     initializePPH,
     setCurrentTapsLeft,
-    currentTapsLeft,
     addPoints,
   } = usePointsStore();
   const { isLoading } = useLoadingScreenStore();
@@ -166,7 +162,7 @@ const useUserPointsConfig = () => {
       update();
     };
 
-    if (typeof window === "undefined") {
+    if (typeof window !== "undefined") {
       setTimeout(executeEffect, 10);
     } else {
       executeEffect();
@@ -213,7 +209,7 @@ const useUserPointsConfig = () => {
       pphReward();
     };
 
-    if (typeof window === "undefined") {
+    if (typeof window !== "undefined") {
       setTimeout(executeEffect, 10);
     } else {
       executeEffect();
