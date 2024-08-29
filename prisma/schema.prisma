@@ -25,7 +25,7 @@ model User {
   skin           String          @default("/newImages/BeeMain.png")
   lastLogin      DateTime        @default(now())
   skins          UserSkin[]
-  league         String?         @default("beginner")
+  league         String?         @default("Bronze")
   referralCount  Int             @default(0) // Field to count referrals
   accounts       Account[]
   sessions       Session[]

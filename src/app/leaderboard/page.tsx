@@ -143,6 +143,8 @@ const Leaderboard = () => {
   
 
   const {user} = useUserStore();
+  console.log("🚀 ~ Leaderboard ~ user:", user?.league)
+  console.log("🚀 ~ Leaderboard ~ user:", levelNames[currentIndex])
 
   return (
     <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  from-purple-800 to-black text-white">
@@ -163,13 +165,14 @@ const Leaderboard = () => {
          />
         </div>
         <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
-        <p className="text-xl">{currentIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>
-          <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
+       { levelNames[currentIndex] === user?.league  && <p className="text-xl">{currentIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>}
+         { levelNames[currentIndex] === user?.league  && ( <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
             <div
               className="progress-gradient h-2 rounded-full"
               style={{ width: `${calculateProgress()}%` }}
-            ></div>
-          </div>
+              ></div>
+          </div>)
+            } 
         <div className="mt-8 w-full pb-40">
         {filteredUsers.length === 0 ? (
             <p className="w-full text-center h-60">No user at this level</p>

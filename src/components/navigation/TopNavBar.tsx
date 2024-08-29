@@ -42,7 +42,7 @@ const TopNavBar = () => {
   const { PPH, points } = usePointsStore();
 
   const { exchange } = useExchangeStore();
-  const [levelIndex, setLevelIndex] = useState(6);
+  const [levelIndex, setLevelIndex] = useState(0);
 
 
   interface User {
@@ -64,7 +64,8 @@ const TopNavBar = () => {
   };
 
   const updateLevelInDB = async (newLevel: string) => {
-    const userId = window.localStorage.getItem("userId");
+    console.log("🚀 ~ updateLevelInDB ~ newLevel:", newLevel)
+    const userId = window.localStorage.getItem("authToken");
     if (!userId) return;
 
     try {
@@ -77,6 +78,7 @@ const TopNavBar = () => {
       });
 
 
+
       if (!data.ok) {
         throw new Error("Failed to update level in DB");
       }
@@ -87,10 +89,11 @@ const TopNavBar = () => {
 
 
 
+
    useEffect(() => {
     const currentLevelMin = levelMinPoints[levelIndex];
     const nextLevelMin = levelMinPoints[levelIndex + 1];
-    if (points >= nextLevelMin && levelIndex < levelNames.length - 1) {
+    if (points >= nextLevelMin && levelIndex < levelNames.length - 1 ) {
       setLevelIndex((prevIndex) => {
         const newIndex = prevIndex + 1;
         updateLevelInDB(levelNames[newIndex]);
@@ -99,7 +102,11 @@ const TopNavBar = () => {
     } else if (points < currentLevelMin && levelIndex > 0) {
       setLevelIndex((prevIndex) => prevIndex - 1);
     }
+
   }, [points, levelIndex, levelMinPoints, levelNames]);
+
+
+ 
 
 
   const route = useRouter();
@@ -113,6 +120,14 @@ const TopNavBar = () => {
     const linkWithId = id ? `${link}?id=${id}` : link;
     route.push(linkWithId);
   };
+
+  useEffect(() => {
+    if((user?.league !== levelNames[levelIndex])){
+      updateLevelInDB(levelNames[levelIndex])
+    }
+
+  },[])
+
 
 
   return (
