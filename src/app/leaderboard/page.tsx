@@ -57,10 +57,19 @@ const Leaderboard = () => {
     if (levelIndex >= levelNames.length - 1) {
       return 100;
     }
-    const currentLevelMin = levelMinPoints[levelIndex];
-    const nextLevelMin = levelMinPoints[levelIndex + 1];
-    const progress = ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
-    return Math.min(progress, 100);
+    if (user) {
+      const leagueIndex = levelNames.findIndex(
+        (level) => level === user?.league
+      );
+      const currentLevelMin = levelMinPoints[leagueIndex];
+      const nextLevelMin = levelMinPoints[leagueIndex + 1];
+      const progress =
+        ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
+
+      const clampedProgress = Math.max(Math.min(progress, 100), 0);
+      return clampedProgress;
+    }
+    return 0;
   };
 
 
