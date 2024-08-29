@@ -101,11 +101,11 @@ const TopNavBar = () => {
       });
     } else if (points < currentLevelMin && levelIndex > 0) {
       const leagueIndex = levelNames.findIndex(level => level === user?.league);
+      console.log("🚀 ~ useEffect ~ leagueIndex:", leagueIndex)
       setLevelIndex(leagueIndex);
     }
 
   }, [points, levelIndex, levelMinPoints, levelNames]);
-
 
  
 
@@ -122,12 +122,6 @@ const TopNavBar = () => {
     route.push(linkWithId);
   };
 
-  useEffect(() => {
-    if((user?.league !== levelNames[levelIndex])){
-      updateLevelInDB(levelNames[levelIndex])
-    }
-
-  },[])
 
 
 
