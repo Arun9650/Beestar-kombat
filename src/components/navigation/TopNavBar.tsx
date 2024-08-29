@@ -100,7 +100,8 @@ const TopNavBar = () => {
         return newIndex;
       });
     } else if (points < currentLevelMin && levelIndex > 0) {
-      setLevelIndex((prevIndex) => prevIndex - 1);
+      const leagueIndex = levelNames.findIndex(level => level === user?.league);
+      setLevelIndex(leagueIndex);
     }
 
   }, [points, levelIndex, levelMinPoints, levelNames]);
