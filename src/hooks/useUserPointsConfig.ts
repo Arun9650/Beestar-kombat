@@ -201,10 +201,11 @@ const useUserPointsConfig = () => {
                 (points + credited?.profit).toString()
               );
               addPoints(credited.profit);
-              setIsLoading(false);
+             
             // }
           }
         }
+        setIsLoading(false);
       };
 
       pphReward();
