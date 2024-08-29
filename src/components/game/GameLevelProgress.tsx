@@ -9,9 +9,9 @@ import { useRouter } from "next/navigation";
 
 const GameLevelProgress = () => {
   const { points, currentTapsLeft, nextBenchmark } = usePointsStore();
-  console.log("🚀 ~ currentTapsLeft:", currentTapsLeft)
+  // console.log("🚀 ~ currentTapsLeft:", currentTapsLeft)
   const { energyCapacity } = useBoostersStore();
-  console.log("🚀 ~ energyCapacity:", energyCapacity)
+  // console.log("🚀 ~ energyCapacity:", energyCapacity)
 
   const router = useRouter();
 

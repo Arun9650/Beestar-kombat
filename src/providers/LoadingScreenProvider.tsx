@@ -11,7 +11,7 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useLoadingScreenStore();
   usePointsStore();
 
-  useUserPointsConfig();
+ 
 
 
 

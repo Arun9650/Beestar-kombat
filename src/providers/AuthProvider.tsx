@@ -10,7 +10,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const params = useSearchParams()
     const id = params.get('id')
-    console.log("🚀 ~ AuthProvider ~ id:", id)
+    // console.log("🚀 ~ AuthProvider ~ id:", id)
     let userName;
     const user = params.get('userName');
     const referredByUser = params.get('referredByUser');
@@ -25,7 +25,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const authToken = window.localStorage.getItem('authToken')
-        console.log("🚀 ~ useEffect ~ authToken:", authToken)
+        // console.log("🚀 ~ useEffect ~ authToken:", authToken)
         const authentication = async () => {
             if (!authToken && authToken != id) {
                 const referredByUserValue = referredByUser ?? undefined; 

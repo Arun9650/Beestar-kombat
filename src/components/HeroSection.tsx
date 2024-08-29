@@ -14,7 +14,7 @@ import { getUserEnergy } from "@/actions/bonus.actions";
 
 const HeroSection = () => {
   const { PPH , points} = usePointsStore();
-  console.log("🚀 ~ HeroSection ~ points:", points)
+  // console.log("🚀 ~ HeroSection ~ points:", points)
   const { multiClickLevel,setEnergyCapacity } = useBoostersStore();
 
 

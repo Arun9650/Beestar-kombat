@@ -150,7 +150,7 @@ const TapGlobe = () => {
         );
 
         if ( points !== 0  && local < currentTapsLeft && !isNaN(currentTapsLeft)) {
-          console.log("🚀 ~ intervalId ~ currentTapsLeft:", currentTapsLeft)
+          // console.log("🚀 ~ intervalId ~ currentTapsLeft:", currentTapsLeft)
           window.localStorage.setItem(
             "currentTapsLeft",
             (currentTapsLeft + multiClickLevel).toString()
@@ -189,7 +189,7 @@ const TapGlobe = () => {
 
   const handleTouch = (event: any) => {
     const length = event.touches.length;
-    console.log("🚀 ~ handleTouch ~ length:", length);
+    // console.log("🚀 ~ handleTouch ~ length:", length);
     console.log(event, length);
 
     if(currentTapsLeft > multiClickLevel){

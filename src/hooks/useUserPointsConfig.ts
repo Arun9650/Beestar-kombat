@@ -22,7 +22,7 @@ const useUserPointsConfig = () => {
     setCurrentTapsLeft,
     addPoints,
   } = usePointsStore();
-  const { isLoading } = useLoadingScreenStore();
+  const { isLoading , setIsLoading } = useLoadingScreenStore();
 
   const {setUser} = useUserStore();
 
@@ -201,6 +201,7 @@ const useUserPointsConfig = () => {
                 (points + credited?.profit).toString()
               );
               addPoints(credited.profit);
+              setIsLoading(false);
             }
           }
         }

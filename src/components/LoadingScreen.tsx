@@ -1,5 +1,6 @@
 'use client'
 
+import useUserPointsConfig from "@/hooks/useUserPointsConfig"
 import useLoadingScreenStore from "@/store/loadingScreenStore"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -8,16 +9,17 @@ const LoadingScreen = () => {
 
     const [value, setValue] = useState(0)
     const { setIsLoading, isLoading } = useLoadingScreenStore()
+    useUserPointsConfig();
 
-    useEffect(() => {
-        setTimeout(() => {
-            value <= 99 && setValue(() => value + 1)
-        }, 10)
-    }, [value])
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         value <= 99 && setValue(() => value + 1)
+    //     }, 10)
+    // }, [value])
 
-    useEffect(() => {
-        value >= 99 && setIsLoading(false);
-    }, [value])
+    // useEffect(() => {
+    //     value >= 99 && setIsLoading(false);
+    // }, [value])
 
     useEffect(() => {
     }, [isLoading])
@@ -32,7 +34,7 @@ const LoadingScreen = () => {
 
             </div>
             <div>
-                {value}%
+                {/* {value}% */}
             </div>
             <div className="text-xs">
             Powered  by Bee Trade Finance
