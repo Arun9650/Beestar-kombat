@@ -303,7 +303,7 @@ export const creditMultiClickLevel = async (userId:string, amount:number) => {
           increment: 1,
         },
         multiClickCost: {
-          increment: amount,
+          increment: 500,
         }
       },
       create: {
