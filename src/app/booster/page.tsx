@@ -49,14 +49,9 @@ const Boosters = () => {
   const {
     multiClickLevel,
     energyCapacity,
-    rechargeVelocity,
-    setRechargeVelocity,
     setMultiClickLevel,
     setEnergyCapacity,
     setMultiClickCost,
-    refill,
-    setRefill,
-    decreaseRefill,
     multiClickCost,
   } = useBoostersStore();
   const { points, reducePoints, currentTapsLeft, increaseTapsLeft } =
@@ -94,6 +89,10 @@ const Boosters = () => {
       discription: "Increase the Earn Per Tab",
     },
   ];
+
+
+
+  console.log("multiClickCost",multiClickCost);
 
   const handleEnergyCapacityIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
@@ -229,7 +228,6 @@ const Boosters = () => {
       setMultiClickCost(newMultiClickCost);
       const newMultiClickLevel = multiClickLevel + 1;
       setMultiClickLevel(newMultiClickLevel);
-
       const result = await creditMultiClickLevel(userId!, multiClickCost * 2);
       if (result.success) {
         window.localStorage.setItem(
