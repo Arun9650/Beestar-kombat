@@ -56,13 +56,16 @@ const TopNavBar = () => {
     if (levelIndex >= levelNames.length - 1) {
       return 100;
     }
-    const leagueIndex = levelNames.findIndex(level => level === user?.league);
+    if(user){
+      const leagueIndex = levelNames.findIndex(level => level === user?.league);
     const currentLevelMin = levelMinPoints[leagueIndex];
     const nextLevelMin = levelMinPoints[leagueIndex + 1];
     const progress = ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
 
     const clampedProgress = Math.max(Math.min(progress, 100), 0);
     return clampedProgress;
+    }
+    return 0;
   };
 
   const updateLevelInDB = async (newLevel: string) => {
@@ -93,22 +96,24 @@ const TopNavBar = () => {
 
 
    useEffect(() => {
+ if(user){
+  const leagueIndex = levelNames.findIndex(level => level === user?.league);
+  const currentLevelMin = levelMinPoints[leagueIndex];
+  const nextLevelMin = levelMinPoints[leagueIndex + 1];
+  if (points >= nextLevelMin && levelIndex < levelNames.length - 1 ) {
+    setLevelIndex((prevIndex) => {
+      const newIndex = prevIndex + 1;
+      updateLevelInDB(levelNames[newIndex]);
+      return newIndex;
+    });
+  } else if (points < currentLevelMin && levelIndex > 0) {
     const leagueIndex = levelNames.findIndex(level => level === user?.league);
-    const currentLevelMin = levelMinPoints[leagueIndex];
-    const nextLevelMin = levelMinPoints[leagueIndex + 1];
-    if (points >= nextLevelMin && levelIndex < levelNames.length - 1 ) {
-      setLevelIndex((prevIndex) => {
-        const newIndex = prevIndex + 1;
-        updateLevelInDB(levelNames[newIndex]);
-        return newIndex;
-      });
-    } else if (points < currentLevelMin && levelIndex > 0) {
-      const leagueIndex = levelNames.findIndex(level => level === user?.league);
-      console.log("🚀 ~ useEffect ~ leagueIndex:", leagueIndex)
-      setLevelIndex(leagueIndex);
-    }
+    console.log("🚀 ~ useEffect ~ leagueIndex:", leagueIndex)
+    setLevelIndex(leagueIndex);
+  }
+ }
 
-  }, [points, levelIndex, levelMinPoints, levelNames]);
+  }, [points]);
 
  
 
