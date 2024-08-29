@@ -102,7 +102,25 @@ const TopNavBar = () => {
   };
 
   useEffect(() => {
-    const update = async (userInfo: any) => {
+    const update = async () => {
+
+      const userId = window.localStorage.getItem("authToken");
+
+      let userInfoFromDB = await getUserConfig(userId!);
+      let userInfo = userInfoFromDB?.userDetails;
+  
+      // Retry mechanism if userInfo is null
+      const maxRetries = 3;
+      let retries = 0;
+  
+      while (!userInfo && retries < maxRetries) {
+        console.log(`Retrying to fetch user info... Attempt ${retries + 1}`);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
+        userInfoFromDB = await getUserConfig(userId!);
+        userInfo = userInfoFromDB?.userDetails;
+        retries++;
+      }
+      
       console.log("🚀 ~ update ~ userInfo:", userInfo);
       const leagueIndex = levelNames.findIndex(
         (level) => level === userInfo?.league
@@ -129,10 +147,10 @@ const TopNavBar = () => {
       }
     };
     const retryUpdate = () => {
-      if (user) {
-        update(user);
+      if (typeof window !== "undefined") {
+        update();
       } else {
-        setTimeout(retryUpdate, 1000); // Retry after 1 second
+        setTimeout(retryUpdate, 10); // Retry after 1 second
       }
     };
   

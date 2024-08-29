@@ -34,8 +34,21 @@ export const useLocalPointsStorage = () => {
   
   useEffect(() => {
     const authToken = window.localStorage.getItem("authToken");
+    console.log("🚀 ~ useEffect ~ authToken:", authToken)
     const preStorePoints = async () => {
-      const user = await getUserConfig(`${authToken}`);
+      let user = await getUserConfig(`${authToken}`);
+      let retries = 0;
+      const maxRetries = 3;
+  
+      // Retry mechanism if user is null
+      while (!user && retries < maxRetries) {
+        console.log(`Retrying to fetch user info... Attempt ${retries + 1}`);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
+        user = await getUserConfig(`${authToken}`);
+        retries++;
+      }
+
+
       const prevStoredPoints = window.localStorage.getItem(`points`);      
       console.log("🚀 ~ preStorePoints ~ user:", user)
     if (Number(prevStoredPoints) > user?.user.points) {
