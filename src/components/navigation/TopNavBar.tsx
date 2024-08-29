@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { beeAvatar } from "../../../public/newImages";
 import Image from "next/image";
 import { IoSettings } from "react-icons/io5";
@@ -8,33 +8,41 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { usePointsStore } from "@/store/PointsStore";
 import useExchangeStore from "@/store/useExchangeStore";
 import { useUserStore } from "@/store/userUserStore";
+import { getUserConfig } from "@/actions/user.actions";
+import { setTimeout } from "timers";
 
 const TopNavBar = () => {
-  const levelNames = [
-    "Bronze", // From 0 to 4999 coins
-    "Silver", // From 5000 coins to 24,999 coins
-    "Gold", // From 25,000 coins to 99,999 coins
-    "Platinum", // From 100,000 coins to 999,999 coins
-    "Diamond", // From 1,000,000 coins to 2,000,000 coins
-    "Epic", // From 2,000,000 coins to 10,000,000 coins
-    "Legendary", // From 10,000,000 coins to 50,000,000 coins
-    "Master", // From 50,000,000 coins to 100,000,000 coins
-    "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
-    "Lord", // From 1,000,000,000 coins to ∞
-  ];
+  const levelNames = useMemo(
+    () => [
+      "Bronze", // From 0 to 4999 coins
+      "Silver", // From 5000 coins to 24,999 coins
+      "Gold", // From 25,000 coins to 99,999 coins
+      "Platinum", // From 100,000 coins to 999,999 coins
+      "Diamond", // From 1,000,000 coins to 2,000,000 coins
+      "Epic", // From 2,000,000 coins to 10,000,000 coins
+      "Legendary", // From 10,000,000 coins to 50,000,000 coins
+      "Master", // From 50,000,000 coins to 100,000,000 coins
+      "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
+      "Lord", // From 1,000,000,000 coins to ∞
+    ],
+    []
+  );
 
-  const levelMinPoints = [
-    0, // Bronze
-    5000, // Silver
-    25000, // Gold
-    100000, // Platinum
-    1000000, // Diamond
-    2000000, // Epic
-    10000000, // Legendary
-    50000000, // Master
-    100000000, // GrandMaster
-    1000000000, // Lord
-  ];
+  const levelMinPoints = useMemo(
+    () => [
+      0, // Bronze
+      5000, // Silver
+      25000, // Gold
+      100000, // Platinum
+      1000000, // Diamond
+      2000000, // Epic
+      10000000, // Legendary
+      50000000, // Master
+      100000000, // GrandMaster
+      1000000000, // Lord
+    ],
+    []
+  );
 
   const userName = window.localStorage.getItem("userName");
   const { PPH, points } = usePointsStore();
@@ -47,7 +55,7 @@ const TopNavBar = () => {
     // Add other properties as needed
   }
 
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
 
   const calculateProgress = () => {
     if (levelIndex >= levelNames.length - 1) {
@@ -85,31 +93,51 @@ const TopNavBar = () => {
       if (!data.ok) {
         throw new Error("Failed to update level in DB");
       }
+      const response = await data.json();
+      console.log("🚀 ~ updateLevelInDB ~ response:", response);
+      return response;
     } catch (error) {
       console.error("Failed to update level in DB:", error);
     }
   };
 
   useEffect(() => {
-    if (!user) return;
-
-    const leagueIndex = levelNames.findIndex(level => level === user?.league);
-    if (leagueIndex !== -1) {
-      setLevelIndex(leagueIndex);
-    }
-
-    const currentLevelMin = levelMinPoints[leagueIndex];
-    const nextLevelMin = levelMinPoints[leagueIndex + 1];
-
-    if (points >= nextLevelMin && leagueIndex < levelNames.length - 1) {
-      setLevelIndex(leagueIndex + 1);
-      updateLevelInDB(levelNames[leagueIndex + 1]);
-    } else if (points < currentLevelMin && leagueIndex > 0) {
-      setLevelIndex(leagueIndex);
-      // updateLevelInDB(levelNames[leagueIndex - 1]);
-    }
-  }, [points, user]);
-
+    const update = async (userInfo: any) => {
+      console.log("🚀 ~ update ~ userInfo:", userInfo);
+      const leagueIndex = levelNames.findIndex(
+        (level) => level === userInfo?.league
+      );
+      if (leagueIndex !== -1) {
+        setLevelIndex(leagueIndex);
+      }
+      console.log("🚀 ~ update ~ leagueIndex:", leagueIndex);
+      const currentLevelMin = levelMinPoints[leagueIndex];
+      console.log("🚀 ~ update ~ currentLevelMin:", currentLevelMin);
+      const nextLevelMin = levelMinPoints[leagueIndex + 1];
+      console.log("🚀 ~ update ~ nextLevelMin:", nextLevelMin);
+      console.log(points);
+      if (points >= nextLevelMin && leagueIndex < levelNames.length - 1) {
+        console.log("running...");
+        setLevelIndex(leagueIndex + 1);
+        const res = await updateLevelInDB(levelNames[leagueIndex + 1]);
+        console.log("🚀 ~ update ~ res:", res);
+        if (res && res.user && res.user.league && user) {
+          setUser({ ...user, league: res.user.league });
+        }
+      } else if (points < currentLevelMin && leagueIndex > 0) {
+        setLevelIndex(leagueIndex);
+      }
+    };
+    const retryUpdate = () => {
+      if (user) {
+        update(user);
+      } else {
+        setTimeout(retryUpdate, 1000); // Retry after 1 second
+      }
+    };
+  
+    retryUpdate();
+  }, [points]);
 
   const route = useRouter();
 
