@@ -56,8 +56,9 @@ const TopNavBar = () => {
     if (levelIndex >= levelNames.length - 1) {
       return 100;
     }
-    const currentLevelMin = levelMinPoints[levelIndex];
-    const nextLevelMin = levelMinPoints[levelIndex + 1];
+    const leagueIndex = levelNames.findIndex(level => level === user?.league);
+    const currentLevelMin = levelMinPoints[leagueIndex];
+    const nextLevelMin = levelMinPoints[leagueIndex + 1];
     const progress =
       ((points - currentLevelMin) / (nextLevelMin - currentLevelMin)) * 100;
     return Math.min(progress, 100);
