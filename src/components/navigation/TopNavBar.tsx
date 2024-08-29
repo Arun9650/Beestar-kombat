@@ -93,8 +93,9 @@ const TopNavBar = () => {
 
 
    useEffect(() => {
-    const currentLevelMin = levelMinPoints[levelIndex];
-    const nextLevelMin = levelMinPoints[levelIndex + 1];
+    const leagueIndex = levelNames.findIndex(level => level === user?.league);
+    const currentLevelMin = levelMinPoints[leagueIndex];
+    const nextLevelMin = levelMinPoints[leagueIndex + 1];
     if (points >= nextLevelMin && levelIndex < levelNames.length - 1 ) {
       setLevelIndex((prevIndex) => {
         const newIndex = prevIndex + 1;
