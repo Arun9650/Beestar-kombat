@@ -1,6 +1,6 @@
 "use client";
 // pages/leaderboard.js
-import React, {  useEffect, useState } from "react";
+import React, {  use, useEffect, useState } from "react";
 import { beeAvatar, MainBee } from "../../../public/newImages";
 import Image from "next/image";
 import { getLeaderboard } from "@/actions/user.actions";
@@ -22,6 +22,7 @@ const Leaderboard = () => {
 
   const [userInfo, setUserInfo] = useState<any>({});
   
+  const {user} = useUserStore()
   
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -125,7 +126,6 @@ const Leaderboard = () => {
         }
       }
     };
-
     fetchLeaderboard();
   }, []);
   const filterUsersByLevel = () => {
@@ -149,9 +149,7 @@ const Leaderboard = () => {
 
   const filteredUsers = filterUsersByLevel();
 
-  
 
-  const {user} = useUserStore();
   console.log("🚀 ~ Leaderboard ~ user:", user?.league)
   console.log("🚀 ~ Leaderboard ~ user:", levelNames[currentIndex])
 
