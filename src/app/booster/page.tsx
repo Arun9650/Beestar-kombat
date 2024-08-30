@@ -92,7 +92,6 @@ const Boosters = () => {
 
 
 
-  console.log("multiClickCost",multiClickCost);
 
   const handleEnergyCapacityIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
@@ -191,20 +190,23 @@ const Boosters = () => {
       toast.error("Not enough free energy");
     }
   }
-
+  
   useEffect(() => {
     const checkWindowDefined = () => {
       if (typeof window !== 'undefined') {
-        const currentDate = new Date().toLocaleDateString();
-        console.log("🚀 ~ checkWindowDefined ~ currentDate:", currentDate)
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+        const currentDateString = currentDate.toLocaleDateString();
+  
+        console.log("🚀 ~ checkWindowDefined ~ currentDateString:", currentDateString);
         const lastDate = window.localStorage.getItem("lastDateFreeEnergy");
-        console.log("🚀 ~ checkWindowDefined ~ lastDate:", lastDate)
+        console.log("🚀 ~ checkWindowDefined ~ lastDate:", lastDate);
         let freeEnergyValue = parseInt(window.localStorage.getItem("freeEnergy") ?? "6");
   
-        if (lastDate !== currentDate) {
+        if (lastDate !== currentDateString) {
           freeEnergyValue = 6; // Set to full value
           window.localStorage.setItem("freeEnergy", freeEnergyValue.toString());
-          window.localStorage.setItem("lastDateFreeEnergy", currentDate);
+          window.localStorage.setItem("lastDateFreeEnergy", currentDateString);
         }
   
         setFreeEnergy(freeEnergyValue);
@@ -212,7 +214,6 @@ const Boosters = () => {
         setTimeout(checkWindowDefined, 100); // Retry after 100ms
       }
     };
-  
     checkWindowDefined();
   }, []);
 
