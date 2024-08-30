@@ -25,6 +25,8 @@ import { Skeleton } from "../ui/skeleton";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { useSearchParams } from "next/navigation";
+import { useYouTubeMutation } from "@/hooks/mutation/useYouTube";
+import { useFetchYoutubeTasks } from "@/hooks/query/useFetchYouTubeTask";
 
 interface Reward {
   id?: string;
@@ -58,8 +60,6 @@ const EarnMoreCoins = () => {
     { day: 10, reward: 5000000 },
   ];
 
-
-
   const [isOpen, setIsOpen] = useState(false);
 
   const [rewards, setReward] = useState<Reward | null>(null);
@@ -69,40 +69,42 @@ const EarnMoreCoins = () => {
 
   const [userId, setUserId] = useState<string | null>(null);
 
-  const { userId: user , increaseTapsLeft, currentTapsLeft, addPoints}  = usePointsStore();
+  const {
+    userId: user,
+    increaseTapsLeft,
+    currentTapsLeft,
+    addPoints,
+  } = usePointsStore();
 
-  const {multiClickLevel} = useBoostersStore();
+  const { multiClickLevel } = useBoostersStore();
 
   const [buttonLoading, setButtonLoading] = useState(false);
 
-
+  const YouTubeMutation = useYouTubeMutation();
 
   const search = useSearchParams();
-  const id  = search.get('id');
+  const id = search.get("id");
 
+  const { data: YoutubeTask , isLoading: isYouTubeTaskLoading} = useFetchYoutubeTasks(id ?? userId ?? "");
+  console.log("🚀 ~ EarnMoreCoins ~ YoutubeTask:", YoutubeTask?.tasks);
 
-
-useEffect(() => {
+  useEffect(() => {
     const intervalId = setInterval(() => {
-    
-        increaseTapsLeft();
-        const local = parseInt(
-          window.localStorage.getItem("currentTapsLeft") ?? "0"
-        );
+      increaseTapsLeft();
+      const local = parseInt(
+        window.localStorage.getItem("currentTapsLeft") ?? "0"
+      );
 
-        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
-          window.localStorage.setItem(
-            "currentTapsLeft",
-            (currentTapsLeft + multiClickLevel).toString()
-          );
-        }
-      
+      if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+        window.localStorage.setItem(
+          "currentTapsLeft",
+          (currentTapsLeft + multiClickLevel).toString()
+        );
+      }
     }, 1000); // Adjust interval as needed
 
     return () => clearInterval(intervalId);
-  }, [ currentTapsLeft]);
-
-
+  }, [currentTapsLeft]);
 
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken"); // Ensure userId is properly handled
@@ -110,7 +112,7 @@ useEffect(() => {
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const checkReward = async () => {
       if (!userId) return;
-      const data = await checkRewardStatus(userId,userTimezone);
+      const data = await checkRewardStatus(userId, userTimezone);
       setNextRewardAvailable(data.nextRewardAvailable!);
       setReward(data.lastReward!);
     };
@@ -130,17 +132,17 @@ useEffect(() => {
         day: (prev?.day || 0) + 1,
         coins: data.reward || 0,
       }));
-  
+
       addPoints(data.reward);
-  
+
       toast.success(`Reward claimed successfully! ${data.reward}`);
     } else {
       console.log(data.error);
-      toast.error('Something went wrong!');
+      toast.error("Something went wrong!");
       toast.dismiss(loadingToastId);
       setButtonLoading(false);
     }
-  
+
     toast.dismiss(loadingToastId);
     setButtonLoading(false);
   };
@@ -149,10 +151,10 @@ useEffect(() => {
 
   useEffect(() => {
     const checkWindowDefined = () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         const authToken = window.localStorage.getItem("authToken");
-  
-        if ( authToken) {
+        setUserId(authToken);
+        if (authToken) {
           const getAllTask = async () => {
             const tasks = await TaskToShow(authToken);
             if (tasks && tasks.length > 0) {
@@ -166,26 +168,51 @@ useEffect(() => {
         setTimeout(checkWindowDefined, 100); // Retry after 100ms
       }
     };
-  
+
     checkWindowDefined();
   }, []);
 
   const handleCompleteTask = async (task: Task) => {
-
     if (!userId) return;
     const result = await completeTask({ userId, taskId: task.id });
 
     if (result === "success") {
-      setCompletedTasks((prev) => [...prev,  task.id]);
+      setCompletedTasks((prev) => [...prev, task.id]);
       toast.success("Task completed successfully!");
       setIsLoading(true);
       addPoints(task.points);
-      window.localStorage.setItem("points", `${parseInt(window.localStorage.getItem("points") || "0") + task.points}`)
+      window.localStorage.setItem(
+        "points",
+        `${
+          parseInt(window.localStorage.getItem("points") || "0") + task.points
+        }`
+      );
       const tasks = await TaskToShow(userId!);
       if (tasks && tasks.length > 0) {
         setTaskList(tasks);
       }
       setIsLoading(false);
+    }
+  };
+
+  const handleCompleteYoutube = async (task: Task) => {
+    if (userId) {
+      YouTubeMutation.mutate(
+        { userId, taskId: task.id },
+        {
+          onSuccess: () => {
+            toast.success("Task completed successfully!");
+            addPoints(task.points);
+            window.localStorage.setItem(
+              "points",
+              `${
+                parseInt(window.localStorage.getItem("points") || "0") +
+                task.points
+              }`
+            );
+          },
+        }
+      );
     }
   };
 
@@ -202,20 +229,46 @@ useEffect(() => {
       <div className="space-y-4">
         <div>
           <h2 className="text-lg font-semibold mb-2">Beestar Youtube</h2>
-          <div className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between">
-              <Link href="https://youtube.com/channel/UCQyXoMQxQBdZSrBiRfDdZoQ"  target="_blank">
-            <div className="flex items-center">
-              <Image src={Youtube} alt="YouTube" className="w-12 h-12 mr-4" />
-              <div>
-                <p className="font-semibold">Check out our youtube channel</p>
-                <p className="text-yellow-400  flex items-center justify-start gap-1">
-                  <Image src={dollarCoin} alt="Coin" className="w-4 h-4 " />
-                  +5000
-                </p>
-              </div>
-            </div>
-              </Link>
-          </div>
+
+          {isYouTubeTaskLoading && <> <Skeleton className="w-full h-20" /></>}
+          {YoutubeTask?.tasks.map((task) => (
+            <>
+              <button
+                onClick={() => handleCompleteYoutube(task)}
+                className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between "
+              >
+                <Link href={task.link} target="_blank">
+                  <div className="flex items-center">
+                    <Image
+                      src={task.icon}
+                      alt="YouTube"
+                      className="w-12 h-12 mr-4"
+                      width={50}
+                      height={50}
+                    />
+                    <div>
+                      <p className="font-semibold text-start">{task.name}</p>
+                      <p className="text-yellow-400  flex items-center justify-start gap-1">
+                        <Image
+                          src={dollarCoin}
+                          alt="Coin"
+                          className="w-4 h-4 "
+                        />
+                        +{task.points}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+                {task.isUserTask && (
+                  <Image
+                    src={approved}
+                    alt="approved icon"
+                    className="w-12 h-12"
+                  />
+                )}
+              </button>
+            </>
+          ))}
         </div>
         <div>
           <h2 className="text-lg font-semibold mb-2">Daily tasks</h2>
@@ -294,7 +347,7 @@ useEffect(() => {
                       disabled={!nextRewardAvailable || buttonLoading}
                       className="w-full p-7 my-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700"
                     >
-                     { buttonLoading  ? <div className="loader"></div>: "Claim"}
+                      {buttonLoading ? <div className="loader"></div> : "Claim"}
                     </Button>
                   </DrawerFooter>
                 </DrawerContent>
@@ -311,7 +364,7 @@ useEffect(() => {
             taskList &&
             taskList.length > 0 &&
             taskList.map((task: Task, index) => (
-              <button 
+              <button
                 disabled={task.isUserTask}
                 onClick={() => handleCompleteTask(task)}
                 key={index}
@@ -325,11 +378,11 @@ useEffect(() => {
                     width={50}
                     height={50}
                   />
-                  <Link  href={task.link} target="_blank">
+                  <Link href={task.link} target="_blank">
                     <p className="font-semibold text-start">{task.name}</p>
                     <p className="text-yellow-400 flex items-center justify-start gap-1">
-                      <Image src={dollarCoin} alt="Coin" className="w-4 h-4" />
-                      +{task.points}
+                      <Image src={dollarCoin} alt="Coin" className="w-4 h-4" />+
+                      {task.points}
                     </p>
                   </Link>
                 </div>
@@ -338,7 +391,7 @@ useEffect(() => {
                     src={approved}
                     alt="approved icon"
                     className="w-12 h-12"
-                  /> 
+                  />
                 )}
               </button>
             ))

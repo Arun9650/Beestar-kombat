@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { beeAvatar } from "../../../public/newImages";
 import Image from "next/image";
 import { IoSettings } from "react-icons/io5";
@@ -109,13 +109,19 @@ const TopNavBar = () => {
     }
   };
 
+
+
   useEffect(() => {
     const update = async () => {
 
       const userId = window.localStorage.getItem("authToken");
-
-      let userInfoFromDB = await getUserConfig(userId!);
-      let userInfo = userInfoFromDB?.userDetails;
+      let userInfo = user;
+      let userInfoFromDB 
+      if(!user){
+        
+               userInfoFromDB = await getUserConfig(userId!);
+               userInfo = userInfoFromDB?.userDetails;
+      }
   
       // Retry mechanism if userInfo is null
       const maxRetries = 3;

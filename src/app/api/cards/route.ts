@@ -3,6 +3,8 @@ import prisma from '@/lib/prisma'; // Adjust the path to your Prisma setup
 
 // The provided function, slightly adjusted to handle API requests
 
+export const dynamic = 'force-dynamic';
+
  async function allCards(userId: string) {
   // Fetch all cards, user's purchased cards, and update user information in parallel
   const [allCards, userCards, user] = await Promise.all([

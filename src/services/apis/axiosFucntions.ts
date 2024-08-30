@@ -60,3 +60,8 @@ export  async function fetchReferrals(userId: string) {
   const { data } = await axios.get(`/api/user/referrals?id=${userId}`);
   return data;
 }
+
+export async function fetchYouTubeTask(userId: string){
+  const { data } = await axios.get(`/api/youTubeTask?userId=${userId}`);
+  return data;
+}

@@ -5,7 +5,7 @@ import { Progress } from "../ui/progress";
 import Image from "next/image";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const GameLevelProgress = () => {
   const { points, currentTapsLeft, nextBenchmark } = usePointsStore();
@@ -14,6 +14,13 @@ const GameLevelProgress = () => {
   // console.log("🚀 ~ energyCapacity:", energyCapacity)
 
   const router = useRouter();
+  const search = useSearchParams();
+  const id = search.get("id");
+
+
+  const handleRoute = () => {
+    router.push(`/booster?id=${id}`);
+  };
 
   return (
     <div className="flex items-center justify-between w-full px-4">
@@ -34,7 +41,7 @@ const GameLevelProgress = () => {
         </div>
       </div>
 
-      <div onClick={() => {router.push("booster")}} className="text-2xl  rotate-12">
+      <div onClick={() => handleRoute() } className="text-2xl  rotate-12">
         <Image src="/newImages/rocket.png" alt="" width={50} height={50} />
       </div>
     </div>

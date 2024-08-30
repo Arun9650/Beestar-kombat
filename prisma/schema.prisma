@@ -46,6 +46,7 @@ model User {
   achievements UserAchievement[]
 
   userTasks TasksCompletion[]
+  userYouTube YouTubeCompletion[]
 }
 
 model AchievementCategory {
@@ -222,6 +223,26 @@ model TasksCompletion {
   userId String
   user   User   @relation(fields: [userId], references: [chatId])
   task   Tasks  @relation(fields: [taskId], references: [id])
+  points Int
+}
+
+
+model YouTube {
+  id       String            @id @default(auto()) @map("_id") @db.ObjectId
+  category String
+  name     String
+  points   Int
+  link     String
+  icon     String
+  user     YouTubeCompletion[]
+}
+
+model YouTubeCompletion {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  taskId String @db.ObjectId
+  userId String
+  user   User   @relation(fields: [userId], references: [chatId])
+  task   YouTube  @relation(fields: [taskId], references: [id])
   points Int
 }
 
