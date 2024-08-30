@@ -13,7 +13,7 @@ import { useUserStore } from "@/store/userUserStore";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState<
-    { points: number; name: string | null; chatId: string }[] | []
+    { points: number; name: string | null; chatId: string; league: string | null }[] | []
   >([]);
 
   const [levelIndex, setLevelIndex] = useState(6);
@@ -114,6 +114,7 @@ const Leaderboard = () => {
       const userName = window.localStorage.getItem("userName");
       setUserName(userName!);
       const response = await getLeaderboard();
+      console.log("🚀 ~ fetchLeaderboard ~ response:", response)
 
       if (response.leaderboard) {
         setLeaderboardData(response.leaderboard);
@@ -121,7 +122,7 @@ const Leaderboard = () => {
           return user.chatId === userName
         })
         
-        if (user) {
+        if (user) {          
           setUserInfo(user);
         }
       }
@@ -129,9 +130,8 @@ const Leaderboard = () => {
     fetchLeaderboard();
   }, []);
   const filterUsersByLevel = () => {
-    const minPoints = levelMinPoints[currentIndex];
-    const maxPoints = levelMinPoints[currentIndex + 1] || Infinity;
-    return leaderboardData.filter(user => user.points >= minPoints && user.points < maxPoints);
+    const currentLeague = levelNames[currentIndex];
+    return leaderboardData.filter(user => user.league === currentLeague );
   };
   
   const handleArrowClick = (direction: 'left' | 'right') => {
@@ -149,9 +149,6 @@ const Leaderboard = () => {
 
   const filteredUsers = filterUsersByLevel();
 
-
-  console.log("🚀 ~ Leaderboard ~ user:", user?.league)
-  console.log("🚀 ~ Leaderboard ~ user:", levelNames[currentIndex])
 
   return (
     <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  from-purple-800 to-black text-white">

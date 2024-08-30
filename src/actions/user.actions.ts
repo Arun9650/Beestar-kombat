@@ -179,8 +179,9 @@ export const getLeaderboard = async () => {
         chatId: true,
         name: true,
         profitPerHour: true,
+        league: true,
       },
-      take: 10, // Adjust this number to get more or fewer users
+      // Adjust this number to get more or fewer users
     });
 
     return { success: true, leaderboard };
