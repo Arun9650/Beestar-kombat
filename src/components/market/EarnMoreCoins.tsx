@@ -234,6 +234,7 @@ const EarnMoreCoins = () => {
           {YoutubeTask?.tasks.map((task) => (
             <>
               <button
+              disabled={task.isUserTask}
                 onClick={() => handleCompleteYoutube(task)}
                 className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between "
               >
