@@ -20,6 +20,7 @@ import useSetCurrentSkin from "@/hooks/mutation/useSetCurrentSkin";
 import { setCurrentSkin } from "@/services/apis/axiosFucntions";
 import useFetchAllSkin from "@/hooks/query/userFetchAllSkin";
 import { useBuySkinMutation } from "@/hooks/mutation/useBuySkinMutation";
+import { useUserStore } from "@/store/userUserStore";
 
 const Skinmini = ({ tab }: { tab: string }) => {
   const [selectedSkin, setSelectedSkin] = useState<SkinType>();
@@ -37,6 +38,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const filteredSkins =
     tab === "featured" ? skinsData?.filter((skin) => skin.featured) : skinsData;
   const { points, setPoints, setSkin, userId: user } = usePointsStore();
+  const {user:userInfo} = useUserStore();
 
   const levelNames = [
     "Bronze", // From 0 to 4999 coins
@@ -72,6 +74,8 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const id = search.get("id");
 
   const {data , isLoading} = useFetchAllSkin(id ?? userId ?? user);
+
+
 
   useEffect(() => {
     const user = window.localStorage.getItem("authToken");
@@ -198,6 +202,14 @@ const getLeague = (points: number): number => {
   return 0; // Default to Bronze if no match
 };
 
+const canBuySkin = (selectedSkin:any, user:any, levelNames:any) => {
+  const skinLeagueIndex = levelNames.indexOf(selectedSkin.league);
+  const userLeagueIndex = levelNames.indexOf(user.league);
+
+  return userLeagueIndex >= skinLeagueIndex;
+};
+
+// const isDisabled = !canBuySkin(selectedSkin, user, levelNames);
 
 
 
@@ -334,7 +346,8 @@ const getLeague = (points: number): number => {
                 <Button
                   disabled={
                     points < selectedSkin.cost ||
-                    selectedSkin.league !== levelNames[levelIndex]
+                    // selectedSkin.league !== levelNames[levelIndex]
+                    !canBuySkin(selectedSkin, userInfo, levelNames)
                   }
                   onClick={() => handleBuySkin(userId!, selectedSkin)}
                   className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
