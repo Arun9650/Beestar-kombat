@@ -99,6 +99,16 @@ const Leaderboard = () => {
     return () => clearInterval(intervalId);
   }, [ currentTapsLeft]);
 
+
+
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    setProgress(calculateProgress());
+  }, [calculateProgress, points, user]);
+
+
+
   useEffect(() => {
     const currentLevelMin = levelMinPoints[levelIndex];
     const nextLevelMin = levelMinPoints[levelIndex + 1];
@@ -173,7 +183,7 @@ const Leaderboard = () => {
          { levelNames[currentIndex] === user?.league  && ( <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
             <div
               className="progress-gradient h-2 rounded-full"
-              style={{ width: `${calculateProgress()}%` }}
+              style={{ width: `${progress}%` }}
               ></div>
           </div>)
             } 

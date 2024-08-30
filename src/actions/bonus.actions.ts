@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { DateTime } from 'luxon';
 
 export interface Bonus {
   id?: string;
@@ -40,15 +41,19 @@ const dailyRewards = [
   { day: 10, reward: 5000000 },
 ];
 
-export const claimReward = async (userId: string) => {
+ // Use Luxon for timezone handling
+
+export const claimReward = async (userId: string, timezone: string) => {
   try {
     if (!userId) {
       throw new Error('Missing userId');
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+    // Get the current date in the user's timezone
+    const nowInUserTimezone = DateTime.now().setZone(timezone);
+    const todayInUserTimezone = nowInUserTimezone.startOf('day'); // Start of the day (midnight)
 
+    // Fetch the last reward claimed by the user
     const lastReward = await prisma.dailyReward.findFirst({
       where: { userId },
       orderBy: { createdAt: 'desc' }
@@ -56,23 +61,28 @@ export const claimReward = async (userId: string) => {
 
     let day = 1;
     if (lastReward) {
-      const lastRewardDate = new Date(lastReward.createdAt);
-      lastRewardDate.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+      // Convert the last reward's createdAt timestamp to the user's timezone
+      const lastRewardDateInUserTimezone = DateTime.fromJSDate(lastReward.createdAt).setZone(timezone).startOf('day');
 
-      const differenceInDays = Math.floor((today.getTime() - lastRewardDate.getTime()) / (1000 * 60 * 60 * 24));
+      // Calculate the difference in days between the last reward date and today
+      const differenceInDays = todayInUserTimezone.diff(lastRewardDateInUserTimezone, 'days').days;
+
       if (differenceInDays >= 1) {
         day = lastReward.day + 1;
       } else {
-        day = 1;
+        day = 1; // Reset to day 1 if the reward was already claimed today
       }
     }
 
+    // Find the reward for the current day or the last reward available
     const reward = dailyRewards.find(r => r.day === day)?.reward || dailyRewards[dailyRewards.length - 1].reward;
 
+    // Create a new reward entry in the database
     await prisma.dailyReward.create({
       data: { userId, day, coins: reward }
     });
 
+    // Update the user's points in the database
     await prisma.user.update({
       where: { chatId: userId },
       data: { points: { increment: reward } }
@@ -85,15 +95,20 @@ export const claimReward = async (userId: string) => {
   }
 };
 
-export const checkRewardStatus = async (userId: string) => {
+
+// Use Luxon for timezone handling
+
+export const checkRewardStatus = async (userId: string, timezone: string) => {
   try {
     if (!userId) {
       throw new Error('Missing userId');
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+    // Get the current date and time in the user's timezone
+    const nowInUserTimezone = DateTime.now().setZone(timezone);
+    const todayInUserTimezone = nowInUserTimezone.startOf('day'); // Start of the day (midnight)
 
+    // Fetch the last reward claimed by the user
     const lastReward = await prisma.dailyReward.findFirst({
       where: { userId: userId },
       orderBy: { createdAt: 'desc' }
@@ -101,10 +116,11 @@ export const checkRewardStatus = async (userId: string) => {
 
     let nextRewardAvailable = true;
     if (lastReward) {
-      const lastRewardDate = new Date(lastReward.createdAt);
-      lastRewardDate.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+      // Convert the last reward's createdAt timestamp to the user's timezone
+      const lastRewardDateInUserTimezone = DateTime.fromJSDate(lastReward.createdAt).setZone(timezone).startOf('day');
 
-      if (lastRewardDate.getTime() === today.getTime()) {
+      // Compare the dates (ignoring time)
+      if (lastRewardDateInUserTimezone.toMillis() === todayInUserTimezone.toMillis()) {
         nextRewardAvailable = false;
       }
     }
@@ -115,6 +131,7 @@ export const checkRewardStatus = async (userId: string) => {
     return { success: false, error: 'Failed to check reward status' };
   }
 };
+
 
 
 

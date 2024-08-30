@@ -107,9 +107,10 @@ useEffect(() => {
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken"); // Ensure userId is properly handled
     setUserId(userId);
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const checkReward = async () => {
       if (!userId) return;
-      const data = await checkRewardStatus(userId);
+      const data = await checkRewardStatus(userId,userTimezone);
       setNextRewardAvailable(data.nextRewardAvailable!);
       setReward(data.lastReward!);
     };
@@ -121,8 +122,8 @@ useEffect(() => {
     if (!userId) return;
     setButtonLoading(true);
     const loadingToastId = toast.loading("Claiming reward...");
-  
-    const data = await claimReward(userId);
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const data = await claimReward(userId, userTimezone);
     if (data.success && data.reward) {
       setNextRewardAvailable(false);
       setReward((prev) => ({
