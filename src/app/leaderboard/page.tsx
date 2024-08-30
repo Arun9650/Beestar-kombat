@@ -1,29 +1,35 @@
 "use client";
 // pages/leaderboard.js
-import React, {  use, useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { beeAvatar, MainBee } from "../../../public/newImages";
 import Image from "next/image";
 import { getLeaderboard } from "@/actions/user.actions";
 import { usePointsStore } from "@/store/PointsStore";
 
 import { SlArrowRight } from "react-icons/sl";
-import { SlArrowLeft } from "react-icons/sl"; 
+import { SlArrowLeft } from "react-icons/sl";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { useUserStore } from "@/store/userUserStore";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState<
-    { points: number; name: string | null; chatId: string; league: string | null }[] | []
+    | {
+        points: number;
+        name: string | null;
+        chatId: string;
+        league: string | null;
+      }[]
+    | []
   >([]);
 
   const [levelIndex, setLevelIndex] = useState(6);
   const { points, PPH } = usePointsStore();
-  const [userName , setUserName] = useState('Honey Collector');
+  const [userName, setUserName] = useState("Honey Collector");
 
   const [userInfo, setUserInfo] = useState<any>({});
-  
-  const {user} = useUserStore()
-  
+
+  const { user } = useUserStore();
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const levelNames = [
@@ -38,7 +44,7 @@ const Leaderboard = () => {
     "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
     "Lord", // From 1,000,000,000 coins to ∞
   ];
-  
+
   const levelMinPoints = [
     0, // Bronze
     5000, // Silver
@@ -51,8 +57,6 @@ const Leaderboard = () => {
     100000000, // GrandMaster
     1000000000, // Lord
   ];
-
-
 
   const calculateProgress = () => {
     if (levelIndex >= levelNames.length - 1) {
@@ -73,41 +77,34 @@ const Leaderboard = () => {
     return 0;
   };
 
-
-  const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
-  const {multiClickLevel} = useBoostersStore()
+  const { currentTapsLeft, increaseTapsLeft } = usePointsStore();
+  const { multiClickLevel } = useBoostersStore();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-    
-        increaseTapsLeft();
-        let time = Date.now();
-        window.localStorage.setItem("lastLoginTime", time.toString() );
-        const local = parseInt(
-          window.localStorage.getItem("currentTapsLeft") ?? "0"
-        );
+      increaseTapsLeft();
+      let time = Date.now();
+      window.localStorage.setItem("lastLoginTime", time.toString());
+      const local = parseInt(
+        window.localStorage.getItem("currentTapsLeft") ?? "0"
+      );
 
-        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
-          window.localStorage.setItem(
-            "currentTapsLeft",
-            (currentTapsLeft + multiClickLevel).toString()
-          );
-        }
-      
+      if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+        window.localStorage.setItem(
+          "currentTapsLeft",
+          (currentTapsLeft + multiClickLevel).toString()
+        );
+      }
     }, 1000); // Adjust interval as needed
 
     return () => clearInterval(intervalId);
-  }, [ currentTapsLeft]);
-
-
+  }, [currentTapsLeft]);
 
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     setProgress(calculateProgress());
   }, [calculateProgress, points, user]);
-
-
 
   useEffect(() => {
     const currentLevelMin = levelMinPoints[levelIndex];
@@ -124,15 +121,15 @@ const Leaderboard = () => {
       const userName = window.localStorage.getItem("userName");
       setUserName(userName!);
       const response = await getLeaderboard();
-      console.log("🚀 ~ fetchLeaderboard ~ response:", response)
+      console.log("🚀 ~ fetchLeaderboard ~ response:", response);
 
       if (response.leaderboard) {
         setLeaderboardData(response.leaderboard);
-        const user = response.leaderboard.find(user => {
-          return user.chatId === userName
-        })
-        
-        if (user) {          
+        const user = response.leaderboard.find((user) => {
+          return user.chatId === userName;
+        });
+
+        if (user) {
           setUserInfo(user);
         }
       }
@@ -141,17 +138,16 @@ const Leaderboard = () => {
   }, []);
   const filterUsersByLevel = () => {
     const currentLeague = levelNames[currentIndex];
-    return leaderboardData.filter(user => user.league === currentLeague );
+    return leaderboardData.filter((user) => user.league === currentLeague);
   };
-  
-  const handleArrowClick = (direction: 'left' | 'right') => {
-    if (direction === 'left' && currentIndex > 0) {
+
+  const handleArrowClick = (direction: "left" | "right") => {
+    if (direction === "left" && currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-    } else if (direction === 'right' && currentIndex < levelNames.length - 1) {
+    } else if (direction === "right" && currentIndex < levelNames.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
-
 
   const getImageSrc = () => {
     return `/newImages/bee_avatars/${currentIndex + 1}.png`;
@@ -159,13 +155,16 @@ const Leaderboard = () => {
 
   const filteredUsers = filterUsersByLevel();
 
-
   return (
     <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  from-purple-800 to-black text-white">
       <div className="p-4 flex flex-col items-center">
         <div className="relative flex items-center gap-6">
-        <SlArrowLeft onClick={() => handleArrowClick('left')} 
-        className={currentIndex === 0 ? 'text-gray-500 font-bold' : 'font-bold'} />
+          <SlArrowLeft
+            onClick={() => handleArrowClick("left")}
+            className={
+              currentIndex === 0 ? "text-gray-500 font-bold" : "font-bold"
+            }
+          />
           <Image
             src={getImageSrc()}
             alt={getImageSrc()}
@@ -173,22 +172,32 @@ const Leaderboard = () => {
             width={200}
             height={200}
           />
-         <SlArrowRight  onClick={() => handleArrowClick('right')}
-         
-         className={currentIndex === levelNames.length - 1 ? 'text-gray-500 font-bold' : 'font-bold'}
-         />
+          <SlArrowRight
+            onClick={() => handleArrowClick("right")}
+            className={
+              currentIndex === levelNames.length - 1
+                ? "text-gray-500 font-bold"
+                : "font-bold"
+            }
+          />
         </div>
         <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
-       { levelNames[currentIndex] === user?.league  && <p className="text-xl">{currentIndex + 1} <span className="text-[#95908a]">/ {levelNames.length}</span></p>}
-         { levelNames[currentIndex] === user?.league  && ( <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
+        {levelNames[currentIndex] === user?.league && (
+          <p className="text-xl">
+            {currentIndex + 1}{" "}
+            <span className="text-[#95908a]">/ {levelNames.length}</span>
+          </p>
+        )}
+        {levelNames[currentIndex] === user?.league && (
+          <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
             <div
               className="progress-gradient h-2 rounded-full"
               style={{ width: `${progress}%` }}
-              ></div>
-          </div>)
-            } 
+            ></div>
+          </div>
+        )}
         <div className="mt-8 w-full pb-40">
-        {filteredUsers.length === 0 ? (
+          {filteredUsers.length === 0 ? (
             <p className="w-full text-center h-60">No user at this level</p>
           ) : (
             filteredUsers.map((user, index) => (
@@ -205,7 +214,12 @@ const Leaderboard = () => {
                   <p className="font-bold">
                     {user.name ? user.name : "honey Collector"}
                   </p>
-                  <p className="text-yellow-500 flex gap-4">{user.points} <span className="text-white">{levelNames[currentIndex]}</span></p>
+                  <p className="text-yellow-500 flex gap-4">
+                    {user.points}{" "}
+                    <span className="text-white">
+                      {levelNames[currentIndex]}
+                    </span>
+                  </p>
                 </div>
               </div>
             ))
@@ -219,8 +233,15 @@ const Leaderboard = () => {
               className="w-10 h-10 rounded-full mr-4"
             />
             <div className="flex-1">
-              <p className="font-bold">{userName ? userName: "honey Collector"}</p>
-              <p className="text-yellow-500 flex gap-4">{userInfo.points} <span className="text-white">{ user ?  user.league : levelNames[currentIndex]}</span> </p>
+              <p className="font-bold">
+                {userName ? userName : "honey Collector"}
+              </p>
+              <p className="text-yellow-500 flex gap-4">
+                {userInfo.points}{" "}
+                <span className="text-white">
+                  {user ? user.league : levelNames[currentIndex]}
+                </span>{" "}
+              </p>
             </div>
             <div className="text-lg">{userInfo.points}</div>
           </div>
