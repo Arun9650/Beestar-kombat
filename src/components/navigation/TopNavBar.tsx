@@ -57,6 +57,8 @@ const TopNavBar = () => {
 
   const { user, setUser } = useUserStore();
 
+  const [progess , setProgress] = useState(0)
+
   const calculateProgress = () => {
     if (levelIndex >= levelNames.length - 1) {
       return 100;
@@ -75,6 +77,12 @@ const TopNavBar = () => {
     }
     return 0;
   };
+
+
+  useEffect(() => {
+    setProgress(calculateProgress());
+  },[points])
+
 
   const updateLevelInDB = async (newLevel: string) => {
     console.log("🚀 ~ updateLevelInDB ~ newLevel:", newLevel);
@@ -208,7 +216,7 @@ const TopNavBar = () => {
                     <div className="w-full h-1 bg-[#43433b]/[0.6] rounded-full">
                       <div
                         className="progress-gradient h-1 rounded-full"
-                        style={{ width: `${calculateProgress()}%` }}
+                        style={{ width: `${progess}%` }}
                       ></div>
                     </div>
                   </div>

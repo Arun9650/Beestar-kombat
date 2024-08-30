@@ -55,7 +55,7 @@ const Boosters = () => {
     setMultiClickCost,
     multiClickCost,
   } = useBoostersStore();
-  const { points, reducePoints, currentTapsLeft, increaseTapsLeft } =
+  const { points, reducePoints, currentTapsLeft, increaseTapsLeft, setCurrentTapsLeft } =
     usePointsStore();
 
   const { decreaseFreeEnergy, freeEnergy, setFreeEnergy } = useFreeEnergy();
@@ -200,7 +200,9 @@ const Boosters = () => {
         const tapsToAdd = energyCapacity - currentTapsLeft;
 
         if (tapsToAdd > 0) {
-          increaseTapsLeft(tapsToAdd);
+          // increaseTapsLeft(tapsToAdd);
+          setCurrentTapsLeft(energyCapacity)
+          
 
           const newRefillValue = freeEnergy - 1;
 
