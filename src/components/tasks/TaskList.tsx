@@ -16,7 +16,6 @@ import { allCards } from "@/actions/tasks.actions";
 import { usePointsStore } from "@/store/PointsStore";
 import { Skeleton } from "../ui/skeleton";
 import toast from "react-hot-toast";
-import { useSearchParams } from "next/navigation";
 import { updatePointsInDB } from "@/actions/points.actions";
 
 export interface Team {
@@ -127,20 +126,21 @@ const TaskList = () => {
   
         const authToken = window.localStorage.getItem("authToken");
         const combinedCards = await allCards(authToken!);
+        console.log("🚀 ~ combinedCards:", combinedCards)
         setCards(combinedCards.combinedCards);
   
-        const updatedUser = await getUserConfig(authToken!);
-        console.log("🚀 ~ TaskList ~ user:", updatedUser.user.points);
-        setPoints(updatedUser?.user.points);
-        window.localStorage.setItem("points", updatedUser?.user.points.toString());
-        setPPH(updatedUser?.user.profitPerHour);
+        // const updatedUser = await getUserConfig(authToken!);
+        console.log("🚀 ~ TaskList ~ user:", combinedCards.user.points);
+        setPoints(combinedCards?.user.points);
+        window.localStorage.setItem("points", combinedCards?.user.points.toString());
+        setPPH(combinedCards?.user.profitPerHour);
   
         setIsDrawerOpen(false);
       })(),
       {
         loading: 'Updating profit per hour...',
         success: `Upgrade is yours! ${selectedTeam.title}`,
-        error: (err) => err.toString(),
+        error: "Error updating profit per hour",
       }
     ).finally(() => {
       setButtonLoading(false);

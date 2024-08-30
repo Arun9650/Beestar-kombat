@@ -71,7 +71,7 @@ const Skinmini = ({ tab }: { tab: string }) => {
   const search = useSearchParams();
   const id = search.get("id");
 
-  const {data , isLoading} = useFetchAllSkin(id!);
+  const {data , isLoading} = useFetchAllSkin(id ?? userId ?? user);
 
   useEffect(() => {
     const user = window.localStorage.getItem("authToken");
