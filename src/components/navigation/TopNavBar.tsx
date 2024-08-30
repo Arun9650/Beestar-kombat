@@ -114,31 +114,31 @@ const TopNavBar = () => {
       let retries = 0;
   
       while (!userInfo && retries < maxRetries) {
-        console.log(`Retrying to fetch user info... Attempt ${retries + 1}`);
+        // console.log(`Retrying to fetch user info... Attempt ${retries + 1}`);
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
         userInfoFromDB = await getUserConfig(userId!);
         userInfo = userInfoFromDB?.userDetails;
         retries++;
       }
       
-      console.log("🚀 ~ update ~ userInfo:", userInfo);
+      // console.log("🚀 ~ update ~ userInfo:", userInfo);
       const leagueIndex = levelNames.findIndex(
         (level) => level === userInfo?.league
       );
       if (leagueIndex !== -1) {
         setLevelIndex(leagueIndex);
       }
-      console.log("🚀 ~ update ~ leagueIndex:", leagueIndex);
+      // console.log("🚀 ~ update ~ leagueIndex:", leagueIndex);
       const currentLevelMin = levelMinPoints[leagueIndex];
-      console.log("🚀 ~ update ~ currentLevelMin:", currentLevelMin);
+      // console.log("🚀 ~ update ~ currentLevelMin:", currentLevelMin);
       const nextLevelMin = levelMinPoints[leagueIndex + 1];
-      console.log("🚀 ~ update ~ nextLevelMin:", nextLevelMin);
-      console.log(points);
+      // console.log("🚀 ~ update ~ nextLevelMin:", nextLevelMin);
+      // console.log(points);
       if (points >= nextLevelMin && leagueIndex < levelNames.length - 1) {
-        console.log("running...");
+        // console.log("running...");
         setLevelIndex(leagueIndex + 1);
         const res = await updateLevelInDB(levelNames[leagueIndex + 1]);
-        console.log("🚀 ~ update ~ res:", res);
+        // console.log("🚀 ~ update ~ res:", res);
         if (res && res.user && res.user.league && user) {
           setUser({ ...user, league: res.user.league });
         }
@@ -168,6 +168,10 @@ const TopNavBar = () => {
     route.push(linkWithId);
   };
 
+  const leagueIndex = levelNames.findIndex(
+    (level) => level === user?.league
+  );
+
   return (
     <div className="w-full">
       <div className="flex justify-between p-2 bg-black bg-opacity-60 border border-yellow-500 backdrop-blur-lg rounded-xl m-2">
@@ -180,8 +184,8 @@ const TopNavBar = () => {
             className="rounded-full"
           />
           <div>
-            <p className="text-white capitalize text-sm font-medium ">
-              {userName ? userName : "Anonymous"}
+            <p className="text-white capitalize text-sm font-medium min-w-16   truncate max-w-40 ">
+              {userName ? userName : "Anonymous"} 
             </p>
             <div className="flex items-center justify-between space-x-4">
               <div className="flex items-center w-full">
@@ -190,11 +194,11 @@ const TopNavBar = () => {
                   className="w-full "
                 >
                   <div className="flex items-baseline  justify-between">
-                    <p className="text-[8px]">
+                    <p className="text-[8px] ">
                       {user ? user.league : levelNames[levelIndex]}
                     </p>
                     <p className="text-[8px]">
-                      {levelIndex + 1}{" "}
+                      { user ? leagueIndex + 1 :  levelIndex + 1}{" "}
                       <span className="text-[#95908a]">
                         / {levelNames.length}
                       </span>
