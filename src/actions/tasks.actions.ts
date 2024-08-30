@@ -147,7 +147,7 @@ export async function allCards(userId: string) {
     where: { userId },
   });
 
-    await prisma.user.update({
+  const user =   await prisma.user.update({
       where: { chatId: userId },
       data: {
         lastProfitDate: Date.now(),
@@ -162,5 +162,5 @@ export async function allCards(userId: string) {
     (card) => userCardsMap.get(card.id) || card
   );
 
-  return { combinedCards };
+  return { combinedCards  , user};
 }
