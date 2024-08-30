@@ -1,3 +1,4 @@
+import { Team } from "@/components/tasks/TaskList";
 import axios from "axios";
 
 export const FetchUserSkin = async (id: string) => {
@@ -65,3 +66,9 @@ export async function fetchYouTubeTask(userId: string){
   const { data } = await axios.get(`/api/youTubeTask?userId=${userId}`);
   return data;
 }
+
+export async function fetchAllCards(userId: string){
+  const { data } = await axios.get(`/api/allCards?userId=${userId}`);
+  return data;
+}
+

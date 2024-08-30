@@ -204,7 +204,7 @@ const TopNavBar = () => {
             <div className="flex items-center justify-between space-x-4">
               <div className="flex items-center w-full">
                 <div
-                  onClick={() => route.push("leaderboard")}
+                  onClick={() => handleRoute("leaderboard")}
                   className="w-full "
                 >
                   <div className="flex items-baseline  justify-between">
@@ -240,7 +240,7 @@ const TopNavBar = () => {
             <span>Buy Skin</span>
           </div>
           <IoSettings
-            onClick={() => route.push("/settings")}
+            onClick={() => handleRoute("/settings")}
             className="w-8 h-8 text-white px-2 py-1 bg-zinc-700 rounded-xl"
           />
         </div>

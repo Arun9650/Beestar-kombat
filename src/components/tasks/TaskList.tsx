@@ -19,6 +19,9 @@ import toast from "react-hot-toast";
 import { updatePointsInDB } from "@/actions/points.actions";
 import { useUserStore } from "@/store/userUserStore";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
+import { useFetchAllCards } from "@/hooks/query/useFetchAllCards";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface Team {
   id: string;
@@ -46,17 +49,23 @@ const TaskList = () => {
   const tabs = ["PR&Team", "Markets", "web3"];
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [user, setUser] = useState<string | null>(null);
 
   const {user:userInfo} =  useUserStore();
 
+  const search = useSearchParams()
+  const id  = search.get('id')
+  
+  const {data, isLoading} = useFetchAllCards(id ?? userInfo?.chatId ?? user!);
+
+
+
   useEffect(() => {
     const checkWindowDefined = () => {
       if (typeof window !== 'undefined') {
         const userId = window.localStorage.getItem("authToken");
-        console.log("🚀 ~ checkWindowDefined ~ userId:", userId)
         setUser(userId);
         
       } else {
@@ -65,19 +74,6 @@ const TaskList = () => {
     };
   
     checkWindowDefined();
-
-    const fetchCards = async () => {
-      if(user !== null){
-        const combinedCards  = await allCards(user);
-        console.log("🚀 ~ fetchCards ~ combinedCards:", combinedCards)
-        console.log("🚀 ~ fetchCards ~ combinedCards:",typeof combinedCards)
-        setCards(combinedCards.combinedCards);
-        setLoading(false);
-
-      }
-    };
-
-    fetchCards();
   }, [user]);
 
   const handleTeamClick = (team: Team) => {
@@ -88,15 +84,15 @@ const TaskList = () => {
     }
   };
 
-  const filteredCards = cards?.filter(
-    (card) =>
+  const filteredCards = data?.combinedCards?.filter(
+    (card:any) =>
       card.category === selectedCategory || card.cardType === selectedCategory
   );
 
   const isEligibleToBuy = (team: Team) => {
     if (team.requiredCardId && team.requiredCardLevel) {
-      const requiredCard = cards.find(
-        (card) =>
+      const requiredCard = data?.combinedCards.find(
+        (card:any) =>
           card.id === team.requiredCardId || card.cardId === team.requiredCardId
       );
       return requiredCard.baseLevel >= team.requiredCardLevel;
@@ -106,68 +102,86 @@ const TaskList = () => {
 
 
 
+
+  const queryClient = useQueryClient();
+
+ 
+
+  const cardPurchasesMutation = useMutation({
+    mutationFn: async ({id, selectedTeam} : {id:string , selectedTeam: Team}) => {
+        return await handleCardPurchase(id, selectedTeam);
+      },
+      onMutate: () => {
+        toast.loading("Updating profit per hour...");
+      },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+    },
+  });
+
+  const handleCardPurchase = async (id: string, selectedTeam: Team) => {
+    
+    let userConfig: any = userInfo;
+
+    if(!userInfo){
+       const userdetails = await getUserConfig(id);
+       userConfig = userdetails.userDetails;
+    }
+
+    if (userConfig.points < points && points > selectedTeam.baseCost) {
+      await axios.post(`/api/update-points`, {
+        points: Number(points),
+        id: user,
+      });
+    }
+
+    console.log(selectedTeam);
+
+    // update profit per hour
+    const result = await axios.post('/api/cardPurchases', {
+      id: user,
+      selectedTeam
+    });
+
+
+    if (!result.data.success) {
+      throw new Error(result.data.message || "something went wrong");
+    }
+
+    const authToken = window.localStorage.getItem("authToken");
+    const cardsResponse = await axios.get(`/api/cards`, {
+      params: { userId: authToken! },
+    });
+
+    const combinedCards = cardsResponse.data;
+    console.log("🚀 ~ combinedCards:", combinedCards)
+
+    setPoints(combinedCards.data.user.points);
+    window.localStorage.setItem("points", combinedCards.data.user.points.toString());
+    setPPH(combinedCards?.data.user.profitPerHour);
+
+  
+
+  };
+
+
+  
+
   const handleUpdateProfitPerHour = async (user: string, selectedTeam: Team) => {
     if (!selectedTeam) {
       toast.error("Please select a team");
       return;
     }
-  
-    setButtonLoading(true);
-    toast.promise(
-      (async () => {
 
-        let userConfig: any = userInfo;
-
-        if(!userInfo){
-           const userdetails = await getUserConfig(user);
-           userConfig = userdetails.userDetails;
-        }
-  
-        if (userConfig.points < points && points > selectedTeam.baseCost) {
-          await axios.post(`/api/update-points`, {
-            points: Number(points),
-            id: user,
-          });
-        }
-
-        console.log(selectedTeam);
-  
-        // update profit per hour
-        const result = await axios.post('/api/cardPurchases', {
-          id: user,
-          selectedTeam
-        });
-
-
-        if (!result.data.success) {
-          throw new Error(result.data.message || "something went wrong");
-        }
-  
-        const authToken = window.localStorage.getItem("authToken");
-        const cardsResponse = await axios.get(`/api/cards`, {
-          params: { userId: authToken! },
-        });
-  
-        const combinedCards = cardsResponse.data;
-        console.log("🚀 ~ combinedCards:", combinedCards)
-
-        setCards(combinedCards.data.combinedCards);
-  
-        // const updatedUser = await getUserConfig(authToken!);
-        console.log("🚀 ~ TaskList ~ user:", combinedCards.data.user.points);
-        setPoints(combinedCards.data.user.points);
-        window.localStorage.setItem("points", combinedCards.data.user.points.toString());
-        setPPH(combinedCards?.data.user.profitPerHour);
-  
+    cardPurchasesMutation.mutate({id: user!, selectedTeam: selectedTeam!}, {
+      onError: (error) => {
+        toast.error("Error purchasing card");
+      },
+      onSuccess: (data) => {
+        toast.dismiss()
+        toast.success("Card purchased successfully");
         setIsDrawerOpen(false);
-      })(),
-      {
-        loading: 'Updating profit per hour...',
-        success: `Upgrade is yours! ${selectedTeam.title}`,
-        error: "Error updating profit per hour",
       }
-    ).finally(() => {
-      setButtonLoading(false);
     });
   };
   
@@ -198,7 +212,7 @@ const TaskList = () => {
               ))}
             </TabsList>
 
-            {loading ? (
+            {isLoading ? (
               <div className="w-full ">
                 <div className="grid grid-cols-2 gap-3 mt-3 ">
                   <Skeleton className="w-full h-20" />
@@ -213,7 +227,7 @@ const TaskList = () => {
                 className="w-full   rounded-lg"
               >
                 <div className="grid grid-cols-2 gap-3 ">
-                  {filteredCards?.map((team, index) => (
+                  {filteredCards?.map((team:any, index:any) => (
                     <div
                       key={index}
                       className="px-3 py-2 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  rounded-2xl"

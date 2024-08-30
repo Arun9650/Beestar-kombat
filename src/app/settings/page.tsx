@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { SlArrowRight } from "react-icons/sl";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import useExchangeStore from '@/store/useExchangeStore';
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from '@/components/ui/drawer';
 import Image from 'next/image';
@@ -17,7 +17,16 @@ const Settings = () => {
 
   const {exchange} = useExchangeStore();
 
-  const router = useRouter();
+  const route = useRouter();
+
+  const search = useSearchParams();
+
+  const id = search.get("id");
+
+  const handleRoute = (link: string) => {
+    const linkWithId = id ? `${link}?id=${id}` : link;
+    route.push(linkWithId);
+  };
    const {setPoints} = usePointsStore()
 
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -86,7 +95,7 @@ const Settings = () => {
     setCurrentTapsLeft(500); 
     if (result.success) {
       setButtonLoading(false);
-      router.push('/');
+      route.push('/');
     }
   };
 
@@ -102,7 +111,7 @@ const Settings = () => {
             </div>
             <SlArrowRight className='text-gray-400' />
           </div>
-          <div onClick={() => {router.push('exchange')}} className="bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-4 rounded-2xl  flex items-center justify-between">
+          <div onClick={() => {handleRoute('exchange')}} className="bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-4 rounded-2xl  flex items-center justify-between">
             <div>
             <h3 className="text-sm font-medium">Choose exchange</h3>
             <p className="text-gray-400 text-xs">{exchange.name}</p>
