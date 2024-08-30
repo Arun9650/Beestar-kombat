@@ -18,6 +18,7 @@ import { Skeleton } from "../ui/skeleton";
 import toast from "react-hot-toast";
 import { updatePointsInDB } from "@/actions/points.actions";
 import { useUserStore } from "@/store/userUserStore";
+import axios from "axios";
 
 export interface Team {
   id: string;
@@ -87,7 +88,7 @@ const TaskList = () => {
     }
   };
 
-  const filteredCards = cards.filter(
+  const filteredCards = cards?.filter(
     (card) =>
       card.category === selectedCategory || card.cardType === selectedCategory
   );
@@ -123,24 +124,40 @@ const TaskList = () => {
         }
   
         if (userConfig.points < points && points > selectedTeam.baseCost) {
-          await updatePointsInDB({ points: points, id: user });
+          await axios.post(`/api/update-points`, {
+            points: Number(points),
+            id: user,
+          });
         }
+
+        console.log(selectedTeam);
   
-        const result = await updateProfitPerHour(user, selectedTeam);
-        if (!result.success) {
-          throw new Error(result.message || "something went wrong");
+        // update profit per hour
+        const result = await axios.post('/api/cardPurchases', {
+          id: user,
+          selectedTeam
+        });
+
+
+        if (!result.data.success) {
+          throw new Error(result.data.message || "something went wrong");
         }
   
         const authToken = window.localStorage.getItem("authToken");
-        const combinedCards = await allCards(authToken!);
+        const cardsResponse = await axios.get(`/api/cards`, {
+          params: { userId: authToken! },
+        });
+  
+        const combinedCards = cardsResponse.data;
         console.log("🚀 ~ combinedCards:", combinedCards)
-        setCards(combinedCards.combinedCards);
+
+        setCards(combinedCards.data.combinedCards);
   
         // const updatedUser = await getUserConfig(authToken!);
-        console.log("🚀 ~ TaskList ~ user:", combinedCards.user.points);
-        setPoints(combinedCards?.user.points);
-        window.localStorage.setItem("points", combinedCards?.user.points.toString());
-        setPPH(combinedCards?.user.profitPerHour);
+        console.log("🚀 ~ TaskList ~ user:", combinedCards.data.user.points);
+        setPoints(combinedCards?.data.user.points);
+        window.localStorage.setItem("points", combinedCards?.data.user.points.toString());
+        setPPH(combinedCards?.data.user.profitPerHour);
   
         setIsDrawerOpen(false);
       })(),
@@ -196,7 +213,7 @@ const TaskList = () => {
                 className="w-full   rounded-lg"
               >
                 <div className="grid grid-cols-2 gap-3 ">
-                  {filteredCards.map((team, index) => (
+                  {filteredCards?.map((team, index) => (
                     <div
                       key={index}
                       className="px-3 py-2 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  rounded-2xl"
