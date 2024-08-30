@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useMemo, useState } from "react";
+import React, { use, useCallback, useEffect, useMemo, useState } from "react";
 import { beeAvatar } from "../../../public/newImages";
 import Image from "next/image";
 import { IoSettings } from "react-icons/io5";
@@ -59,7 +59,7 @@ const TopNavBar = () => {
 
   const [progess , setProgress] = useState(0)
 
-  const calculateProgress = () => {
+  const calculateProgress = useCallback(() => {
     if (levelIndex >= levelNames.length - 1) {
       return 100;
     }
@@ -76,12 +76,12 @@ const TopNavBar = () => {
       return clampedProgress;
     }
     return 0;
-  };
+  },[levelIndex, levelMinPoints, levelNames, points, user]);
 
 
   useEffect(() => {
     setProgress(calculateProgress());
-  },[points])
+  },[points, calculateProgress])
 
 
   const updateLevelInDB = async (newLevel: string) => {
