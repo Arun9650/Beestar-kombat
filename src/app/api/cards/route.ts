@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Adjust the path to your Prisma setup
 
 // The provided function, slightly adjusted to handle API requests
-export async function allCards(userId: string) {
+export const dynamic = 'force-dynamic';
+ async function allCards(userId: string) {
   // Fetch all cards
   const allCards = await prisma.card.findMany();
 
