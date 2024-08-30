@@ -30,10 +30,10 @@ import { formatNumberWithCommas } from "../../../utils/formatNumber";
 import { updatePointsInDB } from "@/actions/points.actions";
 import { getUserConfig } from "@/actions/user.actions";
 import { useFreeEnergy } from "@/store/useFreeEnergy";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
 interface Booster {
-  id:number;
+  id: number;
   name: string;
   status?: string;
   icon: StaticImageData;
@@ -58,7 +58,7 @@ const Boosters = () => {
   const { points, reducePoints, currentTapsLeft, increaseTapsLeft } =
     usePointsStore();
 
-    const {decreaseFreeEnergy, freeEnergy, setFreeEnergy} = useFreeEnergy();
+  const { decreaseFreeEnergy, freeEnergy, setFreeEnergy } = useFreeEnergy();
 
   const freeBoosters = [
     {
@@ -69,7 +69,7 @@ const Boosters = () => {
       discription:
         "Reacharge your energy to the maximum and do another round of mining.",
     },
-    { id:4, name: "Turbo", status: "Coming soon", icon: rocket },
+    { id: 4, name: "Turbo", status: "Coming soon", icon: rocket },
   ];
 
   const boosters = [
@@ -90,9 +90,6 @@ const Boosters = () => {
       discription: "Increase the Earn Per Tab",
     },
   ];
-
-
-
 
   const handleEnergyCapacityIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
@@ -116,10 +113,7 @@ const Boosters = () => {
               throw new Error(result.message || "Credit failed");
             }
 
-            window.localStorage.setItem(
-              "points",
-              (points).toString()
-            );
+            window.localStorage.setItem("points", points.toString());
             window.localStorage.setItem(
               "energyCapacity",
               newEnergyCapacity.toString()
@@ -176,41 +170,56 @@ const Boosters = () => {
   //   }
   // };
 
- 
-
   const handleFuelRefill = async () => {
     try {
       if (typeof window === "undefined") {
         // Retry after a short delay
-        return new Promise((resolve) => setTimeout(() => resolve(handleFuelRefill()), 100));
+        return new Promise((resolve) =>
+          setTimeout(() => resolve(handleFuelRefill()), 100)
+        );
       }
-  
+
       // Proceed with the rest of your code if window is defined
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const nowInUserTimezone = DateTime.now().setZone(userTimezone);
-      console.log("🚀 ~ handleFuelRefill ~ nowInUserTimezone:", nowInUserTimezone)
-  
+      console.log(
+        "🚀 ~ handleFuelRefill ~ nowInUserTimezone:",
+        nowInUserTimezone
+      );
+
       const storedFreeEnergy = window.localStorage.getItem("freeEnergy");
-      const freeEnergy = storedFreeEnergy !== null ? parseInt(storedFreeEnergy) : 0;
-  
-      const storedCurrentTapsLeft = window.localStorage.getItem("currentTapsLeft");
-      const currentTapsLeft = storedCurrentTapsLeft !== null ? parseInt(storedCurrentTapsLeft) : 0;
-  
+      const freeEnergy =
+        storedFreeEnergy !== null ? parseInt(storedFreeEnergy) : 0;
+
+      const storedCurrentTapsLeft =
+        window.localStorage.getItem("currentTapsLeft");
+      const currentTapsLeft =
+        storedCurrentTapsLeft !== null ? parseInt(storedCurrentTapsLeft) : 0;
+
       if (freeEnergy > 0) {
         const tapsToAdd = energyCapacity - currentTapsLeft;
-  
+
         if (tapsToAdd > 0) {
           increaseTapsLeft(tapsToAdd);
-  
+
           const newRefillValue = freeEnergy - 1;
-  
+
           if (newRefillValue >= 0) {
             setFreeEnergy(newRefillValue);
-            window.localStorage.setItem("freeEnergy", newRefillValue.toString());
-            window.localStorage.setItem("lastRefillTime", nowInUserTimezone.toISO() as string);
+            window.localStorage.setItem(
+              "freeEnergy",
+              newRefillValue.toString()
+            );
+            window.localStorage.setItem(
+              "lastRefillTime",
+              nowInUserTimezone.toISO() as string
+            );
           }
-  
-          window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
+
+          window.localStorage.setItem(
+            "currentTapsLeft",
+            (currentTapsLeft + tapsToAdd).toString()
+          );
           setIsDrawerOpen(false);
           toast.success("Taps refilled to " + energyCapacity);
         } else {
@@ -225,30 +234,43 @@ const Boosters = () => {
       toast.error("Something went wrong with the refill.");
     }
   };
-  
-
 
   useEffect(() => {
     const checkWindowDefined = () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         // Capture the user's timezone
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         // Get the current date in the user's timezone
-        const currentDate = DateTime.now().setZone(userTimezone).startOf('day'); // Set to start of the day in the user's timezone
+        const currentDate = DateTime.now().setZone(userTimezone).startOf("day"); // Set to start of the day in the user's timezone
         const currentDateTimestamp = currentDate.toMillis(); // Get the timestamp for the start of the day
 
-        console.log("🚀 ~ checkWindowDefined ~ currentDateTimestamp:", currentDate.toString());
+        console.log(
+          "🚀 ~ checkWindowDefined ~ currentDateTimestamp:",
+          currentDate.toString()
+        );
 
-        const lastDateTimestamp = parseInt(window.localStorage.getItem("lastDateFreeEnergy") ?? "0", 10);
-        console.log("🚀 ~ checkWindowDefined ~ lastDateTimestamp:", lastDateTimestamp);
+        const lastDateTimestamp = parseInt(
+          window.localStorage.getItem("lastDateFreeEnergy") ?? "0",
+          10
+        );
+        console.log(
+          "🚀 ~ checkWindowDefined ~ lastDateTimestamp:",
+          lastDateTimestamp
+        );
 
-        let freeEnergyValue = parseInt(window.localStorage.getItem("freeEnergy") ?? "6", 10);
+        let freeEnergyValue = parseInt(
+          window.localStorage.getItem("freeEnergy") ?? "6",
+          10
+        );
 
         if (lastDateTimestamp !== currentDateTimestamp) {
           freeEnergyValue = 6; // Reset to full value
           window.localStorage.setItem("freeEnergy", freeEnergyValue.toString());
-          window.localStorage.setItem("lastDateFreeEnergy", currentDateTimestamp.toString());
+          window.localStorage.setItem(
+            "lastDateFreeEnergy",
+            currentDateTimestamp.toString()
+          );
         }
 
         setFreeEnergy(freeEnergyValue);
@@ -259,8 +281,6 @@ const Boosters = () => {
 
     checkWindowDefined();
   }, []);
-  
-
 
   const handleMultiTapIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
@@ -279,13 +299,13 @@ const Boosters = () => {
           "points",
           (points - multiClickCost * 2).toString()
         );
-        setButtonLoading(false); 
+        setButtonLoading(false);
         setIsDrawerOpen(false);
         toast.success("Multiplier increased to " + newMultiClickLevel);
       }
     } else {
       toast.error("Not enough points");
-      setButtonLoading(false); 
+      setButtonLoading(false);
     }
   };
 
