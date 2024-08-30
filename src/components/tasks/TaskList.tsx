@@ -155,8 +155,8 @@ const TaskList = () => {
   
         // const updatedUser = await getUserConfig(authToken!);
         console.log("🚀 ~ TaskList ~ user:", combinedCards.data.user.points);
-        setPoints(combinedCards?.data.user.points);
-        window.localStorage.setItem("points", combinedCards?.data.user.points.toString());
+        setPoints(combinedCards.data.user.points);
+        window.localStorage.setItem("points", combinedCards.data.user.points.toString());
         setPPH(combinedCards?.data.user.profitPerHour);
   
         setIsDrawerOpen(false);
