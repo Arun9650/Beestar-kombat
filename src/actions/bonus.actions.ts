@@ -47,6 +47,8 @@ export const claimReward = async (userId: string) => {
     }
 
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+
     const lastReward = await prisma.dailyReward.findFirst({
       where: { userId },
       orderBy: { createdAt: 'desc' }
@@ -55,10 +57,12 @@ export const claimReward = async (userId: string) => {
     let day = 1;
     if (lastReward) {
       const lastRewardDate = new Date(lastReward.createdAt);
+      lastRewardDate.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+
       const differenceInDays = Math.floor((today.getTime() - lastRewardDate.getTime()) / (1000 * 60 * 60 * 24));
-      if (differenceInDays === 1) {
+      if (differenceInDays >= 1) {
         day = lastReward.day + 1;
-      } else if (differenceInDays > 1) {
+      } else {
         day = 1;
       }
     }
@@ -81,21 +85,28 @@ export const claimReward = async (userId: string) => {
   }
 };
 
-export const checkRewardStatus = async (userId:string) => {
+export const checkRewardStatus = async (userId: string) => {
   try {
     if (!userId) {
       throw new Error('Missing userId');
     }
 
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+
     const lastReward = await prisma.dailyReward.findFirst({
       where: { userId: userId },
       orderBy: { createdAt: 'desc' }
     });
 
     let nextRewardAvailable = true;
-    if (lastReward && new Date(lastReward.createdAt).toDateString() === today.toDateString()) {
-      nextRewardAvailable = false;
+    if (lastReward) {
+      const lastRewardDate = new Date(lastReward.createdAt);
+      lastRewardDate.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date
+
+      if (lastRewardDate.getTime() === today.getTime()) {
+        nextRewardAvailable = false;
+      }
     }
 
     return { nextRewardAvailable, lastReward };
