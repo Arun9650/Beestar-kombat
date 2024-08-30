@@ -17,6 +17,7 @@ import { usePointsStore } from "@/store/PointsStore";
 import { Skeleton } from "../ui/skeleton";
 import toast from "react-hot-toast";
 import { updatePointsInDB } from "@/actions/points.actions";
+import { useUserStore } from "@/store/userUserStore";
 
 export interface Team {
   id: string;
@@ -48,7 +49,7 @@ const TaskList = () => {
 
   const [user, setUser] = useState<string | null>(null);
 
-
+  const {user:userInfo} =  useUserStore();
 
   useEffect(() => {
     const checkWindowDefined = () => {
@@ -113,9 +114,15 @@ const TaskList = () => {
     setButtonLoading(true);
     toast.promise(
       (async () => {
-        const userConfig = await getUserConfig(user);
+
+        let userConfig: any = userInfo;
+
+        if(!userInfo){
+           const userdetails = await getUserConfig(user);
+           userConfig = userdetails.userDetails;
+        }
   
-        if (userConfig.user.points < points && points > selectedTeam.baseCost) {
+        if (userConfig.points < points && points > selectedTeam.baseCost) {
           await updatePointsInDB({ points: points, id: user });
         }
   
