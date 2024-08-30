@@ -2,23 +2,22 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Adjust the path to your Prisma setup
 
 // The provided function, slightly adjusted to handle API requests
-export const dynamic = 'force-dynamic';
+
  async function allCards(userId: string) {
-  // Fetch all cards
-  const allCards = await prisma.card.findMany();
-
-  // Fetch user's purchased cards
-  const userCards = await prisma.userCard.findMany({
-    where: { userId },
-  });
-
-  const user = await prisma.user.update({
-    where: { chatId: userId },
-    data: {
-      lastProfitDate: Date.now(), // Updated as a timestamp
-      lastLogin: new Date(), // Correct Date type for lastLogin
-    },
-  });
+  // Fetch all cards, user's purchased cards, and update user information in parallel
+  const [allCards, userCards, user] = await Promise.all([
+    prisma.card.findMany(),
+    prisma.userCard.findMany({
+      where: { userId },
+    }),
+    prisma.user.update({
+      where: { chatId: userId },
+      data: {
+        lastProfitDate: Date.now(), // Updated as a timestamp
+        lastLogin: new Date(), // Correct Date type for lastLogin
+      },
+    }),
+  ]);
 
   // Create a map of userCards for quick lookup
   const userCardsMap = new Map(userCards.map((card) => [card.cardId, card]));

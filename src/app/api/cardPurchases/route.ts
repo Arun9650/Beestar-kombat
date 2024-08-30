@@ -25,24 +25,25 @@ export async function POST(request: Request) {
     const remainingPoints = Math.max(user.points - selectedTeam.baseCost, 0);
 
     if (purchaseCard && remainingPoints > 0) {
-      await prisma.user.update({
-        where: { chatId: id },
-        data: {
-          profitPerHour: { increment: selectedTeam.basePPH },
-          points: remainingPoints,
-          lastProfitDate: Date.now(),
-          lastLogin: new Date(),
-        },
-      });
-
-      await prisma.userCard.update({
-        where: { id: selectedTeam.id },
-        data: {
-          baseLevel: { increment: 1 },
-          basePPH: increasedBasePPH,
-          baseCost: increasedBaseCost,
-        },
-      });
+      await prisma.$transaction([
+        prisma.user.update({
+          where: { chatId: id },
+          data: {
+            profitPerHour: { increment: selectedTeam.basePPH },
+            points: remainingPoints,
+            lastProfitDate: Date.now(),
+            lastLogin: new Date(),
+          },
+        }),
+        prisma.userCard.update({
+          where: { id: selectedTeam.id },
+          data: {
+            baseLevel: { increment: 1 },
+            basePPH: increasedBasePPH,
+            baseCost: increasedBaseCost,
+          },
+        }),
+      ]);
 
       return NextResponse.json({ success: true, message: 'Card updated successfully' });
     } else {
