@@ -209,7 +209,7 @@ useEffect(() => {
                 <p className="font-semibold">Check out our youtube channel</p>
                 <p className="text-yellow-400  flex items-center justify-start gap-1">
                   <Image src={dollarCoin} alt="Coin" className="w-4 h-4 " />
-                  +100,000
+                  +5000
                 </p>
               </div>
             </div>
