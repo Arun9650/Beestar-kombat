@@ -112,6 +112,7 @@ const TaskList = () => {
         return await handleCardPurchase(id, selectedTeam);
       },
       onMutate: () => {
+        setButtonLoading(true);
         toast.loading("Updating profit per hour...");
       },
     onSettled: () => {
@@ -179,6 +180,7 @@ const TaskList = () => {
       },
       onSuccess: (data) => {
         toast.dismiss()
+        setButtonLoading(false);
         toast.success("Card purchased successfully");
         setIsDrawerOpen(false);
       }
