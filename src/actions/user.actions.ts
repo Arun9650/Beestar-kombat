@@ -172,9 +172,23 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
 
 
 
-export const getLeaderboard = async () => {
+
+export const getLeaderboard = async ({
+  league,
+  page = 1,
+  limit = 100,
+}: {
+  league: string;
+  page?: number;
+  limit?: number;
+}) => {
   try {
+    const offset = (page - 1) * limit;
+
     const leaderboard = await prisma.user.findMany({
+      where: {
+        league: league, // Filter users by league
+      },
       orderBy: {
         points: 'desc',
       },
@@ -185,15 +199,24 @@ export const getLeaderboard = async () => {
         profitPerHour: true,
         league: true,
       },
-      // Adjust this number to get more or fewer users
+      skip: offset,
+      take: limit, // Limit the number of users returned
     });
 
-    return { success: true, leaderboard };
+    // Get total number of users in the league for pagination
+    const totalUsers = await prisma.user.count({
+      where: {
+        league: league,
+      },
+    });
+
+    return { success: true, leaderboard, totalUsers };
   } catch (error) {
     console.error(error);
     return { success: false, error: 'Failed to fetch leaderboard' };
   }
 };
+
 
 
 export const DeleteUser = async (userId:string) => {
