@@ -190,6 +190,8 @@ model Bonuster {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   chatId          String @unique
   energy          Int
+  energyCost      Int
+  energylevel     Int
   multiClickLevel Int    @default(1)
   multiClickCost  Int    @default(500)
   user            User   @relation(fields: [chatId], references: [chatId])

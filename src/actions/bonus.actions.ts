@@ -289,10 +289,20 @@ export const creditEnergy = async (userId:string, amount:number) => {
         energy: {
           increment: 500,
         },
+        energyCost: {
+          increment: amount,
+        },
+        energylevel: {
+          increment: 1,
+        },
       },
       create: {
         chatId: userId,
         energy: 500,
+        multiClickLevel:2,
+        energyCost:1000,
+        energylevel:2,
+        multiClickCost:1000,
       },
     });
 
@@ -331,7 +341,7 @@ export const creditMultiClickLevel = async (userId:string, amount:number) => {
           increment: 1,
         },
         multiClickCost: {
-          increment: 500,
+          increment: amount,
         }
       },
       create: {
@@ -339,6 +349,8 @@ export const creditMultiClickLevel = async (userId:string, amount:number) => {
         energy: 500,
         multiClickLevel: 2,
         multiClickCost: 1000,
+        energyCost: 1000,
+        energylevel: 2,
       },
     });
 

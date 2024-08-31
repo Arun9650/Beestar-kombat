@@ -54,6 +54,10 @@ const Boosters = () => {
     setEnergyCapacity,
     setMultiClickCost,
     multiClickCost,
+    energyLevel,
+    energyCost,
+    setEnergyCost,
+    setEnergyLevel
   } = useBoostersStore();
   const { points, reducePoints, currentTapsLeft, increaseTapsLeft, setCurrentTapsLeft } =
     usePointsStore();
@@ -76,8 +80,8 @@ const Boosters = () => {
     {
       id: 2,
       name: "Energy limit",
-      cost: energyCapacity * 2,
-      level: energyCapacity / 500,
+      cost: energyCost * 2,
+      level: energyLevel,
       icon: recharge,
       discription: "Increase the amount of energy",
     },
@@ -85,7 +89,7 @@ const Boosters = () => {
       id: 3,
       name: "Multi Tap",
       cost: multiClickCost * 2,
-      level: multiClickCost / 500,
+      level:multiClickLevel,
       icon: Click,
       discription: "Increase the Earn Per Tab",
     },
@@ -104,11 +108,15 @@ const Boosters = () => {
               id: userId!,
             });
 
-            reducePoints(energyCapacity * 2);
+            reducePoints(energyCost * 2);
             const newEnergyCapacity = energyCapacity + 500;
             setEnergyCapacity(newEnergyCapacity);
 
-            const result = await creditEnergy(userId!, energyCapacity * 2);
+            const newMultiClickCost = energyCost *2;
+      setEnergyCost(newMultiClickCost);
+      const newMultiClickLevel = energyLevel + 1;
+      setEnergyLevel(newMultiClickLevel);
+            const result = await creditEnergy(userId!, energyCost);
             if (!result.success) {
               throw new Error(result.message || "Credit failed");
             }
@@ -291,11 +299,11 @@ const Boosters = () => {
       await updatePointsInDB({ points: points, id: userId! });
 
       reducePoints(multiClickCost * 2);
-      const newMultiClickCost = multiClickCost + 500;
+      const newMultiClickCost = multiClickCost *2;
       setMultiClickCost(newMultiClickCost);
       const newMultiClickLevel = multiClickLevel + 1;
       setMultiClickLevel(newMultiClickLevel);
-      const result = await creditMultiClickLevel(userId!, multiClickCost * 2);
+      const result = await creditMultiClickLevel(userId!, multiClickCost);
       if (result.success) {
         window.localStorage.setItem(
           "points",
@@ -438,7 +446,7 @@ const Boosters = () => {
                   <div className="flex items-center gap-2">
                     <Image src={dollarCoin} alt="coin" width={30} height={30} />
                     {selectedBooster.name === "Energy limit"
-                      ? energyCapacity * 2
+                      ? energyCost * 2
                       : selectedBooster.name === "Multi Tap"
                       ? multiClickCost * 2
                       : "Free"}

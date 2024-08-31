@@ -13,6 +13,8 @@ const useUserPointsConfig = () => {
     setEnergyCapacity,
     setMultiClickLevel,
     setMultiClickCost,
+    setEnergyCost,
+    setEnergyLevel
   } = useBoostersStore();
 
   const {
@@ -30,32 +32,38 @@ const useUserPointsConfig = () => {
     const executeEffect = () => {
 
       const user = window.localStorage.getItem("authToken");
+      console.log("🚀 ~ executeEffect ~ user:", user)
       let initialPoints = window.localStorage.getItem("points");
 
       const currentTapsLeftLocal =
         window.localStorage.getItem("currentTapsLeft");
-      console.log(
-        "🚀 ~ executeEffect ~ currentTapsLeftLocal:",
-        currentTapsLeftLocal
-      );
+      // console.log(
+      //   "🚀 ~ executeEffect ~ currentTapsLeftLocal:",
+      //   currentTapsLeftLocal
+      // );
       const energyCapacityLocal = window.localStorage.getItem("energyCapacity");
 
       async function update() {
-        console.log(user);
+        // console.log(user);
         const config = await getUserConfig(`${user}`);
         
+        console.log("🚀 ~ update ~ config:", config)
         const currentState = config?.user;
         if (config?.userDetails && config ) {
           setUser(config.userDetails);
         }
-        console.log("🚀 ~ update ~ currentState:", currentState);
+        // console.log("🚀 ~ update ~ currentState:", currentState);
         if (currentState) {
+          console.log("🚀 ~ update ~ currentState:", currentState)
           if (currentState && currentState.capacity) {
             if (
               energyCapacity < currentState.capacity &&
-              currentState.capacity >= Number(energyCapacityLocal)
+              currentState.capacity >= Number(energyCapacityLocal) && currentState.energyLevel
             ) {
+              console.log("asf")
               setEnergyCapacity(currentState.capacity);
+              setEnergyCost(currentState.energyCost);
+              setEnergyLevel(currentState.energyLevel);
             }
 
             if (currentState.multiClickCost && currentState.multiClickLevel) {
@@ -66,7 +74,7 @@ const useUserPointsConfig = () => {
           // Retrieve the last login time from local storage
           const getLastLoginTimeFromLocalStorage = (): number | null => {
             const lastLogin = window.localStorage.getItem("lastLoginTime");
-            console.log("🚀lastLogin:", lastLogin)
+            // console.log("🚀lastLogin:", lastLogin)
             return lastLogin ? parseInt(lastLogin, 10) : null;
           };
 
@@ -84,10 +92,10 @@ const useUserPointsConfig = () => {
             let lastLoginTime: number;
             if (lastLoginTimeFromConfig !== null) {
               lastLoginTime =  lastLoginTimeFromLocalStorage !== null ? Math.max(lastLoginTimeFromConfig,lastLoginTimeFromLocalStorage) : lastLoginTimeFromConfig;
-              console.log("🚀 ~ update ~ lastLoginTime:", lastLoginTime)
+              // console.log("🚀 ~ update ~ lastLoginTime:", lastLoginTime)
             } else {
               lastLoginTime = lastLoginTimeFromLocalStorage !== null ? lastLoginTimeFromLocalStorage : Date.now(); // Fallback to current time if both are null
-              console.log("🚀 ~ update ~ lastLoginTime:", lastLoginTime)
+              // console.log("🚀 ~ update ~ lastLoginTime:", lastLoginTime)
             }
 
             // Update the local storage with the latest login time
@@ -102,9 +110,9 @@ const useUserPointsConfig = () => {
             const timeDifferenceInSeconds = Math.floor(
               (now - lastLoginTime) / 1000
             );
-            console.log("🚀 ~ update ~ timeDifferenceInSeconds:",
-              timeDifferenceInSeconds
-            );
+            // console.log("🚀 ~ update ~ timeDifferenceInSeconds:",
+            //   timeDifferenceInSeconds
+            // );
 
             let currentTapsLeftcal = Number(currentTapsLeftLocal);
             console.log(
@@ -114,17 +122,17 @@ const useUserPointsConfig = () => {
 
             const remainingTaps =
               (currentState?.capacity ?? 0) - currentTapsLeftcal;
-            console.log("🚀 ~ update ~ remainingTaps:", remainingTaps);
+            // console.log("🚀 ~ update ~ remainingTaps:", remainingTaps);
 
             if (Number(initialPoints) != 0) {
               if (timeDifferenceInSeconds > remainingTaps) {
                 currentTapsLeftcal = currentState.capacity ?? 0;
                 console.log(currentState.capacity);
                 if (!isNaN(currentTapsLeftcal)) {
-                  console.log(
-                    "🚀 ~ update ~ currentTapsLeftcal:",
-                    currentTapsLeftcal
-                  );
+                  // console.log(
+                  //   "🚀 ~ update ~ currentTapsLeftcal:",
+                  //   currentTapsLeftcal
+                  // );
                   setCurrentTapsLeft(currentTapsLeftcal);
                   window.localStorage.setItem(
                     "currentTapsLeft",
@@ -135,10 +143,10 @@ const useUserPointsConfig = () => {
               } else {
                 currentTapsLeftcal += timeDifferenceInSeconds;
                 if (!isNaN(Number(currentTapsLeftcal))) {
-                  console.log(
-                    "🚀 ~ update ~ currentTapsLeftcal:",
-                    currentTapsLeftcal
-                  );
+                  // console.log(
+                  //   "🚀 ~ update ~ currentTapsLeftcal:",
+                  //   currentTapsLeftcal
+                  // );
                   setCurrentTapsLeft(currentTapsLeftcal);
                   window.localStorage.setItem(
                     "currentTapsLeft",

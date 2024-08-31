@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       where: { id: selectedTeam.id },
     });
 
-    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2);
+    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2.5);
     const increasedBasePPH = Math.floor(selectedTeam.basePPH * 1.05);
     const remainingPoints = Math.max(user.points - selectedTeam.baseCost, 0);
 
@@ -47,8 +47,8 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ success: true, message: 'Card updated successfully' });
     } else {
-      const increasedBaseCost = selectedTeam.baseCost * 2;
-      const increasedBasePPH = selectedTeam.basePPH * 1.25;
+      const increasedBaseCost = selectedTeam.baseCost * 2.5;
+      const increasedBasePPH = selectedTeam.basePPH * 1.05;
 
       await prisma.userCard.create({
         data: {

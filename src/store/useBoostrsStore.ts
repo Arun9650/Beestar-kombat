@@ -12,10 +12,14 @@ export type BoostersStore = {
 
   //   one time boosts
   energyCapacity: number;
+  energyCost:number;
+  energyLevel:number;
   multiClickLevel: number;
   multiClickCost: number;
 
   setEnergyCapacity: (val: number) => void;
+  setEnergyCost: (val: number) => void;
+  setEnergyLevel: (val: number) => void;
   setMultiClickLevel: (val: number) => void;
   setMultiClickCost: (val: number) => void;
 
@@ -41,11 +45,15 @@ export const useBoostersStore = create<BoostersStore>((set, get) => ({
 
   //   one time boosts
   energyCapacity: 500,
+  energyCost: 500,
+  energyLevel: 1,
   multiClickLevel: 1,
   multiClickCost: 500,
 
   setMultiClickLevel: (val) => set({ multiClickLevel: val }),
   setMultiClickCost:  (val) => set({ multiClickCost: val }),
+  setEnergyCost:  (val) => set({ energyCost: val }),
+  setEnergyLevel:  (val) => set({ energyLevel: val }),
   setEnergyCapacity: (val) => set({ energyCapacity: val }),
   setRefill: (refill) => set({ refill }), // Define setRefill
 
