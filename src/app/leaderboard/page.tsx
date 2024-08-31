@@ -58,6 +58,19 @@ const Leaderboard = () => {
     1000000000, // Lord
   ];
 
+  const formatNumber = (num: number): string => {
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+    }
+    if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return num.toString();
+  };
+
   const calculateProgress = () => {
     if (levelIndex >= levelNames.length - 1) {
       return 100;
@@ -182,12 +195,12 @@ const Leaderboard = () => {
           />
         </div>
         <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
-        {levelNames[currentIndex] === user?.league && (
-          <p className="text-xl">
-            {currentIndex + 1}{" "}
-            <span className="text-[#95908a]">/ {levelNames.length}</span>
+        {levelNames[currentIndex] === user?.league ? (
+          <p className="font-semibold text-[#95908a]">
+            { (formatNumber(points) )  }{" "}
+            <span className="">/ {formatNumber(levelMinPoints[currentIndex])}</span>
           </p>
-        )}
+        ) : <p className="font-semibold text-[#95908a]">from  {formatNumber(levelMinPoints[currentIndex])}</p>}
         {levelNames[currentIndex] === user?.league && (
           <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
             <div
