@@ -88,6 +88,10 @@ const EarnMoreCoins = () => {
   const { data: YoutubeTask , isLoading: isYouTubeTaskLoading} = useFetchYoutubeTasks(id ?? userId ?? "");
   console.log("🚀 ~ EarnMoreCoins ~ YoutubeTask:", YoutubeTask?.tasks);
 
+
+  const [isYouTubeTaskProcessing, setIsYouTubeTaskProcessing] = useState(false);
+
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       increaseTapsLeft();
@@ -196,7 +200,8 @@ const EarnMoreCoins = () => {
   };
 
   const handleCompleteYoutube = async (task: Task) => {
-    if (userId) {
+    if (userId && !isYouTubeTaskProcessing) {
+      setIsYouTubeTaskProcessing(true);
       YouTubeMutation.mutate(
         { userId, taskId: task.id },
         {
@@ -210,6 +215,7 @@ const EarnMoreCoins = () => {
                 task.points
               }`
             );
+            setIsYouTubeTaskProcessing(false);
           },
         }
       );
@@ -234,7 +240,7 @@ const EarnMoreCoins = () => {
           {YoutubeTask?.tasks.map((task) => (
             <>
               <button
-              disabled={task.isUserTask}
+              disabled={task.isUserTask  || isYouTubeTaskProcessing}
                 onClick={() => handleCompleteYoutube(task)}
                 className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between "
               >
