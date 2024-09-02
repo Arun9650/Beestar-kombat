@@ -35,14 +35,13 @@ const Leaderboard = () => {
       const leagueIndex = levelNames.findIndex((level) => level === user?.league);
       const currentLevelMin = levelMinPoints[leagueIndex];
       const nextLevelMin = levelMinPoints[leagueIndex + 1];
-      const progress = ((points) / (currentLevelMin)) * 100;
+      const progress = ((points) / (nextLevelMin)) * 100;
   
       const cappedProgress = Math.min(progress, 100);
       return cappedProgress >= 0 ? cappedProgress : 0;
     }
     return 0;
   };
-  
 
   const handleArrowClick = (direction: "left" | "right") => {
     if (direction === "left" && currentIndex > 0) {
@@ -82,7 +81,7 @@ const adjustedUserIndex = userIndex === -1 ? `${Math.floor(Math.random() * 9000)
         <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
         {levelNames[currentIndex] === user?.league ? (
           <p className="font-semibold text-[#95908a]">
-            {formatNumber(points)} <span className="">/ {formatNumber(levelMinPoints[currentIndex])}</span>
+            {formatNumber(points)} <span className="">/ {formatNumber(levelMinPoints[currentIndex + 1])}</span>
           </p>
         ) : (
           <p className="font-semibold text-[#95908a]">from {formatNumber(levelMinPoints[currentIndex])}</p>

@@ -69,7 +69,7 @@ const TopNavBar = () => {
       );
       const currentLevelMin = levelMinPoints[leagueIndex];
       const nextLevelMin = levelMinPoints[leagueIndex + 1];
-      const progress =  ((points) / (currentLevelMin)) * 100;
+      const progress =  ((points) / (nextLevelMin)) * 100;
 
       const clampedProgress = Math.max(Math.min(progress, 100), 0);
       return clampedProgress;
