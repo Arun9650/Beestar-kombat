@@ -27,6 +27,8 @@ import { useBoostersStore } from "@/store/useBoostrsStore";
 import { useSearchParams } from "next/navigation";
 import { useYouTubeMutation } from "@/hooks/mutation/useYouTube";
 import { useFetchYoutubeTasks } from "@/hooks/query/useFetchYouTubeTask";
+import { useFetchTasks } from "@/hooks/query/useFetchTask";
+import { useTasksMutation } from "@/hooks/mutation/useTasksMutation";
 
 interface Reward {
   id?: string;
@@ -64,8 +66,8 @@ const EarnMoreCoins = () => {
 
   const [rewards, setReward] = useState<Reward | null>(null);
   const [nextRewardAvailable, setNextRewardAvailable] = useState(false);
-  const [taskList, setTaskList] = useState<Task[]>();
-  const [isLoading, setIsLoading] = useState(true);
+  // const [taskList, setTaskList] = useState<Task[]>();
+  // const [isLoading, setIsLoading] = useState(true);
 
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -81,11 +83,14 @@ const EarnMoreCoins = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const YouTubeMutation = useYouTubeMutation();
+  const TaskMutation = useTasksMutation();
 
   const search = useSearchParams();
   const id = search.get("id");
 
   const { data: YoutubeTask , isLoading: isYouTubeTaskLoading} = useFetchYoutubeTasks(id ?? userId ?? "");
+  const { data: taskList , isLoading} = useFetchTasks(id ?? userId ?? "");
+
   console.log("🚀 ~ EarnMoreCoins ~ YoutubeTask:", YoutubeTask?.tasks);
 
 
@@ -153,49 +158,51 @@ const EarnMoreCoins = () => {
 
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
-  useEffect(() => {
-    const checkWindowDefined = () => {
-      if (typeof window !== "undefined") {
-        const authToken = window.localStorage.getItem("authToken");
-        setUserId(authToken);
-        if (authToken) {
-          const getAllTask = async () => {
-            const tasks = await TaskToShow(authToken);
-            if (tasks && tasks.length > 0) {
-              setTaskList(tasks);
-              setIsLoading(false);
-            }
-          };
-          getAllTask();
-        }
-      } else {
-        setTimeout(checkWindowDefined, 100); // Retry after 100ms
-      }
-    };
+  // useEffect(() => {
+  //   const checkWindowDefined = () => {
+  //     if (typeof window !== "undefined") {
+  //       const authToken = window.localStorage.getItem("authToken");
+  //       setUserId(authToken);
+  //       if (authToken) {
+  //         const getAllTask = async () => {
+  //           const tasks = await TaskToShow(authToken);
+  //           if (tasks && tasks.length > 0) {
+  //             // setTaskList(tasks);
+  //             // setIsLoading(false);
+  //           } 
+  //         };
+  //         getAllTask();
+  //       }
+  //     } else {
+  //       setTimeout(checkWindowDefined, 100); // Retry after 100ms
+  //     }
+  //   };
 
-    checkWindowDefined();
-  }, []);
+  //   checkWindowDefined();
+  // }, []);
 
   const handleCompleteTask = async (task: Task) => {
     if (!userId) return;
-    const result = await completeTask({ userId, taskId: task.id });
 
-    if (result === "success") {
-      setCompletedTasks((prev) => [...prev, task.id]);
-      toast.success("Task completed successfully!");
-      setIsLoading(true);
-      addPoints(task.points);
-      window.localStorage.setItem(
-        "points",
-        `${
-          parseInt(window.localStorage.getItem("points") || "0") + task.points
-        }`
+    if (userId && !isYouTubeTaskProcessing) {
+      setIsYouTubeTaskProcessing(true);
+      TaskMutation.mutate(
+        { userId, taskId: task.id },
+        {
+          onSuccess: () => {
+            toast.success("Task completed successfully!");
+            addPoints(task.points);
+            window.localStorage.setItem(
+              "points",
+              `${
+                parseInt(window.localStorage.getItem("points") || "0") +
+                task.points
+              }`
+            );
+            setIsYouTubeTaskProcessing(false);
+          },
+        }
       );
-      const tasks = await TaskToShow(userId!);
-      if (tasks && tasks.length > 0) {
-        setTaskList(tasks);
-      }
-      setIsLoading(false);
     }
   };
 
@@ -265,7 +272,7 @@ const EarnMoreCoins = () => {
                       </p>
                     </div>
                   </div>
-                </Link>
+                </Link> 
                 {task.isUserTask && (
                   <Image
                     src={approved}
@@ -372,7 +379,7 @@ const EarnMoreCoins = () => {
             taskList.length > 0 &&
             taskList.map((task: Task, index) => (
               <button
-                disabled={task.isUserTask}
+                disabled={task.isUserTask || isYouTubeTaskProcessing}
                 onClick={() => handleCompleteTask(task)}
                 key={index}
                 className="p-4 bg-[#1d2025] shadow-xl w-full border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl mt-2 flex items-center justify-between"
