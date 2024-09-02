@@ -115,53 +115,26 @@ const TaskList = () => {
         setButtonLoading(true);
         toast.loading("Updating profit per hour...");
       },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["cards"] });
-    },
   });
 
   const handleCardPurchase = async (id: string, selectedTeam: Team) => {
     
-    let userConfig: any = userInfo;
-
-    if(!userInfo){
-       const userdetails = await getUserConfig(id);
-       userConfig = userdetails.userDetails;
-    }
-
-    if (userConfig.points < points && points > selectedTeam.baseCost) {
-      await axios.post(`/api/update-points`, {
-        points: Number(points),
-        id: user,
-      });
-    }
-
-    console.log(selectedTeam);
-
     // update profit per hour
     const result = await axios.post('/api/cardPurchases', {
       id: user,
-      selectedTeam
+      selectedTeam,
+      points: points
     });
-
 
     if (!result.data.success) {
       throw new Error(result.data.message || "something went wrong");
     }
 
-    const authToken = window.localStorage.getItem("authToken");
-    const cardsResponse = await axios.get(`/api/cards`, {
-      params: { userId: authToken! },
-    });
+    setPoints(result.data.user.points);
+    window.localStorage.setItem("points", result.data.user.points.toString());
+    setPPH(result?.data.user.profitPerHour);
 
-    const combinedCards = cardsResponse.data;
-    console.log("🚀 ~ combinedCards:", combinedCards)
-
-    setPoints(combinedCards.data.user.points);
-    window.localStorage.setItem("points", combinedCards.data.user.points.toString());
-    setPPH(combinedCards?.data.user.profitPerHour);
-
-  
+    return result.data;
 
   };
 
@@ -176,9 +149,35 @@ const TaskList = () => {
 
     cardPurchasesMutation.mutate({id: user!, selectedTeam: selectedTeam!}, {
       onError: (error) => {
+        setButtonLoading(false);
+        toast.dismiss();
+        setIsDrawerOpen(false);
         toast.error("Error purchasing card");
       },
       onSuccess: (data) => {
+      console.log("🚀 ~ handleUpdateProfitPerHour ~ data:", data)
+
+        queryClient.setQueryData(["cards"],(oldQueryData) => {
+          const oldQuery = oldQueryData as {combinedCards : any[]} ;
+          console.log("🚀 ~  oldQuery:", oldQuery)
+         
+          if (oldQuery) {
+            return {
+              ...oldQuery,
+              combinedCards: oldQuery.combinedCards.map((card:any) => {
+                if (card.id === data.userCard.id || card.title === data.userCard.title || card.image === data.userCard.image) {
+                  return {
+                    ...card,
+                    ...data.userCard,
+                  };
+                }
+                return card;
+              }),
+            };
+          }
+          return oldQueryData;
+        })  
+
         toast.dismiss()
         setButtonLoading(false);
         toast.success("Card purchased successfully");

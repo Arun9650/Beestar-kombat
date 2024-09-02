@@ -1,55 +1,38 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Adjust the path to your Prisma setup
 
-// The function you've provided, slightly modified for use in an API context
-async function updatePointsInDB({
-  points,
-  id,
-}: {
-  points: number;
-  id: string;
-}): Promise<"success" | "unknownError" | "userNotExist"> {
+export async function POST(request: Request) {
   try {
-    const user = await prisma.user.findUnique({ where: { chatId: id } });
+    const { points, id } = await request.json();
 
-    if (!user) return "userNotExist";
+    // Input validation
+    if (typeof points !== 'number' || typeof id !== 'string') {
+      return NextResponse.json({ status: 'error', message: 'Invalid input' }, { status: 400 });
+    }
 
+    // Fetch the user and check existence
+    const userExists = await prisma.user.findUnique({
+      where: { chatId: id },
+      select: { chatId: true }, // Only check for existence
+    });
+
+    if (!userExists) {
+      return NextResponse.json({ status: 'error', message: 'User does not exist' }, { status: 404 });
+    }
+
+    // If points > 0, update the user
     if (points > 0) {
       await prisma.user.update({
         where: { chatId: id },
         data: {
-          points: points,
-          lastProfitDate: Date.now(), // Changed to a new Date object
+          points,
+          lastProfitDate: Math.floor(Date.now() / 1000), // Store as Unix timestamp (seconds)
           lastLogin: new Date(),
         },
       });
     }
 
-    return "success";
-  } catch (e) {
-    console.log(e);
-    return "unknownError";
-  }
-}
-
-// API Route handler
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { points, id } = body;
-
-    if (typeof points !== 'number' || typeof id !== 'string') {
-      return NextResponse.json({ status: 'error', message: 'Invalid input' }, { status: 400 });
-    }
-
-    const result = await updatePointsInDB({ points, id });
-
-    if (result === "userNotExist") {
-      return NextResponse.json({ status: 'error', message: 'User does not exist' }, { status: 404 });
-    } else if (result === "unknownError") {
-      return NextResponse.json({ status: 'error', message: 'An unknown error occurred' }, { status: 500 });
-    }
-
+    // Return success response immediately after update
     return NextResponse.json({ status: 'success' });
   } catch (error) {
     console.error('Failed to update points:', error);

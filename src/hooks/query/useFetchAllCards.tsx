@@ -6,6 +6,6 @@ export const useFetchAllCards = (userId: string) => {
   return useQuery({
     queryKey: ['cards'],
     queryFn: () => fetchAllCards(userId),  
-    staleTime: 1000 * 60 * 60,  
+    enabled: !!userId 
  } );
 };

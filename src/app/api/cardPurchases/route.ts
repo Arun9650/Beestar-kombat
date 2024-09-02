@@ -4,34 +4,37 @@ import { Team } from '@/components/tasks/TaskList';
 
 export async function POST(request: Request) {
   try {
-    const { id, selectedTeam }: { id: string; selectedTeam: Team } = await request.json();
+    const { id, selectedTeam, points }: { id: string; selectedTeam: Team, points: number } = await request.json();
 
     if (!id || !selectedTeam) {
       return NextResponse.json({ success: false, message: 'Invalid request data' }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({ where: { chatId: id } });
+    // Fetch user and their purchased card in parallel
+    const [user, purchaseCard] = await Promise.all([
+      prisma.user.findUnique({ where: { chatId: id } }),
+      prisma.userCard.findUnique({ where: { id: selectedTeam.id } }),
+    ]);
 
     if (!user) {
       return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
     }
 
-    const purchaseCard = await prisma.userCard.findUnique({
-      where: { id: selectedTeam.id },
-    });
-
+    // Calculate new values
     const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2.5);
     const increasedBasePPH = Math.floor(selectedTeam.basePPH * 1.05);
-    const remainingPoints = Math.max(user.points - selectedTeam.baseCost, 0);
+    const remainingPoints = points - selectedTeam.baseCost;
+    console.log("🚀 ~ POST ~ selectedTeam.baseCost:", selectedTeam.baseCost)
+    console.log("🚀 ~ POST ~ user.points:", user.points)
 
-    if (purchaseCard && remainingPoints > 0) {
-      await prisma.$transaction([
+    if (purchaseCard && remainingPoints >= 0) {
+      const updatedUser = await prisma.$transaction([
         prisma.user.update({
           where: { chatId: id },
           data: {
             profitPerHour: { increment: selectedTeam.basePPH },
             points: remainingPoints,
-            lastProfitDate: Date.now(),
+            lastProfitDate: Math.floor(Date.now() / 1000),
             lastLogin: new Date(),
           },
         }),
@@ -45,33 +48,37 @@ export async function POST(request: Request) {
         }),
       ]);
 
-      return NextResponse.json({ success: true, message: 'Card updated successfully' });
+      // Fetch the latest user data after the transaction
+      return NextResponse.json({ success: true, message: 'Card updated successfully', user: updatedUser[0], userCard:  updatedUser[1] });
+    } else if (remainingPoints >= 0) {
+      const updatedUser = await prisma.$transaction([
+        prisma.userCard.create({
+          data: {
+            cardId: selectedTeam.id,
+            title: selectedTeam.title,
+            image: selectedTeam.image,
+            baseLevel: 1,
+            basePPH: increasedBasePPH,
+            baseCost: increasedBaseCost,
+            userId: id,
+            category: selectedTeam.category,
+          },
+        }),
+        prisma.user.update({
+          where: { chatId: id },
+          data: {
+            profitPerHour: { increment: selectedTeam.basePPH },
+            points: { decrement: selectedTeam.baseCost },
+            lastProfitDate: Math.floor(Date.now() / 1000),
+            lastLogin: new Date(),
+          },
+        }),
+      ]);
+
+      // Fetch the latest user data after the transaction
+      return NextResponse.json({ success: true, message: 'Card created and user updated successfully', user: updatedUser[1], userCard:  updatedUser[0] });
     } else {
-      const increasedBaseCost = selectedTeam.baseCost * 2.5;
-      const increasedBasePPH = selectedTeam.basePPH * 1.05;
-
-      await prisma.userCard.create({
-        data: {
-          cardId: selectedTeam.id,
-          title: selectedTeam.title,
-          image: selectedTeam.image,
-          baseLevel: 1,
-          basePPH: increasedBasePPH,
-          baseCost: increasedBaseCost,
-          userId: id,
-          category: selectedTeam.category,
-        },
-      });
-
-      await prisma.user.update({
-        where: { chatId: id },
-        data: {
-          profitPerHour: { increment: selectedTeam.basePPH },
-          points: { decrement: selectedTeam.baseCost },
-        },
-      });
-
-      return NextResponse.json({ success: true, message: 'Card created and user updated successfully' });
+      return NextResponse.json({ success: false, message: 'Insufficient points' }, { status: 400 });
     }
   } catch (e) {
     console.error('Error updating profit per hour:', e);
