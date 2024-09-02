@@ -231,7 +231,7 @@ export const DeleteUser = async (userId:string) => {
       },
       data: {
         referredById: null,
-        referralCount: { decrement: 1 },
+        // referralCount: { decrement: 1 },
       },
     });
 
