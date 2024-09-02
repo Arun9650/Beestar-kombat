@@ -54,7 +54,7 @@ const AirDrop = () => {
               height={48}
               className="mr-4"
             />
-            <p className="font-semibold">Connect your TON wallet</p>
+            <p className="font-semibold">Wallet Connect Coming Soon</p>
           </div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
