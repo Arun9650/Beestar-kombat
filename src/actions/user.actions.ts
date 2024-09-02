@@ -227,10 +227,11 @@ export const DeleteUser = async (userId:string) => {
 
     await prisma.user.updateMany({
       where: {
-        referredById: user?.id,  // The user ID you want to delete
+        referredById: user?.chatId,  // The user ID you want to delete
       },
       data: {
         referredById: null,
+        referralCount: { decrement: 1 },
       },
     });
 
