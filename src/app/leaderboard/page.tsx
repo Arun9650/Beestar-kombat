@@ -36,11 +36,13 @@ const Leaderboard = () => {
       const currentLevelMin = levelMinPoints[leagueIndex];
       const nextLevelMin = levelMinPoints[leagueIndex + 1];
       const progress = ((points) / (currentLevelMin)) * 100;
-
-      return progress >= 0 ? progress : 0;
+  
+      const cappedProgress = Math.min(progress, 100);
+      return cappedProgress >= 0 ? cappedProgress : 0;
     }
     return 0;
   };
+  
 
   const handleArrowClick = (direction: "left" | "right") => {
     if (direction === "left" && currentIndex > 0) {
