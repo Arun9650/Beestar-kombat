@@ -33,7 +33,7 @@ const BottomNavBar = () => {
     {
       name: "AirDrop",
       icon: <Image src={SponsorImage} width={24} height={24} alt="AirDrop" />,
-      link: "/bonus",
+      link: "/airdrop",
     },
   ];
 
