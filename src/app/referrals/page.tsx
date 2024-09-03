@@ -89,14 +89,14 @@ useEffect(() => {
               <p className="text-yellow-400">+5,000 for you and your friend</p>
             </div>
         </div>
-        <div className='flex items-center px-3 py-2 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  rounded-2xl'>
-          {/* card2 */}
+        {/* <div className='flex items-center px-3 py-2 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  rounded-2xl'>
+          
           <Image src={Gift} alt="Gift" className="w-16 h-16" />
             <div>
               <p className="font-semibold ">Invite a friend with Telegram Premium</p>
               <p className="text-yellow-400">+25,000 for you and your friend</p>
             </div>
-        </div>
+        </div> */}
         
       </div>
 
