@@ -41,9 +41,10 @@ const GameLevelProgress = () => {
         </div>
       </div>
 
-      <div onClick={() => handleRoute() } className="text-2xl  rotate-12">
-        <Image src="/newImages/rocket.png" alt="" width={50} height={50} />
-      </div>
+      <button onClick={() => handleRoute() } className="text-2xl  flex items-center">
+        <Image src="/newImages/rocket.png" alt="" width={50} height={50} className="rotate-12" />
+        <p className="text-sm text-white font-bold">Boost</p>
+      </button>
     </div>
   );
 };

@@ -1,27 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
-import { beeAvatar } from "../../../public/newImages";
+import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { useLeaderboard } from "@/hooks/query/useLeaderBoard";
 import { usePointsStore } from "@/store/PointsStore";
 import { SlArrowRight, SlArrowLeft } from "react-icons/sl";
 import { useUserStore } from "@/store/userUserStore";
+import { beeAvatar } from "../../../public/newImages";
+
+const levelMinPoints = [0, 5000, 25000, 100000, 1000000, 2000000, 10000000, 50000000, 100000000, 1000000000];
+const levelNames = [
+  "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Epic", "Legendary", "Master", "GrandMaster", "Lord",
+];
 
 const Leaderboard = () => {
-  const [page, setPage] = useState(1); // State to manage the current page
   const { user } = useUserStore();
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const levelNames = [
-    "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Epic", "Legendary", "Master", "GrandMaster", "Lord",
-  ];
-  const levelMinPoints = [0, 5000, 25000, 100000, 1000000, 2000000, 10000000, 50000000, 100000000, 1000000000];
-
-  const league = levelNames[currentIndex]; // League based on current index
-
-  const { data, isLoading, error } = useLeaderboard(league, page); // Fetch data with pagination and league filtering
   const { points } = usePointsStore();
+
+  const initialLeagueIndex = useMemo(
+    () => (user?.league ? levelNames.indexOf(user.league) : 0),
+    [user?.league]
+  );
+
+  const [page, setPage] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(initialLeagueIndex);
+  const [league, setLeague] = useState(levelNames[initialLeagueIndex]);
+
+  const { data, isLoading, error } = useLeaderboard(league, page);
 
   const formatNumber = (num: number): string => {
     if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
@@ -32,31 +37,33 @@ const Leaderboard = () => {
 
   const calculateProgress = () => {
     if (user) {
-      const leagueIndex = levelNames.findIndex((level) => level === user?.league);
+      const leagueIndex = levelNames.findIndex((level) => level === user.league);
       const currentLevelMin = levelMinPoints[leagueIndex];
       const nextLevelMin = levelMinPoints[leagueIndex + 1];
-      const progress = ((points) / (nextLevelMin)) * 100;
-  
-      const cappedProgress = Math.min(progress, 100);
-      return cappedProgress >= 0 ? cappedProgress : 0;
+      const progress = ((points) / nextLevelMin) * 100;
+
+      return Math.min(Math.max(progress, 0), 100); // Ensures progress is between 0 and 100
     }
     return 0;
   };
 
   const handleArrowClick = (direction: "left" | "right") => {
+    setPage(1); // Reset page to 1 on league change
+
     if (direction === "left" && currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setPage((old) => Math.max(old - 1, 1));
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+      setLeague(levelNames[currentIndex - 1]);
     } else if (direction === "right" && currentIndex < levelNames.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setPage((old) => (data?.leaderboard?.length === 100 ? old + 1 : old));
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      setLeague(levelNames[currentIndex + 1]);
     }
   };
 
-
-  const userIndex = data?.leaderboard?.findIndex((level) => level.league === user?.league) ?? -1;
-// If user is not on the list, set userIndex to a random number
-const adjustedUserIndex = userIndex === -1 ? `${Math.floor(Math.random() * 9000) + 1001}+` : userIndex + 1  ;
+  const adjustedUserIndex = useMemo(() => {
+    const userLeagueIndex = data?.leaderboard?.findIndex((level) => level.league === user?.league) ?? -1;
+    const userChatIdIndex = data?.leaderboard?.findIndex((level) => level.chatId === user?.chatId) ?? -1;
+    return userLeagueIndex === -1 ? `${Math.floor(Math.random() * 9000) + 1001}+` : userChatIdIndex + 1;
+  }, [data?.leaderboard, user?.league, user?.chatId]);
 
   return (
     <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] from-purple-800 to-black text-white">
@@ -64,7 +71,9 @@ const adjustedUserIndex = userIndex === -1 ? `${Math.floor(Math.random() * 9000)
         <div className="relative flex items-center gap-6">
           <SlArrowLeft
             onClick={() => handleArrowClick("left")}
-            className={currentIndex === 0 ? "text-gray-500 font-bold" : "font-bold"}
+            className={currentIndex === 0 ? "text-gray-500 font-bold cursor-not-allowed" : "font-bold cursor-pointer"}
+            aria-label="Previous League"
+            role="button"
           />
           <Image
             src={`/newImages/bee_avatars/${currentIndex + 1}.png`}
@@ -75,7 +84,9 @@ const adjustedUserIndex = userIndex === -1 ? `${Math.floor(Math.random() * 9000)
           />
           <SlArrowRight
             onClick={() => handleArrowClick("right")}
-            className={currentIndex === levelNames.length - 1 ? "text-gray-500 font-bold" : "font-bold"}
+            className={currentIndex === levelNames.length - 1 ? "text-gray-500 font-bold cursor-not-allowed" : "font-bold cursor-pointer"}
+            aria-label="Next League"
+            role="button"
           />
         </div>
         <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
@@ -93,13 +104,19 @@ const adjustedUserIndex = userIndex === -1 ? `${Math.floor(Math.random() * 9000)
         )}
         <div className="mt-8 w-full pb-40">
           {isLoading ? (
-            <p className="w-full text-center h-60">Loading... </p> // Loading spinner or message
+            <div className="w-full text-center h-60 flex items-center justify-center">
+              <p>Loading...</p> {/* You could add a spinner here */}
+            </div>
           ) : error ? (
-            <p className="w-full text-center h-60">Error loading leaderboard</p>
+            <div className="w-full text-center h-60 flex items-center justify-center">
+              <p>Error loading leaderboard</p>
+            </div>
           ) : data?.leaderboard?.length === 0 ? (
-            <p className="w-full text-center h-60">No user at this level</p>
+            <div className="w-full text-center h-60 flex items-center justify-center">
+              <p>No users at this level</p>
+            </div>
           ) : (
-            data?.leaderboard?.map((user: any, index: number) => (
+            data?.leaderboard?.map((user, index) => (
               <div
                 key={index}
                 className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2"
@@ -107,9 +124,9 @@ const adjustedUserIndex = userIndex === -1 ? `${Math.floor(Math.random() * 9000)
                 <div className="flex w-full">
                   <Image src={beeAvatar} alt={"beeavatar"} className="w-10 h-10 rounded-full mr-4" />
                   <div className="flex-1">
-                    <p className="font-bold">{user.name ? user.name : "Honey Collector"}</p>
+                    <p className="font-bold">{user.name || "Honey Collector"}</p>
                     <p className="text-yellow-500 flex gap-4">
-                      {user.points} <span className="text-white">{levelNames[currentIndex]}</span>
+                      {formatNumber(user.points)} <span className="text-white">{levelNames[currentIndex]}</span>
                     </p>
                   </div>
                 </div>
@@ -118,24 +135,18 @@ const adjustedUserIndex = userIndex === -1 ? `${Math.floor(Math.random() * 9000)
             ))
           )}
         </div>
-        <div className="flex justify-center mt-4">
-        </div>
-        <div>
-          {
-            levelNames[currentIndex] === user?.league && (
-              <div className="fixed bottom-20 w-[90%] left-1/2 transform -translate-x-1/2 flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2">
-              <Image src={beeAvatar} alt={"user"} className="w-10 h-10 rounded-full mr-4" />
-              <div className="flex-1">
-                <p className="font-bold">{user?.name || "Honey Collector"}</p>
-                <p className="text-yellow-500 flex gap-4">
-                  {user?.points} <span className="text-white">{user?.league}</span>
-                </p>
-              </div>
-              <div className="text-lg">{adjustedUserIndex}</div>
+        {levelNames[currentIndex] === user?.league && (
+          <div className="fixed bottom-20 w-[90%] left-1/2 transform -translate-x-1/2 flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2">
+            <Image src={beeAvatar} alt={"user"} className="w-10 h-10 rounded-full mr-4" />
+            <div className="flex-1">
+              <p className="font-bold">{user?.name || "Honey Collector"}</p>
+              <p className="text-yellow-500 flex gap-4">
+                {formatNumber(user?.points)} <span className="text-white">{user?.league}</span>
+              </p>
             </div>
-            )
-          }
-        </div>
+            <div className="text-lg">{adjustedUserIndex}</div>
+          </div>
+        )}
       </div>
     </div>
   );
