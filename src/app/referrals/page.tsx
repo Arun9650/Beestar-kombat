@@ -11,6 +11,7 @@ import { usePointsStore } from '@/store/PointsStore';
 import { useBoostersStore } from '@/store/useBoostrsStore';
 import { useQuery } from '@tanstack/react-query';
 import useFetchUserReferred from '@/hooks/query/useFetchUserReferred';
+import { ShowAdButton } from '@/components/adsButton';
 const ReferralPage = () => {
 
 
@@ -99,6 +100,7 @@ useEffect(() => {
         </div> */}
         
       </div>
+      <ShowAdButton/>
 
       <div className='flex flex-col gap-4 items-center justify-center w-full  bg-opacity-85   '>
       {
