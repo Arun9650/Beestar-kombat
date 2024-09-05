@@ -35,7 +35,7 @@ export default function RootLayout({
 
           <LoadingScreenProvider>
 
-            <main className=" min-h-screen relative  flex flex-col justify-between text-white/80">
+            <main className="min-h-screen relative  flex flex-col justify-between  text-white/80">
             <TopNavBar/>
               {children}
               <BottomNavBar/>

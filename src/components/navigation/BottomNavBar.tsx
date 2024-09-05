@@ -27,7 +27,7 @@ const BottomNavBar = () => {
       name: "Earn",
       icon: <Image src="/newImages/earn.png" width={24} height={24}  className="w-6 h-6 mx-auto" alt="Earn" />,
       selectedIcon: <Image src="/newImages/earn-selected.png"  width={24} height={24} className="w-6 h-6 mx-auto" alt="Mine" />,
-      link: "/market",
+      link: "/earn",
     },
     {
       name: "AirDrop",

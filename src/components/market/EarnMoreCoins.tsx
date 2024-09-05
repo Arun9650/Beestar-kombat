@@ -230,12 +230,7 @@ const EarnMoreCoins = () => {
   };
 
   return (
-    <div className="p-4 bg-black flex-grow  bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]  text-white max-w-xl pb-20 mx-auto shadow-lg">
-      <div className="flex flex-col items-center mb-6">
-        <div className="glowing-coin my-8">
-          <Image src={dollarCoin} alt="TON Wallet" width={150} height={150} />
-        </div>
-      </div>
+    <div className="p-4  text-white max-w-xl pb-20 mx-auto border shadow-lg">
       <div className="flex flex-col items-center mb-4 ">
         <h1 className="text-2xl font-bold">Earn more coins</h1>
       </div>
