@@ -23,7 +23,7 @@ const PointsTracker = () => {
     <div className="font-bold text-3xl flex items-center gap-2 text-white">
       <span className="text-6xl">
         <Image
-          src="/assets/images/dollar-coin.png"
+          src="/newImages/Bee-coin.png"
           height={40}
           width={40}
           alt=""

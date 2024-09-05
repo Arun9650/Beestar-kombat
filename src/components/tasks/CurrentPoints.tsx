@@ -1,5 +1,5 @@
 'use client'
-import PointsTracker from '../game/PointsTracker'
+import PointsTracker from '../HeroSection/PointsTracker'
 
 
 const CurrentPoints = ({ type }: { type?: 'sm' }) => {

@@ -19,6 +19,10 @@ const config = {
     },
     extend: {
       colors: {
+        'custom-orange': '#FFA41C', 
+        backgroundImage: {
+          'custom-button': 'radial-gradient(circle, #FF7B00 100%, #FF7B00 100%)',
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

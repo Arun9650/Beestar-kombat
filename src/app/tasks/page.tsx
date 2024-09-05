@@ -1,6 +1,6 @@
 'use client'
-import GameLevelProgress from "@/components/game/GameLevelProgress";
-import TapGlobe from "@/components/game/Globe";
+import GameLevelProgress from "@/components/HeroSection/GameLevelProgress";
+import TapGlobe from "@/components/HeroSection/Globe";
 import Header from "@/components/Header";
 import CurrentPoints from "@/components/tasks/CurrentPoints";
 import TaskList from "@/components/tasks/TaskList";

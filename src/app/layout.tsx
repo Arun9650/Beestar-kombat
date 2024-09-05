@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import LoadingScreenProvider from "@/providers/LoadingScreenProvider";
 import BottomMenus from "@/components/layouts/BottomMenus";
@@ -11,7 +11,7 @@ import BottomNavBar from "@/components/navigation/BottomNavBar";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import Head from "next/head";
 
-const montserrat = Montserrat({ subsets: ["latin"], variable: "--montserat" });
+const montserrat = Poppins({ weight: ['100',"200",'300',"400","500","600","700","800","900"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Beestar - Telegram Kombat",
@@ -35,7 +35,7 @@ export default function RootLayout({
 
           <LoadingScreenProvider>
 
-            <main className=" min-h-screen relative  flex flex-col  text-white/80">
+            <main className=" min-h-screen relative  flex flex-col justify-between text-white/80">
             <TopNavBar/>
               {children}
               <BottomNavBar/>

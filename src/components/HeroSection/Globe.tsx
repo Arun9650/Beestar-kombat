@@ -6,10 +6,6 @@ import { usePointsStore } from "@/store/PointsStore";
 import { useLocalPointsStorage } from "@/hooks/useLocalPointsStorage";
 import { usePushPointsToDB } from "@/hooks/usePushPointsToDB";
 import { useBoostersStore } from "@/store/useBoostrsStore";
-import { UpdateUser } from "@/actions/user.actions";
-import toast from "react-hot-toast";
-import { getCurrentSkin } from "@/actions/skins.actions";
-import useFetchNFTSwap from "@/hooks/query/useFetchUserSkin";
 import useFetchUserSkin from "@/hooks/query/useFetchUserSkin";
 import { useSearchParams } from "next/navigation";
 
@@ -34,14 +30,9 @@ const TapGlobe = () => {
   } = usePointsStore();
   const { secondsLeft, decreaseSecondsLeft } = useBoostersStore();
   const { multiClickLevel } = useBoostersStore();
-  const { skin } = usePointsStore();
 
   useLocalPointsStorage();
   usePushPointsToDB();
-
-  const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
-    []
-  );
 
   const bodyRef = useRef<HTMLDivElement | null>(null);
 
@@ -49,23 +40,6 @@ const TapGlobe = () => {
  
 
   const handleCardClick = (event: any) => {
-    // if (secondsLeft > 0) {
-    //   tapInBoostMode(7 * multiClickLevel);
-    // } else {
-
-    // decreaseTapsLeft(1);
-    // if(!isNaN(currentTapsLeft)){
-
-    // window.localStorage.setItem("currentTapsLeft", `${currentTapsLeft - 1}`);
-
-    //   }
-
-    //   const userId  = window.localStorage.getItem("authToken");
-    //   setIsTapping(true);
-    //   setTimeout(() => {setIsTapping(false), UpdateUser(userId!) }, 400);
-    // }
-
-    // addPoints(multiClickLevel + event.touch.length);
 
     event.preventDefault();
     const rect = event.target.getBoundingClientRect();
@@ -247,7 +221,7 @@ const TapGlobe = () => {
   };
   // console.log(skin);
   return (
-    <div className="relative ">
+    <div className="relative  bg-[url('/newImages/honeycomb-design.png')]  bg-center bg-contain bg-no-repeat ">
       <div className=" mx-auto  w-fit ">
         <div
           ref={bodyRef}
@@ -260,11 +234,11 @@ const TapGlobe = () => {
           <div className="circle-inner rounded-full  ">
             <Image
               src={userSkin?.data ?? "/newImages/BeeMain.png"}
-              height={200}
-              width={200}
+              height={250}
+              width={250}
               alt=""
-              className="transition duration-300  cursor-pointer"
-            />
+              className="transition duration-300  mb-4 cursor-pointer"
+            />  
           </div>
         </div>
       </div>

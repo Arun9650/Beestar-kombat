@@ -10,7 +10,7 @@ import useExchangeStore from "@/store/useExchangeStore";
 import Link from "next/link";
 const Header = () => {
   
-
+ 
   return (
     <div className="w-full px-4 ">
       <div className="w-full  ">

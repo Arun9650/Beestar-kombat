@@ -1,22 +1,19 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from "./ui/drawer";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import { dollarCoin } from "../../public/newImages";
 import { usePointsStore } from "@/store/PointsStore";
-import { skinBuy, SkinsToShow, SkinType } from "@/actions/skins.actions";
+import { SkinType } from "@/actions/skins.actions";
 import { getUserConfig } from "@/actions/user.actions";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
-import axios from "axios";
 import {
-  QueryClient,
   useMutation,
-  useQueryClient,
+  useQueryClient
 } from "@tanstack/react-query";
-import useSetCurrentSkin from "@/hooks/mutation/useSetCurrentSkin";
 import { setCurrentSkin } from "@/services/apis/axiosFucntions";
 import useFetchAllSkin from "@/hooks/query/userFetchAllSkin";
 import { useBuySkinMutation } from "@/hooks/mutation/useBuySkinMutation";
