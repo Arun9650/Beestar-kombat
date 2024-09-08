@@ -57,9 +57,9 @@ const EarnMoreCoins = () => {
     { day: 5, reward: 15000 },
     { day: 6, reward: 25000 },
     { day: 7, reward: 100000 },
-    { day: 8, reward: 500000 },
-    { day: 9, reward: 1000000 },
-    { day: 10, reward: 5000000 },
+    { day: 8, reward: 250000 },
+    { day: 9, reward: 500000 },
+    { day: 10, reward: 1000000 },
   ];
 
   const [isOpen, setIsOpen] = useState(false);
