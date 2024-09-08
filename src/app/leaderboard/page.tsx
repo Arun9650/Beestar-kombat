@@ -28,12 +28,32 @@ const Leaderboard = () => {
 
   const { data, isLoading, error } = useLeaderboard(league, page);
 
-  const formatNumber = (num: number): string => {
-    if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
-    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
-    return num.toString();
-  };
+const formatNumber = (num: number): string => {
+  if (num >= 1_000_000_000) {
+    const result = (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+    return result;
+  }
+  if (num >= 1_000_000) {
+    const result = (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    return result;
+  }
+  if (num >= 1_000) {
+    const result = (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+    return result;
+  }
+  const result = num.toString();
+  return result;
+};
+
+const getNextLevelMinPoints = (currentIndex: number, levelMinPoints: number[]): number => {
+  if (currentIndex + 1 >= levelMinPoints.length) {
+    return levelMinPoints[levelMinPoints.length - 1];
+  }
+  return levelMinPoints[currentIndex + 1];
+};
+
+const nextLevelMinPoints = getNextLevelMinPoints(currentIndex, levelMinPoints);
+
 
   const calculateProgress = () => {
     if (user) {
@@ -92,10 +112,14 @@ const Leaderboard = () => {
         <h1 className="text-4xl font-bold mt-4">{levelNames[currentIndex]}</h1>
         {levelNames[currentIndex] === user?.league ? (
           <p className="font-semibold text-[#95908a]">
-            {formatNumber(points)} <span className="">/ {formatNumber(levelMinPoints[currentIndex + 1])}</span>
+            {formatNumber(points)} <span className="">/ 
+              {formatNumber(nextLevelMinPoints)}
+              </span>
           </p>
         ) : (
-          <p className="font-semibold text-[#95908a]">from {formatNumber(levelMinPoints[currentIndex])}</p>
+          <p className="font-semibold text-[#95908a]">from {" "}
+          {formatNumber(levelMinPoints[currentIndex])}
+          </p>
         )}
         {levelNames[currentIndex] === user?.league && (
           <div className="w-full h-2 bg-[#43433b]/[0.6] rounded-full">
