@@ -11,6 +11,7 @@ import BottomNavBar from "@/components/navigation/BottomNavBar";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import Head from "next/head";
 
+
 const montserrat = Poppins({ weight: ['100',"200",'300',"400","500","600","700","800","900"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,15 +29,15 @@ export default function RootLayout({
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
       </Head>
-      <body className={`${montserrat.className} min-h-screen   h-screen  `}>
+      <body className={`${montserrat.className} min-h-screen h-screen`}>
         {/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
         <AuthProviderWithSuspense>
           <ReactQueryProvider>
 
           <LoadingScreenProvider>
 
-            <main className="min-h-screen relative  flex flex-col justify-between  text-white/80">
-            <TopNavBar/>
+            <main className="min-h-screen relative h-full p-4 xs:p-8 flex flex-col justify-between text-white/80">
+      
               {children}
               <BottomNavBar/>
             </main>

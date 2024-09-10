@@ -2,8 +2,6 @@
 import React, { use, useCallback, useEffect, useMemo, useState } from "react";
 import { beeAvatar } from "../../../public/newImages";
 import Image from "next/image";
-import { IoSettings } from "react-icons/io5";
-import { FaCartShopping, FaRightLeft } from "react-icons/fa6";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { usePointsStore } from "@/store/PointsStore";
 import useExchangeStore from "@/store/useExchangeStore";
@@ -13,6 +11,9 @@ import { setTimeout } from "timers";
 import { Button } from "../ui/button";
 
 const TopNavBar = () => {
+  const pathname = usePathname();
+
+
   const levelNames = useMemo(
     () => [
       "Bronze", // From 0 to 4999 coins
@@ -178,9 +179,13 @@ const TopNavBar = () => {
 
   const leagueIndex = levelNames.findIndex((level) => level === user?.league);
 
+
+  
+
+
   return (
     <div className="w-full">
-      <div className="flex justify-between p-2 bg-[#252423]  rounded-xl m-2">
+      <div className="flex justify-between p-2 bg-[#252423]  rounded-xl  mb-2 xs:m-2 ">
         <div className="flex gap-2 items-center  ">
           <Image
             src={beeAvatar}

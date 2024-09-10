@@ -8,8 +8,8 @@ const GameLevelProgress = () => {
   const { energyCapacity } = useBoostersStore();
 
   return (
-    <div className="flex items-center justify-center w-full px-4 ">
-      <div className="flex items-center my-4  gap-2 text-lg">
+    <div className="flex items-center justify-center xs:w-full px-4">
+      <div className="flex items-center  xs:my-4  gap-2 text-lg">
         <div>
           <Image src="/newImages/Energy.png" height={14} width={14} alt="" />
         </div>

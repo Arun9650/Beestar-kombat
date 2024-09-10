@@ -4,19 +4,18 @@ import TapGlobe from "./Globe";
 import GameLevelProgress from "./EnergyMeter";
 import PointsTracker from "./PointsTracker";
 import Booster from "./Boost";
+import { formatNumberWithCommas } from "../../../utils/formatNumber";
+import MenuGrid from "./MenuGrid";
 
 const HeroSection = () => {
 
   return (
-    <div className="  flex flex-col justify-between  ">
-      <div>
+    <div className="flex flex-col justify-between">
+        <MenuGrid/>
         <TapGlobe />
-      </div>
       <Booster/>
-      <div className="mx-auto my-2">
-        <PointsTracker />
-      </div>
-      <div>
+      <div className="flex xs:block">
+        <PointsTracker formatNumber={formatNumberWithCommas} />
         <GameLevelProgress />
       </div>
     </div>

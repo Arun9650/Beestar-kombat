@@ -29,6 +29,8 @@ import { useYouTubeMutation } from "@/hooks/mutation/useYouTube";
 import { useFetchYoutubeTasks } from "@/hooks/query/useFetchYouTubeTask";
 import { useFetchTasks } from "@/hooks/query/useFetchTask";
 import { useTasksMutation } from "@/hooks/mutation/useTasksMutation";
+import { ChevronRight } from "lucide-react";
+import SectionBanner from "../sectionBanner";
 
 interface Reward {
   id?: string;
@@ -88,14 +90,13 @@ const EarnMoreCoins = () => {
   const search = useSearchParams();
   const id = search.get("id");
 
-  const { data: YoutubeTask , isLoading: isYouTubeTaskLoading} = useFetchYoutubeTasks(id ?? userId ?? "");
-  const { data: taskList , isLoading} = useFetchTasks(id ?? userId ?? "");
+  const { data: YoutubeTask, isLoading: isYouTubeTaskLoading } =
+    useFetchYoutubeTasks(id ?? userId ?? "");
+  const { data: taskList, isLoading } = useFetchTasks(id ?? userId ?? "");
 
   console.log("🚀 ~ EarnMoreCoins ~ YoutubeTask:", YoutubeTask?.tasks);
 
-
   const [isYouTubeTaskProcessing, setIsYouTubeTaskProcessing] = useState(false);
-
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -158,29 +159,6 @@ const EarnMoreCoins = () => {
 
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
-  // useEffect(() => {
-  //   const checkWindowDefined = () => {
-  //     if (typeof window !== "undefined") {
-  //       const authToken = window.localStorage.getItem("authToken");
-  //       setUserId(authToken);
-  //       if (authToken) {
-  //         const getAllTask = async () => {
-  //           const tasks = await TaskToShow(authToken);
-  //           if (tasks && tasks.length > 0) {
-  //             // setTaskList(tasks);
-  //             // setIsLoading(false);
-  //           } 
-  //         };
-  //         getAllTask();
-  //       }
-  //     } else {
-  //       setTimeout(checkWindowDefined, 100); // Retry after 100ms
-  //     }
-  //   };
-
-  //   checkWindowDefined();
-  // }, []);
-
   const handleCompleteTask = async (task: Task) => {
     if (!userId) return;
 
@@ -230,73 +208,97 @@ const EarnMoreCoins = () => {
   };
 
   return (
-    <div className="p-4  text-white max-w-xl pb-20 mx-auto border shadow-lg">
-      <div className="flex flex-col items-center mb-4 ">
-        <h1 className="text-2xl font-bold">Earn more coins</h1>
-      </div>
-      <div className="space-y-4">
+    <>
+    <SectionBanner
+      mainText="Earn more coins"
+      subText="Make our tasks to get more coins"
+      leftIcon="/newImages/bee.png"
+      rightIcon="/newImages/bee-right.png"
+    />
+      <div className="space-y-4 mt-10 divide-y divide-custom-orange">
         <div>
-          <h2 className="text-lg font-semibold mb-2">Beestar Youtube</h2>
-
-          {isYouTubeTaskLoading && <> <Skeleton className="w-full h-20" /></>}
+          {isYouTubeTaskLoading && (
+            <>
+              {" "}
+              <Skeleton className="w-full h-20" />
+            </>
+          )}
           {YoutubeTask?.tasks.map((task) => (
             <>
               <button
-              disabled={task.isUserTask  || isYouTubeTaskProcessing}
+                disabled={task.isUserTask || isYouTubeTaskProcessing}
                 onClick={() => handleCompleteYoutube(task)}
-                className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between "
+                className="flex items-center justify-between  w-full gap-2"
               >
                 <Link href={task.link} target="_blank">
                   <div className="flex items-center">
                     <Image
                       src={task.icon}
                       alt="YouTube"
-                      className="w-12 h-12 mr-4"
+                      className="mr-4 border-2 border-white border-opacity-10 bg-white bg-opacity-10 p-2.5 rounded-xl "
                       width={50}
                       height={50}
                     />
-                    <div>
-                      <p className="font-semibold text-start">{task.name}</p>
-                      <p className="text-yellow-400  flex items-center justify-start gap-1">
-                        <Image
-                          src={dollarCoin}
-                          alt="Coin"
-                          className="w-4 h-4 "
-                        />
-                        +{task.points}
+                    <div className=" flex flex-col  justify-between py-1">
+                      <p className="text-[#B7B5B5] text-[0.5rem] text-start">
+                        5000 Points
+                      </p>
+                      <p className="font-normal text-start text-sm">
+                        {task.name}
+                      </p>
+                      <p className="text-yellow-400  text-[0.5rem] flex items-center justify-start  gap-1 ">
+                          Get reward <ChevronRight size={10} />{" "}
                       </p>
                     </div>
                   </div>
-                </Link> 
+                </Link>
+
                 {task.isUserTask && (
-                  <Image
-                    src={approved}
-                    alt="approved icon"
-                    className="w-12 h-12"
-                  />
+                  <Button
+                    className="bg-green-600 text-white font-semibold"
+                    disabled
+                  >
+                    Redeem
+                  </Button>
                 )}
               </button>
             </>
           ))}
         </div>
         <div>
-          <h2 className="text-lg font-semibold mb-2">Daily tasks</h2>
-          <div className="p-4 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="flex items-center " onClick={() => setIsOpen(true)}>
+          {/* <h2 className="text-lg font-semibold mb-2">Daily tasks</h2> */}
+          <div className="px-0 pt-2 flex items-center justify-between">
+            <div className="w-full">
+              <div className="flex items-center justify-between w-full " onClick={() => setIsOpen(true)}>
+                <div className="flex w-full  items-center">
                 <Image
                   src={Calendar}
                   alt="Daily Reward"
-                  className="w-12 h-12 mr-4"
+                  className="mr-4 border-2 border-white border-opacity-10 bg-white bg-opacity-10 p-2.5 rounded-xl"
+                  width={50}
+                  height={50}
                 />
-                <span className="">
-                  Daily reward:{" "}
-                  <span className="text-yellow-400 flex items-center justify-between  gap-1">
-                    <Image src={dollarCoin} alt="Coin" className="w-4 h-4 " />
-                    +6,649,000{" "}
-                  </span>
+                <span className="text-sm">
+                  <div className=" flex flex-col  justify-between py-1">
+                      <p className="text-[#B7B5B5] text-[0.5rem] text-start">
+                        5000 Points
+                      </p>
+                      <p className="font-normal text-start text-xs">
+                      Daily reward
+                      </p>
+                      <p className="text-yellow-400  text-[0.5rem] flex items-center justify-start  gap-1 ">
+                          Get reward <ChevronRight size={10} />{" "}
+                      </p>
+                    </div>
                 </span>
-              </p>
+                </div>
+                <Button
+                      onClick={handleClaimReward}
+                      disabled={!nextRewardAvailable || buttonLoading}
+                    >
+                      Redeem
+                    </Button>
+              </div>
               <Drawer open={isOpen}>
                 {/* <DrawerOverlay className=""  /> */}
                 <DrawerContent className="bg-[#14161a]  border-none px-2 ">
@@ -354,7 +356,7 @@ const EarnMoreCoins = () => {
                     <Button
                       onClick={handleClaimReward}
                       disabled={!nextRewardAvailable || buttonLoading}
-                      className="w-full p-7 my-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700"
+                      className="w-full p-7 my-4  text-white text-lg font-semibold rounded-xl "
                     >
                       {buttonLoading ? <div className="loader"></div> : "Claim"}
                     </Button>
@@ -365,7 +367,7 @@ const EarnMoreCoins = () => {
           </div>
         </div>
         <div>
-          <h2 className="text-lg font-semibold mb-2">Tasks list</h2>
+          {/* <h2 className="text-lg font-semibold mb-2">Tasks list</h2> */}
           {isLoading ? (
             // Skeleton loader
             <Skeleton className="w-full h-20" />
@@ -377,37 +379,44 @@ const EarnMoreCoins = () => {
                 disabled={task.isUserTask || isYouTubeTaskProcessing}
                 onClick={() => handleCompleteTask(task)}
                 key={index}
-                className="p-4 bg-[#1d2025] shadow-xl w-full border border-yellow-400 bg-opacity-85 backdrop-blur-none rounded-2xl mt-2 flex items-center justify-between"
+                className="mt-2 flex items-center justify-between w-full"
               >
                 <div className="flex items-center">
                   <Image
                     src={task.icon}
                     alt="Telegram"
-                    className="w-12 h-12 mr-6"
+                    className="mr-4 border-2 border-white border-opacity-10 bg-white bg-opacity-10 p-2.5 rounded-xl"
                     width={50}
                     height={50}
                   />
                   <Link href={task.link} target="_blank">
-                    <p className="font-semibold text-start">{task.name}</p>
-                    <p className="text-yellow-400 flex items-center justify-start gap-1">
-                      <Image src={dollarCoin} alt="Coin" className="w-4 h-4" />+
-                      {task.points}
-                    </p>
+                  <div className=" flex flex-col  justify-between py-1">
+                      <p className="text-[#B7B5B5] text-[0.5rem] text-start">
+                        5000 Points
+                      </p>
+                      <p className="font-normal text-start text-sm">
+                       {task.name}
+                      </p>
+                      <p className="text-yellow-400  text-[0.5rem] flex items-center justify-start  gap-1 ">
+                          Get reward <ChevronRight size={10} />{" "}
+                      </p>
+                    </div>
                   </Link>
                 </div>
                 {task.isUserTask && (
-                  <Image
-                    src={approved}
-                    alt="approved icon"
-                    className="w-12 h-12"
-                  />
+                  <Button
+                    className="bg-green-600 text-white font-semibold"
+                    disabled
+                  >
+                    Redeem
+                  </Button>
                 )}
               </button>
             ))
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
