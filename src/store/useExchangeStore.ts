@@ -1,6 +1,6 @@
 import { StaticImageData } from 'next/image';
 import {create} from 'zustand';
-import { binanceLogo, bingx,  crypto, htx, kucoin, okx } from '../../public/newImages';
+import { binanceLogo, bingx,  crypto, htx, kucoin, okx, huobi, coinbase } from '../../public/newImages';
 
 export type TExchange = {
   name: string;
@@ -19,10 +19,10 @@ type ExchangeState = {
 const initialExchanges: TExchange[] = [
   { name: 'Binance', icon: binanceLogo },
   { name: 'OKX', icon: okx },
-  { name: 'Crypto.com', icon: crypto },
   { name: 'BingX', icon: bingx },
-  { name: 'HTX', icon: htx },
   { name: 'Kucoin', icon: kucoin },
+  { name: 'Huobi', icon: huobi },
+  { name: 'CoinBase', icon: coinbase },
 ];
 
 

@@ -7,6 +7,7 @@ import { usePointsStore } from "@/store/PointsStore";
 import { SlArrowRight, SlArrowLeft } from "react-icons/sl";
 import { useUserStore } from "@/store/userUserStore";
 import { beeAvatar } from "../../../public/newImages";
+import SectionBanner from "@/components/sectionBanner";
 
 const levelMinPoints = [0, 5000, 25000, 100000, 1000000, 2000000, 10000000, 50000000, 100000000, 1000000000];
 const levelNames = [
@@ -66,7 +67,13 @@ const Leaderboard = () => {
   }, [data?.leaderboard, user?.league, user?.chatId]);
 
   return (
-    <div className="min-h-screen bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] from-purple-800 to-black text-white">
+    <div className="">
+      <SectionBanner
+      mainText="Leaderboard"
+      subText="See who is doing well"
+      leftIcon="/newImages/bee.png"
+      rightIcon="/newImages/bee-right.png"
+      />
       <div className="p-4 flex flex-col items-center">
         <div className="relative flex items-center gap-6">
           <SlArrowLeft
@@ -76,7 +83,7 @@ const Leaderboard = () => {
             role="button"
           />
           <Image
-            src={`/newImages/bee_avatars/${currentIndex + 1}.png`}
+            src={`/newImages/bee_avatars/${currentIndex + 1 }.png`}
             alt={levelNames[currentIndex]}
             className="w-32 h-32 mx-auto"
             width={200}
@@ -102,24 +109,24 @@ const Leaderboard = () => {
             <div className="progress-gradient h-2 rounded-full" style={{ width: `${calculateProgress()}%` }}></div>
           </div>
         )}
-        <div className="mt-8 w-full pb-40">
+        <div className="mt-8 w-full pb-40 ">
           {isLoading ? (
-            <div className="w-full text-center h-60 flex items-center justify-center">
+            <div className="w-full text-center  flex items-center justify-center">
               <p>Loading...</p> {/* You could add a spinner here */}
             </div>
           ) : error ? (
-            <div className="w-full text-center h-60 flex items-center justify-center">
+            <div className="w-full text-center  flex items-center justify-center">
               <p>Error loading leaderboard</p>
             </div>
           ) : data?.leaderboard?.length === 0 ? (
-            <div className="w-full text-center h-60 flex items-center justify-center">
+            <div className="w-full text-center  flex items-center justify-center">
               <p>No users at this level</p>
             </div>
           ) : (
             data?.leaderboard?.map((user, index) => (
               <div
                 key={index}
-                className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2"
+                className="flex items-center bg-[#252423] shadow-xl  p-4 overflow-y-auto rounded-lg mt-2"
               >
                 <div className="flex w-full">
                   <Image src={beeAvatar} alt={"beeavatar"} className="w-10 h-10 rounded-full mr-4" />
@@ -136,7 +143,7 @@ const Leaderboard = () => {
           )}
         </div>
         {levelNames[currentIndex] === user?.league && (
-          <div className="fixed bottom-20 w-[90%] left-1/2 transform -translate-x-1/2 flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 overflow-y-auto rounded-lg mt-2">
+          <div className="fixed bottom-32 w-[90%] left-1/2 transform -translate-x-1/2 flex items-center bg-[#252423] shadow-xl  p-4 overflow-y-auto rounded-lg mt-2">
             <Image src={beeAvatar} alt={"user"} className="w-10 h-10 rounded-full mr-4" />
             <div className="flex-1">
               <p className="font-bold">{user?.name || "Honey Collector"}</p>

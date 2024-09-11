@@ -52,8 +52,8 @@ const BottomNavBar = () => {
 
   return (
     <div
-      className="absolute bottom-0 left-1/2  transform -translate-x-1/2 max-w-[370px] w-full px-6 pt-3 pb-1 mx-auto  flex  justify-around items-center  text-xs 
-      bg-[url('/newImages/bottom-navbar.png')] bg-contain bg-center xs:mb-10 bg-no-repeat z-50"
+      className="sticky bottom-0 xs:bottom-10 max-w-[370px] w-full px-6 pt-3 pb-1 mx-auto  flex  justify-around items-center  text-xs 
+      bg-[url('/newImages/bottom-navbar.png')] bg-contain bg-center bg-no-repeat z-50"
     >
       {NavigationItems.map((item, index) => {
         return (

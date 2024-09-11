@@ -52,10 +52,6 @@ const TopNavBar = () => {
   const { exchange } = useExchangeStore();
   const [levelIndex, setLevelIndex] = useState(0);
 
-  interface User {
-    league: string;
-    // Add other properties as needed
-  }
 
   const { user, setUser } = useUserStore();
 
@@ -206,52 +202,32 @@ const TopNavBar = () => {
                 >
                   <div className="flex items-baseline  justify-between">
                     <p className="text-[8px] ">
-                      {/* {user ? user.league : levelNames[levelIndex]} */}
+                      {user ? user.league : levelNames[levelIndex]}
                     </p>
-                    {/* <p className="text-[8px]">
+                    <p className="text-[8px]">
                       { user ? leagueIndex + 1 :  levelIndex + 1}{" "}
                       <span className="text-[#95908a]">
                         / {levelNames.length}
                       </span>
-                    </p> */}
+                    </p>
                   </div>
-                  {/* <div className="flex w-full items-center  border-2 border-[#43433b] rounded-full">
+                  <div className="flex w-full items-center  border-2 border-[#43433b] rounded-full">
                     <div className="w-full h-1 bg-[#43433b]/[0.6] rounded-full">
                       <div
                         className="progress-gradient h-1 rounded-full"
                         style={{ width: `${progess}%` }}
                       ></div>
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <Button onClick={() => handleRoute("/exchange")} className=" flex items-center gap-2 text-sm">
-          <Image
-            src={exchange.icon}
-            width={24}
-            height={24}
-            alt={exchange.name}
-          />
-          {exchange.name}
+        <Button onClick={() => handleRoute("/skin")} className=" flex items-center gap-2 text-sm">
+          Skin
         </Button>
-
-        {/* <div className="flex items-center justify-between gap-2 ">
-          <div
-            onClick={() => handleRoute("/skin")}
-            className="flex items-center h-full  gap-2 text-white bg-orange-700 px-2 py-1 rounded-xl text-xs"
-          >
-            <FaCartShopping className="w-4 h-4" />
-            <span>Buy Skin</span>
-          </div>
-          <IoSettings
-            onClick={() => handleRoute("/settings")}
-            className="w-8 h-8 text-white px-2 py-1 bg-zinc-700 rounded-xl"
-          />
-        </div> */}
       </div>
     </div>
   );

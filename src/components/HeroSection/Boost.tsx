@@ -20,11 +20,11 @@ const Booster = () => {
 
 
   return (
-    <div className='flex items-center  mx-auto gap-4 my-4'>
-        <Button className='flex items-center gap-2 p-5'> 
+    <div className='flex items-center'>
+        {/* <Button className='flex items-center gap-2 p-5'> 
         <Image src="/newImages/tap.png" alt="" width={20} height={20} className="" /> 
             
-            Tap Bee</Button>
+            Tap Bee</Button> */}
         <button onClick={() => handleRoute() } className='flex items-center gap-4 boost-button h-10 px-5 py-2 rounded-3xl border-2 border-[#FCEE21]'>
         <Image src="/newImages/rocket.png" alt="" width={20} height={20} className="rotate-12" />            
             Boost</button>

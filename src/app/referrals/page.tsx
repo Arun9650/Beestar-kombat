@@ -11,6 +11,8 @@ import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { useQuery } from "@tanstack/react-query";
 import useFetchUserReferred from "@/hooks/query/useFetchUserReferred";
+import SectionBanner from "@/components/sectionBanner";
+import { Skeleton } from "@/components/ui/skeleton";
 const ReferralPage = () => {
   const [isTapped, setIsTapped] = useState(false);
   const [id, setId] = useState("");
@@ -66,29 +68,36 @@ const ReferralPage = () => {
 
   return (
     <div className="px-4 text-white flex flex-col gap-16">
-      <div>
+      {/* <div>
         <h1 className="text-4xl mt-5 font-bold mx-auto  flex justify-center ">
           Invite friends!
         </h1>
         <p className="mb-4  flex justify-center mt-4">
           You and your friend will receive bonuses
         </p>
-      </div>
+      </div> */}
+
+        <SectionBanner
+        mainText="Invite friends"
+        subText="You and your friend will receive bonuses"
+        leftIcon="/newImages/bee.png"
+        rightIcon="/newImages/bee-right.png"
+        />
 
       <div className="flex justify-center flex-col gap-6">
-        <div className="flex items-center px-3 py-2 bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  rounded-2xl">
+        <div className="flex items-center gap-5 px-3 py-2 bg-[#1d2025] rounded-2xl">
           {/* card1 */}
-          <Image src={Gift} alt="Gift" className="w-16 h-16" />
+          <Image src={Gift} alt="Gift"  width={24} height={24} />
           <div>
-            <p className="font-semibold ">Invite a friend</p>
-            <p className="text-yellow-400">+5,000 for you and your friend</p>
+            <p className="font-semibold">Invite a friend</p>
+            <p className="text-yellow-400 text-xs">+5,000 for you and your friend</p>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col gap-4 items-center justify-center w-full  bg-opacity-85   ">
         {isLoading ? (
-          <div className="loader mx-auto"></div>
+          <Skeleton className="w-full h-20" />
         ) : (
           <>
             {data?.length === 0 ? (
@@ -122,7 +131,7 @@ const ReferralPage = () => {
               Invite a friend
             </TelegramShareButton>
           ) : (
-            <div className="loader"></div> // Placeholder while id is being set
+            <Skeleton className="w-full "/> // Placeholder while id is being set
           )}
         </Button>
         <button

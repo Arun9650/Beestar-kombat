@@ -47,6 +47,8 @@ import coolBee from './cool_bee.png'
 import SponsorImage from './sponsorImage.png'
 import Tab from './tap.jpg'
 import Click from './clicks.png'
+import huobi from './huobi.png'
+import coinbase from './coinbase.png'
 export {
     binanceLogo,
     dollarCoin,
@@ -96,5 +98,7 @@ export {
      coolBee,
      SponsorImage,
      Tab,
-     Click
+     Click,
+     huobi,
+     coinbase
 };

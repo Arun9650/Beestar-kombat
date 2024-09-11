@@ -253,7 +253,7 @@ const canBuySkin = (selectedSkin:any, user:any, levelNames:any) => {
               <button
                 onClick={() => handleChooseSkin(selectedSkin!)}
                 
-                className="mt-4 w-full py-2 bg-yellow-400 text-zinc-700 rounded-xl font-medium"
+                className="mt-4 w-full py-2 bg-custom-orange text-zinc-700 rounded-xl font-medium"
               >
                 {selectedSkin?.owned ? "Choose" : "Unlock"}
               </button>
@@ -268,7 +268,7 @@ const canBuySkin = (selectedSkin:any, user:any, levelNames:any) => {
                     key={index}
                     className={`relative  py-2 px-2 h-full rounded-lg bg-[#1d2025] ${
                       selectedSkin?.name === skin.name
-                        ? "border-2 border-yellow-400 overflow-hidden"
+                        ? "border-2 border-custom-orange overflow-hidden"
                         : ""
                     }`}
                     onClick={() => setSelectedSkin(skin)}
@@ -310,7 +310,7 @@ const canBuySkin = (selectedSkin:any, user:any, levelNames:any) => {
                 onClick={() => setIsDrawerOpen(false)}
                 className="flex text-white rounded-full justify-end  mr-0  w-full  items-center"
               >
-                <div className="p-3 px-5 bg-[#1C1F23] rounded-full">x</div>
+                <div className="p-3 px-5 bg-[#252423] rounded-full">x</div>
               </DrawerHeader>
               <div className="text-center">
                 <Image
@@ -325,7 +325,7 @@ const canBuySkin = (selectedSkin:any, user:any, levelNames:any) => {
                 </h2>
                 <p className="text-white">
                   {selectedSkin.league !== levelNames[levelIndex] && (
-                    <span className="text-yellow-400">
+                    <span className="text-custom-orange">
                       You need to be at {selectedSkin.league}
                     </span>
                   )}
@@ -347,7 +347,7 @@ const canBuySkin = (selectedSkin:any, user:any, levelNames:any) => {
                     !canBuySkin(selectedSkin, userInfo, levelNames)
                   }
                   onClick={() => handleBuySkin(userId!, selectedSkin)}
-                  className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
+                  className="w-full py-8 bg-custom-orange text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
                 >
                   {buttonLoading ? <div className="loader"></div> : "Buy"}
                 </Button>

@@ -221,8 +221,8 @@ const TapGlobe = () => {
   };
   // console.log(skin);
   return (
-    <div className="relative  bg-[url('/newImages/honeycomb-design.png')]  bg-center bg-contain bg-no-repeat ">
-      <div className=" mx-auto  w-fit ">
+    <div className="relative bg-[url('/newImages/honeycomb-design.png')]  bg-center bg-cover bg-no-repeat my-8">
+      <div className=" mx-auto  w-full ">
         <div
           ref={bodyRef}
           onTouchStart={(e) => {
@@ -237,9 +237,9 @@ const TapGlobe = () => {
               height={250}
               width={250}
               alt=""
-              className="transition duration-300  mb-4 cursor-pointer"
+              className="transition duration-300  cursor-pointer"
             />  
-          </div>
+          </div>  
         </div>
       </div>
     </div>

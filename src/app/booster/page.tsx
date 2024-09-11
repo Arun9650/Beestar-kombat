@@ -31,6 +31,7 @@ import { updatePointsInDB } from "@/actions/points.actions";
 import { getUserConfig } from "@/actions/user.actions";
 import { useFreeEnergy } from "@/store/useFreeEnergy";
 import { DateTime } from "luxon";
+import SectionBanner from "@/components/sectionBanner";
 
 interface Booster {
   id: number;
@@ -337,8 +338,14 @@ const Boosters = () => {
   };
 
   return (
-    <div className="min-h-screen  bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f] text-white">
-      <div className="p-4">
+    <div className="">
+      <SectionBanner
+        mainText="Boosters"
+        subText="Upgrade your energy"
+        leftIcon="/newImages/bee.png"
+        rightIcon="/newImages/bee-right.png"
+      />
+      <div className="">
         <div className="text-center mb-8">
           <p className="text-gray-400">Your balance</p>
           <div className="flex justify-center items-center">
@@ -347,7 +354,7 @@ const Boosters = () => {
               {formatNumberWithCommas(points)}
             </p>
           </div>
-          <p className="text-yellow-500 mt-2">How a boost works</p>
+          <p className="text-custom-orange mt-2">How a boost works</p>
         </div>
         <div>
           <h2 className="text-lg font-bold mb-2">Free daily boosters</h2>
@@ -355,7 +362,7 @@ const Boosters = () => {
             <div
               key={booster.name}
               onClick={() => handleBoosterClick(booster)}
-              className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none  p-2 rounded-2xl mb-2"
+              className="flex items-center bg-[#252423] shadow-xl  p-2 rounded-2xl mb-2"
             >
               <Image
                 src={booster.icon}
@@ -380,7 +387,7 @@ const Boosters = () => {
             <div
               key={booster.name}
               onClick={() => handleBoosterClick(booster)}
-              className="flex items-center bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none   p-2 rounded-2xl mb-2"
+              className="flex items-center bg-[#252423] shadow-xl p-2 rounded-2xl mb-2"
             >
               <Image
                 src={booster.icon}
@@ -412,7 +419,7 @@ const Boosters = () => {
 
         {selectedBooster && (
           <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-            <DrawerContent className="bg-[#14161a] border-none">
+            <DrawerContent className="bg-[#252423] border-none">
               <DrawerHeader
                 onClick={() => setIsDrawerOpen(false)}
                 className="flex pb-0  text-white rounded-full justify-end mr-0 w-full items-center"
@@ -463,7 +470,7 @@ const Boosters = () => {
               <DrawerFooter>
                 <Button
                   onClick={() => handleBoosterSelection(selectedBooster.id)}
-                  className="w-full py-8 bg-yellow-400 text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
+                  className="w-full py-8 text-xl rounded-lg"
                 >
                   {buttonLoading ? <div className="loader"></div> : "Go ahead"}
                 </Button>

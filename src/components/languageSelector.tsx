@@ -1,9 +1,8 @@
 "use client";
-// app/components/LanguageSelector.js
 
+import useLanguageStore from "@/store/uselanguageStore";
 import React, { useState, useEffect, useRef } from "react";
 import { CircleFlag } from "react-circle-flags";
-import { Input } from "./ui/input";
 
 const languages = [
   { id: 1, name: "English", code: "GB" },
@@ -33,6 +32,18 @@ const LanguageSelector = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(1); // Default to English
   const [searchTerm, setSearchTerm] = useState(""); // Search input state
   const [filteredLanguages, setFilteredLanguages] = useState(languages); // Filtered languages
+
+  const {  setLanguage } = useLanguageStore();
+
+  const handleLanguageChange = (newLanguage: string, newLanguageCode: string, newImage: string) => {
+    setLanguage(newLanguage, newLanguageCode, newImage);
+  };
+
+
+  const handleChange = (name:string, code:string, id:number) => {
+    setSelectedLanguage(id);
+    handleLanguageChange(name, code, id.toString());
+  }
 
   // Set the type of the ref to NodeJS.Timeout | null to handle the Timeout correctly in Node.js environment
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -70,7 +81,7 @@ const LanguageSelector = () => {
       />
 
       <div className="grid grid-cols-3 gap-2">
-        {languages.map((language) => (
+        {filteredLanguages.map((language) => (
           <div
             className={`my-1 flex items-center justify-between border rounded-md p-2 ${
               selectedLanguage === language.id
@@ -109,7 +120,7 @@ const LanguageSelector = () => {
               name="language"
               value={language.id}
               checked={selectedLanguage === language.id}
-              onChange={() => setSelectedLanguage(language.id)}
+              onChange={() => handleChange(language.name, language.code, language.id)}
               className="sr-only peer"
             />
           </div>

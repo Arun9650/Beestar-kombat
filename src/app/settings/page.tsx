@@ -18,6 +18,8 @@ import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import SectionBanner from "@/components/sectionBanner";
 import { ChevronRight, Trash } from "lucide-react";
+import useLanguageStore from "@/store/uselanguageStore";
+import { CircleFlag } from "react-circle-flags";
 
 const Settings = () => {
   const { exchange } = useExchangeStore();
@@ -40,6 +42,7 @@ const Settings = () => {
   const { currentTapsLeft, increaseTapsLeft, setCurrentTapsLeft, setPPH } =
     usePointsStore();
   const { multiClickLevel } = useBoostersStore();
+  const { language, languageCode} = useLanguageStore();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -133,9 +136,14 @@ const Settings = () => {
                 </p>
               </div>
             </div>
-            <Button className="flex items-center justify-between text-xs w-32">
-            <Image src={exchange.icon} alt="YouTube" width={20} height={20} className="mr-2" />
-              English
+            <Button onClick={() => handleRoute("/language")} className="flex items-center justify-between text-xs w-32">
+            {/* <Image src={exchange.icon} alt="YouTube" width={20} height={20} className="mr-2" /> */}
+            <CircleFlag
+                countryCode={languageCode.toLocaleLowerCase()}
+                height={5}
+                width={12}
+              />
+           {language}
               <ChevronRight strokeWidth={4} className="text-white" size={18} />
             </Button>
           </div>
@@ -203,7 +211,7 @@ const Settings = () => {
                 <h3 className="text-sm font-medium">Delete Account</h3>
               </div>
             </div>
-            <button className="flex items-center text-xs justify-between bg-red-900 px-4 py-3 rounded-xl w-32"  >
+            <button  className="flex items-center text-xs justify-between bg-red-900 px-4 py-3 rounded-xl w-32"  >
             <Image src={exchange.icon} alt="YouTube" width={20} height={20} className="mr-2" />
              Delete
               <ChevronRight strokeWidth={4} className="text-white" size={18} />
