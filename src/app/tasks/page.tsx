@@ -1,5 +1,4 @@
 'use client'
-import Header from "@/components/Header";
 import CurrentPoints from "@/components/tasks/CurrentPoints";
 import TaskList from "@/components/tasks/TaskList";
 import Image from "next/image";
@@ -48,7 +47,6 @@ const TasksPage =  () => {
         rightIcon="/newImages/bee-right.png"
       />
       <CurrentPoints />
-      <Header />
       <TaskList />
     </section>
   );
