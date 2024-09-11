@@ -45,7 +45,7 @@ const MenuGrid = () => {
   }, []);
 
 
-  const showAd = useAdsgram({ blockId: "2794", onReward, onError });
+  const showAd = useAdsgram({ blockId: "2953", onReward, onError });
 
 
   const menuItems = [
