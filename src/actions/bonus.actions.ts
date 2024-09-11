@@ -68,7 +68,12 @@ export const claimReward = async (userId: string, timezone: string) => {
       const differenceInDays = todayInUserTimezone.diff(lastRewardDateInUserTimezone, 'days').days;
 
       if (differenceInDays >= 1) {
-        day = lastReward.day + 1;
+        // If the user claimed the reward for day 10, reset to day 1
+        if (lastReward.day >= 10) {
+          day = 1;
+        } else {
+          day = lastReward.day + 1;
+        }
       } else {
         day = 1; // Reset to day 1 if the reward was already claimed today
       }
