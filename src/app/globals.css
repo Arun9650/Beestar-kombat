@@ -157,8 +157,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80vw;
-  height: 80vw;
+  width: 60vw;
+  height: 60vw;
   max-width: 360px;
   max-height: 360px;
 }
@@ -168,11 +168,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 70vw;
-  height: 70vw;
+  width: 60vw;
+  height: 60vw;
   /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); */
 }
 
+@media (min-width: 401px) {
+  .circle-outer, .circle-inner {
+    width: 80vw;
+    height: 80vw;
+    max-width: 400px;
+    max-height: 400px;
+  }
+}
 @keyframes float {
   0% {
     opacity: 1;

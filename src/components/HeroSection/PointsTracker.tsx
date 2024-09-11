@@ -23,7 +23,7 @@ const PointsTracker: React.FC<PointsTrackerProps> = ({ formatNumber }) => {
   }, [PPH, points, setPoints]);
 
   return (
-    <div className="font-bold text-xl mx-auto  flex items-center xs:justify-center text-white">
+    <div className="font-bold text-xl mx-auto  flex items-center xs:justify-center gap-2 text-white">
       <span className="text-6xl ">
         <Image
           src="/newImages/Bee-coin.png"

@@ -229,15 +229,15 @@ const TapGlobe = () => {
             e.stopPropagation();
             handleTouch(e);
           }}
-          className="relative rounded-full circle-outer"
+          className="relative rounded-full circle-outer mx-auto"
         >
-          <div className="circle-inner rounded-full  ">
+          <div className="circle-inner rounded-full">
             <Image
               src={userSkin?.data ?? "/newImages/BeeMain.png"}
-              height={250}
-              width={250}
+              height={180}
+              width={180}
               alt=""
-              className="transition duration-300  cursor-pointer"
+              className="transition duration-300  cursor-pointer w-44 h-44 xs:h-[16.1rem] xs:w-[16.1rem]"
             />  
           </div>  
         </div>
