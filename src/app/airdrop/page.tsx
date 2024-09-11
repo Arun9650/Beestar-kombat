@@ -7,7 +7,6 @@ import { useBoostersStore } from "@/store/useBoostrsStore";
 import SectionBanner from "@/components/sectionBanner";
 import CurrentPoints from "@/components/tasks/CurrentPoints";
 import { Button } from "@/components/ui/button";
-import Flag from "react-flagpack";
 
 interface TaskItemProps {
   iconSrc: string;

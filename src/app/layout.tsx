@@ -10,6 +10,7 @@ import TopNavBar from "@/components/navigation/TopNavBar";
 import BottomNavBar from "@/components/navigation/BottomNavBar";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import Head from "next/head";
+import Script from "next/script";
 
 
 const montserrat = Poppins({ weight: ['100',"200",'300',"400","500","600","700","800","900"], subsets: ["latin"] });
@@ -29,6 +30,7 @@ export default function RootLayout({
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
       </Head>
+        <Script src="https://sad.adsgram.ai/js/sad.min.js"></Script>
       <body className={`${montserrat.className} min-h-screen h-screen`}>
         {/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
         <AuthProviderWithSuspense>

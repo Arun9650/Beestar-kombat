@@ -1,23 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useAdsgram } from "@/hooks/useAdsgram";
+
 
 interface MenuItemProps {
   iconSrc: string;
   label: string;
-  route: string;
+  route?: string;
+  onReward?: () => void;
+  onError?: (result:any) => void;
+  onClick?: () => void;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ iconSrc, label, route }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ iconSrc, label, route, onReward, onError, onClick }) => {
   const router = useRouter();
 
-  const handleNavigation = () => {
-    router.push(route);
-  };
+  // const handleNavigation = () => {
+  //   router.push(route);
+  // };
 
   return (
     <div
-    onClick={handleNavigation}
+    onClick={onClick}
     className='flex flex-col justify-between items-center'
     >
 
@@ -32,8 +37,19 @@ const MenuItem: React.FC<MenuItemProps> = ({ iconSrc, label, route }) => {
 };
 
 const MenuGrid = () => {
+  const onReward = useCallback(() => {
+    alert('Reward');
+  }, []);
+  const onError = useCallback((result:any) => {
+    alert(JSON.stringify(result, null, 4));
+  }, []);
+
+
+  const showAd = useAdsgram({ blockId: "2794", onReward, onError });
+
+
   const menuItems = [
-    { iconSrc: '/icons/daily-gift.png', label: 'Daily reward', route: '/daily-reward' },
+    { iconSrc: '/icons/daily-gift.png', label: 'Daily reward',  onClick: showAd  },
     { iconSrc: '/icons/daily-ciper.png', label: 'Daily cipher', route: '/daily-cipher' },
     { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo' },
     { iconSrc: '/icons/settings.png', label: 'Settings', route: '/settings' },
@@ -43,7 +59,7 @@ const MenuGrid = () => {
   return (
     <div className="grid grid-cols-5 gap-4">
       {menuItems.map((item, index) => (
-        <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} />
+        <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} />
       ))}
     </div>
   );
