@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useAdsgram } from "@/hooks/useAdsgram";
+import toast from 'react-hot-toast';
 
 
 interface MenuItemProps {
@@ -14,12 +15,6 @@ interface MenuItemProps {
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ iconSrc, label, route, onReward, onError, onClick }) => {
-  const router = useRouter();
-
-  // const handleNavigation = () => {
-  //   router.push(route);
-  // };
-
   return (
     <div
     onClick={onClick}
@@ -37,12 +32,18 @@ const MenuItem: React.FC<MenuItemProps> = ({ iconSrc, label, route, onReward, on
 };
 
 const MenuGrid = () => {
+
+
+  const search = useSearchParams();
+  const id = search.get("id");
+
   const onReward = useCallback(() => {
-    alert('Reward');
+  toast.success('You have been rewarded with 5000 honey');
   }, []);
   const onError = useCallback((result:any) => {
     alert(JSON.stringify(result, null, 4));
   }, []);
+  const router = useRouter();
 
 
   const showAd = useAdsgram({ blockId: "2953", onReward, onError });
@@ -50,9 +51,9 @@ const MenuGrid = () => {
 
   const menuItems = [
     { iconSrc: '/icons/daily-gift.png', label: 'Daily reward',  onClick: showAd  },
-    { iconSrc: '/icons/daily-ciper.png', label: 'Daily cipher', route: '/daily-cipher' },
+    { iconSrc: '/icons/daily-ciper.png', label: 'Daily cipher', route: '/daily-cipher',  },
     { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo' },
-    { iconSrc: '/icons/settings.png', label: 'Settings', route: '/settings' },
+    { iconSrc: '/icons/Settings.png', label: 'Settings', route: '/settings', onClick: () =>  router.push(`/settings?${id}`) },
     { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys' },
   ];
 
