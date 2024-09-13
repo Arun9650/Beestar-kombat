@@ -148,7 +148,7 @@ const Leaderboard = () => {
             <div className="flex-1">
               <p className="font-bold">{user?.name || "Honey Collector"}</p>
               <p className="text-yellow-500 flex gap-4">
-                {formatNumber(user?.points)} <span className="text-white">{user?.league}</span>
+                {formatNumber(points)} <span className="text-white">{user?.league}</span>
               </p>
             </div>
             <div className="text-lg">{adjustedUserIndex}</div>
