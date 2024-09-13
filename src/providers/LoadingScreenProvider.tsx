@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 import LoadingScreen from "@/components/LoadingScreen";
 import useLoadingScreenStore from "@/store/loadingScreenStore";
 import { usePointsStore } from "@/store/PointsStore";
@@ -9,6 +9,15 @@ import WebApp from "@twa-dev/sdk";
 import { UpdateUser } from "@/actions/user.actions";
 import { BackButton, initSwipeBehavior, initViewport } from "@telegram-apps/sdk";
 import { initBackButton } from "@telegram-apps/sdk";
+import {
+  bindMiniAppCSSVars,
+  bindThemeParamsCSSVars,
+  bindViewportCSSVars,
+  initNavigator, useLaunchParams,
+  useMiniApp,
+  useThemeParams,
+  useViewport,
+} from '@telegram-apps/sdk-react';
 const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useLoadingScreenStore();
   usePointsStore();
@@ -19,6 +28,14 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
    swipeBehavior.enableVerticalSwipe();
    backButton.show();
   
+
+   const navigator = useMemo(() => initNavigator('app-navigation-state'), []);
+
+   useEffect(() => {
+    navigator.attach();
+    return () => navigator.detach();
+  }, [navigator]);
+
 
   useEffect(() => {
   async  function initTg() {
