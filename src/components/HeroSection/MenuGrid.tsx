@@ -3,6 +3,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useAdsgram } from "@/hooks/useAdsgram";
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 
 interface MenuItemProps {
@@ -38,8 +39,18 @@ const MenuGrid = () => {
   const id = search.get("id");
 
   const onReward = useCallback(() => {
-  toast.success('You have been rewarded with 5000 honey');
-  }, []);
+
+    axios.get('https://beestar-kombat-git-ui-change-arun9650s-projects.vercel.app/api/reward', {
+      params: {
+        id: id
+      }
+    }).then((response) => {
+      toast.success(response.data.message);
+    }).catch((error) => {
+      toast.error(error.response.data.message);
+    })
+
+  }, [id]);
   const onError = useCallback((result:any) => {
     alert(JSON.stringify(result, null, 4));
   }, []);
