@@ -24,9 +24,10 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
         WebApp.expand()
         WebApp.disableVerticalSwipes()
         WebApp.setHeaderColor('#000000');
-        WebApp.BackButton.onClick( () => window.history.back() );
+        // WebApp.BackButton.onClick( () => window.history.back() );
         const [backButton] = initBackButton();
       backButton.show();
+      backButton.on('click', () => window.history.back());
   } else {
     console.log('Telegram WebApp is undefined, retrying…');
     setTimeout(initTg, 500);
