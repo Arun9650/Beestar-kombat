@@ -293,7 +293,7 @@ const EarnMoreCoins = () => {
                 </span>
                 </div>
                 <Button
-                      onClick={handleClaimReward}
+                      onClick={() => setIsOpen(true)}
                       disabled={!nextRewardAvailable || buttonLoading}
                     >
                       Redeem
