@@ -29,7 +29,9 @@ export default function RootLayout({
     <html lang="en">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+            
       </Head>
+      <Script async src="https://telegram.org/js/telegram-widget.js?22"></Script>
         <Script src="https://sad.adsgram.ai/js/sad.min.js"></Script>
       <body className={`${montserrat.className} min-h-screen h-screen`}>
         {/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}

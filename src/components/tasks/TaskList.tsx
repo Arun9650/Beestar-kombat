@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { Button } from "../ui/button";
-import { CEO, dollarCoin, QuestionMark } from "../../../public/newImages";
+import { dollarCoin, } from "../../../public/newImages";
 import {
   Drawer,
   DrawerContent,

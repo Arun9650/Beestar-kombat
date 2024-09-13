@@ -241,18 +241,18 @@ const Settings = () => {
                 </div>
 
                 <DrawerFooter>
-                  <Button
+                  <button
                     onClick={() => handleDeleteUser()}
-                    className="w-full py-4 bg-red-500 text-white text-md rounded-lg "
+                    className="w-full py-2 bg-red-500 text-white text-md rounded-lg "
                   >
-                    {buttonLoading ? "Loading" : "Delete account"}
-                  </Button>
-                  <Button
+                    {buttonLoading ? "Loading..." : "Delete account"}
+                  </button>
+                  <button
                     onClick={() => setIsDrawerOpen(false)}
-                    className="w-full py-4 bg-[#1C1F23] text-white text-md rounded-lg "
+                    className="w-full py-2 bg-[#1C1F23] text-white text-md rounded-lg "
                   >
                     Cancel
-                  </Button>
+                  </button>
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>

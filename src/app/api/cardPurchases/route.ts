@@ -4,7 +4,7 @@ import { Team } from '@/components/tasks/TaskList';
 
 export async function POST(request: Request) {
   try {
-    const { id, selectedTeam, points }: { id: string; selectedTeam: Team, points: number } = await request.json();
+    const { id, selectedTeam, points }: { id: string; selectedTeam: Team; points: number } = await request.json();
 
     if (!id || !selectedTeam) {
       return NextResponse.json({ success: false, message: 'Invalid request data' }, { status: 400 });
@@ -24,10 +24,16 @@ export async function POST(request: Request) {
     const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2.5);
     const increasedBasePPH = Math.floor(selectedTeam.basePPH * 1.05);
     const remainingPoints = points - selectedTeam.baseCost;
-    console.log("🚀 ~ POST ~ selectedTeam.baseCost:", selectedTeam.baseCost)
-    console.log("🚀 ~ POST ~ user.points:", user.points)
+    console.log('🚀 ~ POST ~ selectedTeam.baseCost:', selectedTeam.baseCost);
+    console.log('🚀 ~ POST ~ user.points:', user.points);
 
-    if (purchaseCard && remainingPoints >= 0) {
+    // Ensure the user's points do not go below zero
+    if (remainingPoints < 0) {
+      return NextResponse.json({ success: false, message: 'Insufficient points to complete the transaction' }, { status: 400 });
+    }
+
+    if (purchaseCard) {
+      // Update the user's card and points
       const updatedUser = await prisma.$transaction([
         prisma.user.update({
           where: { chatId: id },
@@ -48,9 +54,14 @@ export async function POST(request: Request) {
         }),
       ]);
 
-      // Fetch the latest user data after the transaction
-      return NextResponse.json({ success: true, message: 'Card updated successfully', user: updatedUser[0], userCard:  updatedUser[1] });
-    } else if (remainingPoints >= 0) {
+      return NextResponse.json({
+        success: true,
+        message: 'Card updated successfully',
+        user: updatedUser[0],
+        userCard: updatedUser[1],
+      });
+    } else {
+      // Create a new card and update the user
       const updatedUser = await prisma.$transaction([
         prisma.userCard.create({
           data: {
@@ -68,20 +79,25 @@ export async function POST(request: Request) {
           where: { chatId: id },
           data: {
             profitPerHour: { increment: selectedTeam.basePPH },
-            points: { decrement: selectedTeam.baseCost },
+            points: remainingPoints,
             lastProfitDate: Math.floor(Date.now() / 1000),
             lastLogin: new Date(),
           },
         }),
       ]);
 
-      // Fetch the latest user data after the transaction
-      return NextResponse.json({ success: true, message: 'Card created and user updated successfully', user: updatedUser[1], userCard:  updatedUser[0] });
-    } else {
-      return NextResponse.json({ success: false, message: 'Insufficient points' }, { status: 400 });
+      return NextResponse.json({
+        success: true,
+        message: 'Card created and user updated successfully',
+        user: updatedUser[1],
+        userCard: updatedUser[0],
+      });
     }
   } catch (e) {
     console.error('Error updating profit per hour:', e);
-    return NextResponse.json({ success: false, message: 'An error occurred while updating the profit per hour' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'An error occurred while updating the profit per hour' },
+      { status: 500 }
+    );
   }
 }

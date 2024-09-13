@@ -53,17 +53,17 @@ const BottomNavBar = () => {
   return (
     <div
       className="sticky bottom-0 xs:bottom-10 max-w-[370px] w-full px-6 pt-3 pb-1 mx-auto  flex  justify-around items-center  text-xs 
-      bg-[url('/newImages/bottom-navbar.png')] bg-contain bg-center bg-no-repeat z-50"
+      bg-[url('/newImages/bottom-navbar.png')] bg-contain bg-center bg-no-repeat z-50 h-20"
     >
       {NavigationItems.map((item, index) => {
         return (
           <div
             key={index} 
-            className="flex flex-col items-center justify-center gap-1"
+            className="flex flex-col items-center justify-center gap-1 "
           >
             <button
               onClick={() => handleRoute(item.link)}
-              className={`  flex items-center justify-center flex-col   `}
+              className={`  flex items-center justify-center flex-col`}
             >
               <div
                 className={`${

@@ -17,7 +17,6 @@ import exchange from './exchange.png'
 import invite from './invitation.png'
 import approved from './approved.png'
 import CEO from './ceo.png'
-import QuestionMark from './question_mark.png'
 import beeAvatar from './bee_avatars/4.png'
 import card1 from './card1.png'
 import card2 from './card2.png'
@@ -69,7 +68,6 @@ export {
     invite,
     approved,
     CEO,
-    QuestionMark,
     beeAvatar,
      card1,
      card2,

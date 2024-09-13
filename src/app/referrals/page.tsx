@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Copy from "../../../public/icons/Copy";
 import { dollarCoin, Gift } from "../../../public/newImages";
-import Image from "next/image";
+import Image from "next/image";``
 import React, { useEffect, useState } from "react";
 import { TelegramShareButton } from "react-share";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
@@ -13,9 +13,13 @@ import { useQuery } from "@tanstack/react-query";
 import useFetchUserReferred from "@/hooks/query/useFetchUserReferred";
 import SectionBanner from "@/components/sectionBanner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { initUtils } from '@telegram-apps/sdk'
+import Link from "next/link";
 const ReferralPage = () => {
   const [isTapped, setIsTapped] = useState(false);
   const [id, setId] = useState("");
+
+   const INVITE_URL = "https://t.me/BeestarKombat_bot/start"
 
   const handleTap = () => {
     setIsTapped(true);
@@ -30,6 +34,20 @@ const ReferralPage = () => {
 
   const { data, isLoading } = useFetchUserReferred(id);
   console.log("🚀 ~ ReferralPage ~ data:", data);
+
+
+  const handleLick = () => {
+    window.location.href = `https://t.me/BeestarKombat_bot/start?start=${id}`
+  }
+
+  const handleInviteFriend = () => {
+    const utils = initUtils()
+    const inviteLink = `${INVITE_URL}?startapp=${id}`
+    const shareText = `Join me on this awesome Telegram mini app!`
+    const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`
+    utils.openTelegramLink(fullUrl)
+  }
+
 
   useEffect(() => {
     const checkWindowAndSetId = () => {
@@ -68,14 +86,6 @@ const ReferralPage = () => {
 
   return (
     <div className="px-4 text-white flex flex-col gap-16">
-      {/* <div>
-        <h1 className="text-4xl mt-5 font-bold mx-auto  flex justify-center ">
-          Invite friends!
-        </h1>
-        <p className="mb-4  flex justify-center mt-4">
-          You and your friend will receive bonuses
-        </p>
-      </div> */}
 
         <SectionBanner
         mainText="Invite friends"
@@ -93,6 +103,34 @@ const ReferralPage = () => {
             <p className="text-yellow-400 text-xs">+5,000 for you and your friend</p>
           </div>
         </div>
+      </div>
+      <div className="flex  gap-3 mb-24">
+        {/* button */}
+        <Button className="bg-black/80 shadow-2xl border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full py-4 px-4  semi-bold text-sm ">
+          {id ? (
+            <Button
+            style={{ width: "100%" }}
+              // onClick={() => handleLick()}
+              onClick={ () => handleInviteFriend()}
+            >
+              Invite a friend
+            </Button>
+          ) : (
+            <Skeleton className="w-full "/> // Placeholder while id is being set
+          )}
+        </Button>
+        <button
+          onClick={handleTap}
+          className={`bg-yellow-400 border border-black  py-2 px-4 rounded-2xl ${
+            isTapped ? "scale-95" : ""
+          } transition-transform duration-200`}
+        >
+          {isTapped ? (
+            <IoCheckmarkDoneSharp className="w-6 h-6 text-black" />
+          ) : (
+            <Copy className="w-6 h-6 text-black" />
+          )}
+        </button>
       </div>
 
       <div className="flex flex-col gap-4 items-center justify-center w-full  bg-opacity-85   ">
@@ -120,33 +158,7 @@ const ReferralPage = () => {
         )}
       </div>
 
-      <div className="flex  gap-3 mb-24">
-        {/* button */}
-        <Button className="bg-black/80 shadow-2xl border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full py-4 px-4  semi-bold text-sm ">
-          {id ? (
-            <TelegramShareButton
-              style={{ width: "100%" }}
-              url={`http://t.me/BeestarKombat_bot/start?start=${id}`}
-            >
-              Invite a friend
-            </TelegramShareButton>
-          ) : (
-            <Skeleton className="w-full "/> // Placeholder while id is being set
-          )}
-        </Button>
-        <button
-          onClick={handleTap}
-          className={`bg-yellow-400 border border-black  py-2 px-4 rounded-2xl ${
-            isTapped ? "scale-95" : ""
-          } transition-transform duration-200`}
-        >
-          {isTapped ? (
-            <IoCheckmarkDoneSharp className="w-6 h-6 text-black" />
-          ) : (
-            <Copy className="w-6 h-6 text-black" />
-          )}
-        </button>
-      </div>
+  
     </div>
   );
 };

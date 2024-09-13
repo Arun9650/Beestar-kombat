@@ -51,7 +51,7 @@ const MenuGrid = () => {
 
   const menuItems = [
     { iconSrc: '/icons/daily-gift.png', label: 'Daily reward',  onClick: showAd  },
-    { iconSrc: '/icons/daily-ciper.png', label: 'Daily cipher', route: '/daily-cipher',  },
+    { iconSrc: '/icons/daily-ciper.png', label: 'Daily Task', route: '/earn', onClick : () =>  router.push(`/earn?${id}`) },
     { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo' },
     { iconSrc: '/icons/Settings.png', label: 'Settings', route: '/settings', onClick: () =>  router.push(`/settings?${id}`) },
     { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys' },
