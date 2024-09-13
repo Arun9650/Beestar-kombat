@@ -7,23 +7,26 @@ import { usePointsStore } from "@/store/PointsStore";
 import useUserPointsConfig from "@/hooks/useUserPointsConfig";
 import WebApp from "@twa-dev/sdk"
 import { UpdateUser } from "@/actions/user.actions";
+import { BackButton } from "@telegram-apps/sdk";
+import { initBackButton } from '@telegram-apps/sdk';
 const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useLoadingScreenStore();
   usePointsStore();
 
  
 
-
-
-
+  
+  
   useEffect(() => {
     function initTg() {
-    if (typeof window !== 'undefined') {
-    WebApp.ready()
-    WebApp.expand()
-    WebApp.disableVerticalSwipes()
-      WebApp.setHeaderColor('#000000');
-      WebApp.BackButton.onClick( () => window.history.back() );
+      if (typeof window !== 'undefined') {
+        WebApp.ready()
+        WebApp.expand()
+        WebApp.disableVerticalSwipes()
+        WebApp.setHeaderColor('#000000');
+        WebApp.BackButton.onClick( () => window.history.back() );
+        const [backButton] = initBackButton();
+      backButton.show();
   } else {
     console.log('Telegram WebApp is undefined, retrying…');
     setTimeout(initTg, 500);
