@@ -40,10 +40,7 @@ const MenuGrid = () => {
 
   const onReward = useCallback(() => {
 
-    axios.get('https://beestar-kombat-git-ui-change-arun9650s-projects.vercel.app/api/reward', {
-      params: {
-        id: id
-      }
+    axios.get('https://beestar-kombat-git-ui-change-arun9650s-projects.vercel.app/api/reward?userid=' + id + '', {
     }).then((response) => {
       toast.success(response.data.message);
     }).catch((error) => {
