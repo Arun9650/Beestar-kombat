@@ -27,7 +27,7 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
         // WebApp.BackButton.onClick( () => window.history.back() );
         const [backButton] = initBackButton();
       backButton.show();
-      backButton.on('click', () => window.history.back());
+      // backButton.on('click', () => window.history.back());
   } else {
     console.log('Telegram WebApp is undefined, retrying…');
     setTimeout(initTg, 500);
