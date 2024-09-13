@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useAdsgram } from "@/hooks/useAdsgram";
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { usePointsStore } from '@/store/PointsStore';
 
 
 interface MenuItemProps {
@@ -16,6 +17,9 @@ interface MenuItemProps {
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ iconSrc, label, route, onReward, onError, onClick }) => {
+
+  
+
   return (
     <div
     onClick={onClick}
@@ -34,19 +38,20 @@ const MenuItem: React.FC<MenuItemProps> = ({ iconSrc, label, route, onReward, on
 
 const MenuGrid = () => {
 
-
+  const {addPoints} = usePointsStore();
   const search = useSearchParams();
   const id = search.get("id");
 
   const onReward = useCallback(() => {
-
     axios.get('https://beestar-kombat-git-ui-change-arun9650s-projects.vercel.app/api/reward?userid=' + id + '', {
     }).then((response) => {
-      toast.success(response.data.message);
+      toast.success(response.data.message || "Reward claimed successfully");
+      
+      addPoints(5000);
+
     }).catch((error) => {
       toast.error(error.response.data.message);
     })
-
   }, [id]);
   const onError = useCallback((result:any) => {
     alert(JSON.stringify(result, null, 4));
