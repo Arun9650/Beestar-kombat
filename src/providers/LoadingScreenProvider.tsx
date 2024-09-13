@@ -7,7 +7,7 @@ import { usePointsStore } from "@/store/PointsStore";
 import useUserPointsConfig from "@/hooks/useUserPointsConfig";
 import WebApp from "@twa-dev/sdk";
 import { UpdateUser } from "@/actions/user.actions";
-import { BackButton, initSwipeBehavior } from "@telegram-apps/sdk";
+import { BackButton, initSwipeBehavior, initViewport } from "@telegram-apps/sdk";
 import { initBackButton } from "@telegram-apps/sdk";
 const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useLoadingScreenStore();
@@ -15,24 +15,26 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
 
    const [backButton] = initBackButton();
    const [swipeBehavior] = initSwipeBehavior();
+   
+   swipeBehavior.enableVerticalSwipe();
+   backButton.show();
+  
 
-      swipeBehavior.enableVerticalSwipe();
-      backButton.show();
-
-  // useEffect(() => {
-  //   function initTg() {
-  //     if (typeof window !== "undefined") {
-  //       WebApp.ready();
-  //       WebApp.expand();
-  //       WebApp.disableVerticalSwipes();
-  //       WebApp.setHeaderColor("#000000");
-  //     } else {
-  //       console.log("Telegram WebApp is undefined, retrying…");
-  //       setTimeout(initTg, 500);
-  //     }
-  //   }
-  //   initTg();
-  // }, []);
+  useEffect(() => {
+  async  function initTg() {
+      if (typeof window !== "undefined") {
+        const [viewport] = initViewport();
+      const vp = await viewport;
+      if (!vp.isExpanded) {
+        vp.expand(); // will expand the Mini App, if it's not
+    }
+      } else {
+        console.log("Telegram WebApp is undefined, retrying…");
+        setTimeout(initTg, 500);
+      }
+    }
+    initTg();
+  }, []);
 
   useEffect(() => {
     const updateUser = async () => {
