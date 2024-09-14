@@ -27,9 +27,6 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
         WebApp.disableVerticalSwipes()
         WebApp.setHeaderColor('#000000');
         // WebApp.BackButton.onClick( () => window.history.back() );
-        const { initDataRaw, initData } = retrieveLaunchParams();
-        console.log("🚀 ~ initTg ~ initData:", initData)
-        console.log("🚀 ~ initTg ~ initDataRaw:", initDataRaw)
         const [backButton] = initBackButton();
       backButton.show();
       // Conditionally show or hide the back button based on the current route
