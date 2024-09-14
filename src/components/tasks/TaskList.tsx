@@ -241,6 +241,7 @@ const TaskList = () => {
                           width={60}
                           height={60}
                           quality={100}
+                          className="rounded-2xl"
                         />
 
                         <div className="flex flex-col  justify-between gap-1">
