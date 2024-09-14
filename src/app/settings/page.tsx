@@ -21,7 +21,7 @@ import { ChevronRight, Trash } from "lucide-react";
 import useLanguageStore from "@/store/uselanguageStore";
 import { CircleFlag } from "react-circle-flags";
 import WebApp from "@twa-dev/sdk"
-import { initClosingBehavior } from '@telegram-apps/sdk';
+import { initClosingBehavior, initUtils } from '@telegram-apps/sdk';
 
 declare global {
   interface Window {
@@ -51,6 +51,15 @@ const Settings = () => {
     usePointsStore();
   const { multiClickLevel } = useBoostersStore();
   const { language, languageCode} = useLanguageStore();
+   const INVITE_URL = "https://t.me/BeestarKombat_bot/start"
+  const handleInviteFriend = () => {
+    const utils = initUtils()
+    const inviteLink = `${INVITE_URL}?startapp=${id}`
+    const shareText = `Join me on this awesome Telegram mini app!`
+    const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`
+    utils.openTelegramLink(fullUrl)
+  }
+
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -210,7 +219,7 @@ const Settings = () => {
                 </p>
               </div>
             </div>
-            <Button className="flex items-center text-xs justify-between w-32">
+            <Button onClick={() => handleInviteFriend()} className="flex items-center text-xs justify-between w-32">
             <Image src='/newImages/share-icon.png' alt="YouTube" width={20} height={20} className="mr-2" />
              share
               <ChevronRight strokeWidth={4} className="text-white" size={18} />
