@@ -19,8 +19,8 @@ const ReferralPage = () => {
   const [isTapped, setIsTapped] = useState(false);
   const [id, setId] = useState("");
 
-  //  const INVITE_URL = "https://t.me/BeestarKombat_bot/start"
-   const INVITE_URL = 'https://t.me/beestar_devbot/start'
+   const INVITE_URL = "https://t.me/BeestarKombat_bot/start"
+  //  const INVITE_URL = 'https://t.me/beestar_devbot/start'
 
   const handleTap = () => {
     setIsTapped(true);
