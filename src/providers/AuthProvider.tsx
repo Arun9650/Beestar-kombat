@@ -47,7 +47,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     isPremium.current = isPremiumFromTelegram ? "true" : "false";
                 }
 
-              
+               
             }
 
             if (!authToken && authToken !== id.current) {
