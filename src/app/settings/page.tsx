@@ -102,8 +102,8 @@ const Settings = () => {
     setCurrentTapsLeft(500);
     if (result.success) {
       setButtonLoading(false);
-      route.push("/");
       WebApp.close();
+      route.push("/");
     }
   };
 
