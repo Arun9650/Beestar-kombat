@@ -47,18 +47,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     isPremium.current = isPremiumFromTelegram ? "true" : "false";
                 }
 
-                // Append the `id`, `userName`, and `is_premium` to the URL without reloading the page
-                const currentUrl = new URL(window.location.href);
-                if (!currentUrl.searchParams.get('id') && id.current) {
-                    currentUrl.searchParams.set('id', id.current);
-                }
-                if (!currentUrl.searchParams.get('userName') && userName.current) {
-                    currentUrl.searchParams.set('userName', userName.current);
-                }
-                if (!currentUrl.searchParams.get('is_premium') && isPremium.current) {
-                    currentUrl.searchParams.set('is_premium', isPremium.current);
-                }
-                window.history.pushState({}, '', currentUrl.toString());
+              
             }
 
             if (!authToken && authToken !== id.current) {
