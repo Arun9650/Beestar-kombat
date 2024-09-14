@@ -9,11 +9,13 @@ import WebApp from "@twa-dev/sdk"
 import { UpdateUser } from "@/actions/user.actions";
 import { BackButton } from "@telegram-apps/sdk";
 import { initBackButton } from '@telegram-apps/sdk';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
+import { usePathname, useRouter } from "next/navigation";
 const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useLoadingScreenStore();
   usePointsStore();
 
- 
+  const pathname = usePathname(); // Use usePathname to get the current path
 
   
   
@@ -25,9 +27,21 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
         WebApp.disableVerticalSwipes()
         WebApp.setHeaderColor('#000000');
         // WebApp.BackButton.onClick( () => window.history.back() );
+        const { initDataRaw, initData } = retrieveLaunchParams();
+        console.log("🚀 ~ initTg ~ initData:", initData)
+        console.log("🚀 ~ initTg ~ initDataRaw:", initDataRaw)
         const [backButton] = initBackButton();
       backButton.show();
-      backButton.on('click', () => window.history.back());
+      // Conditionally show or hide the back button based on the current route
+      if (pathname === "/") {
+        // If on home screen, hide the back button
+        backButton.hide();
+      } else {
+        // Otherwise, show the back button and set up its behavior
+        backButton.show();
+        backButton.on("click", () => window.history.back());
+      }
+
   } else {
     console.log('Telegram WebApp is undefined, retrying…');
     setTimeout(initTg, 500);
