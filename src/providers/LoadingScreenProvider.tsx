@@ -48,7 +48,7 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
     }
     }
     initTg();
-  }, []);
+  }, [pathname]);
 
   
 
