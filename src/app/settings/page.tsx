@@ -199,7 +199,7 @@ const Settings = () => {
               </div>
             </div>
             <Button className="flex items-center text-xs justify-between w-32">
-            <Image src={exchange.icon} alt="YouTube" width={20} height={20} className="mr-2" />
+            <Image src='/newImages/share-icon.png' alt="YouTube" width={20} height={20} className="mr-2" />
              share
               <ChevronRight strokeWidth={4} className="text-white" size={18} />
             </Button>
@@ -212,7 +212,7 @@ const Settings = () => {
               </div>
             </div>
             <button  className="flex items-center text-xs justify-between bg-red-900 px-4 py-3 rounded-xl w-32"  >
-            <Image src={exchange.icon} alt="YouTube" width={20} height={20} className="mr-2" />
+            <Trash strokeWidth={3}   className="mr-2" size={16} />
              Delete
               <ChevronRight strokeWidth={4} className="text-white" size={18} />
             </button>

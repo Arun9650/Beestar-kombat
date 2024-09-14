@@ -145,7 +145,7 @@ const ReferralPage = () => {
               data?.map((item: any) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-4 border rounded-2xl border-yellow-400 w-full"
+                  className="flex items-center justify-between p-4 border rounded-2xl  w-full"
                 >
                   <p>{item.name}</p>
                   <p className="flex items-center gap-3">
