@@ -12,7 +12,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const params = useSearchParams();
     const id = useRef(params.get('id'));
     const userName = useRef(params.get('userName') || randomName());
-    const referredByUser = params.get('referredByUser');
+    const referredByUser = useRef(params.get('referredByUser'));
     const isPremium = useRef(params.get('is_premium')); // Track is_premium parameter
 
     const { setUserId, setCurrentTapsLeft, addPoints } = usePointsStore();
@@ -27,6 +27,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const userIdFromTelegram = initData?.user?.id; // Get user ID from Telegram
                 const userNameFromTelegram = initData?.user?.username; // Get Telegram username
                 const isPremiumFromTelegram = initData?.user?.isPremium; // Get Telegram is_premium status
+                const referredByUserTelegram = initData?.startParam; // Get Telegram is_premium status
 
                 console.log("🚀 ~ userIdFromTelegram:", userIdFromTelegram);
                 console.log("🚀 ~ userNameFromTelegram:", userNameFromTelegram);
@@ -47,7 +48,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     isPremium.current = isPremiumFromTelegram ? "true" : "false";
                 }
 
-               
+                if(referredByUserTelegram) {
+                    referredByUser.current = referredByUserTelegram;
+                }
+               // Append the `id`, `userName`, and `is_premium` to the URL without reloading the page
+               const currentUrl = new URL(window.location.href);
+               if (!currentUrl.searchParams.get('id') && id.current) {
+                   currentUrl.searchParams.set('id', id.current);
+               }
+               if (!currentUrl.searchParams.get('userName') && userName.current) {
+                   currentUrl.searchParams.set('userName', userName.current);
+               }
+               if (!currentUrl.searchParams.get('is_premium') && isPremium.current) {
+                   currentUrl.searchParams.set('is_premium', isPremium.current);
+               }
+               window.history.pushState({}, '', currentUrl.toString());
             }
 
             if (!authToken && authToken !== id.current) {
@@ -56,7 +71,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const authenticate = await authenticateUserOrCreateAccount({
                     chatId: id.current!,
                     userName: userName.current!,
-                    referredByUser: referredByUserValue
+                    referredByUser: String(referredByUserValue.current)
                 });
                 console.log("🚀 ~ authentication ~ authenticate:", authenticate);
 
