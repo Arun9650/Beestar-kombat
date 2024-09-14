@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
 import { authenticateUserOrCreateAccount } from '@/actions/auth.actions'
 import { useSearchParams } from 'next/navigation'
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect, useRef } from 'react'
 import randomName from '@scaleway/random-name'
 import { usePointsStore } from '@/store/PointsStore'
+import { retrieveLaunchParams } from '@telegram-apps/sdk';// Import Telegram WebApp SDK
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const params = useSearchParams()
-    const id = params.get('id')
-    // console.log("🚀 ~ AuthProvider ~ id:", id)
+    const id = useRef(params.get('id'));
     let userName;
     const user = params.get('userName');
     const referredByUser = params.get('referredByUser');
@@ -25,17 +25,29 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const authToken = window.localStorage.getItem('authToken')
-        // console.log("🚀 ~ useEffect ~ authToken:", authToken)
+
         const authentication = async () => {
-            if (!authToken && authToken != id) {
+            // Initialize Telegram WebApp
+            if (typeof window !== 'undefined') {
+                const { initDataRaw, initData } = retrieveLaunchParams();
+                const userIdFromTelegram = initData?.user?.id; // Get user ID from Telegram
+                console.log("🚀 ~ userIdFromTelegram:", userIdFromTelegram);
+
+                // Use Telegram user ID as the id
+                if (userIdFromTelegram) {
+                    id.current = userIdFromTelegram.toString();
+                }
+            }
+
+            if (!authToken && authToken != id.current) {
                 const referredByUserValue = referredByUser ?? undefined; 
 
-                const authenticate = await authenticateUserOrCreateAccount({ chatId: id!, userName: userName!, referredByUser: referredByUserValue })
+                const authenticate = await authenticateUserOrCreateAccount({ chatId: id.current!, userName: userName!, referredByUser: referredByUserValue })
                 console.log("🚀 ~ authentication ~ authenticate:", authenticate)
                 
                 switch (authenticate) {
                     
-                    case  'createdByReferral': 
+                    case 'createdByReferral': 
                         console.log("Account by referral created successfully");
                         window.localStorage.setItem('authToken', `${id}`);
                         window.localStorage.setItem('userName', `${userName}`);
@@ -44,8 +56,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         setCurrentTapsLeft(500);
                         addPoints(5000);
 
-                        setUserId(id!);
-
+                        setUserId(id.current!);
+                        break;
 
                     case 'createdNewAccount':
                         console.log("Account created successfully");
@@ -54,14 +66,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         window.localStorage.setItem("currentTapsLeft", '500');
                         setCurrentTapsLeft(500);
 
-                        setUserId(id!);
+                        setUserId(id.current!);
                         break;
+
                     case 'userAlreadyExists':
                         console.log("User already exists, authenticated successfully");
                         window.localStorage.setItem('authToken', `${id}`);
                         window.localStorage.setItem('userName', `${userName}`);
-                        setUserId(id!);
+                        setUserId(id.current!);
                         break;
+
                     case 'unknownError':
                     default:
                         alert("Could not authenticate you");
@@ -69,7 +83,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             } else { 
                 console.log("Already authenticated", authToken);
-                setUserId(id!); // Ensure the user ID is set even if already authenticated
+                setUserId(id.current!); // Ensure the user ID is set even if already authenticated
             }
         }
 
@@ -89,4 +103,4 @@ const AuthProviderWithSuspense = ({ children }: { children: React.ReactNode }) =
     </Suspense>
 )
 
-export default AuthProviderWithSuspense
+export default AuthProviderWithSuspense;
