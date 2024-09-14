@@ -1,76 +1,158 @@
-'use client';
+"use client";
 import { usePointsStore } from "@/store/PointsStore";
 import { BeeCoin, SponsorImage, tonWallet } from "../../../public/newImages";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useBoostersStore } from "@/store/useBoostrsStore";
+import SectionBanner from "@/components/sectionBanner";
+import CurrentPoints from "@/components/tasks/CurrentPoints";
+import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from "@/components/ui/drawer";
+
+interface TaskItemProps {
+  iconSrc: string;
+  title: string;
+  buttonText: string;
+}
+
+const TaskItem: React.FC<TaskItemProps> = ({ iconSrc, title, buttonText }) => {
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  return (
+    <>
+    <div className="flex justify-between items-center p-2 rounded-lg border border-[#504949]">
+      <div className="flex items-center gap-4">
+        <Image src={iconSrc} alt={title} width={20} height={20} />
+        <span className="text-white text-xs">{title}</span>
+      </div>
+      <Button onClick={() => setIsDrawerOpen(true)} className="text-xs">{buttonText}</Button>
+    </div>
+    <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+          
+            <DrawerContent className="bg-[#14161a] border-none ">
+              <DrawerHeader
+                onClick={() => setIsDrawerOpen(false)}
+                className="flex text-white rounded-full justify-end  mr-0  w-full  items-center"
+              >
+                <div className="p-3 px-5 bg-[#252423] rounded-full">x</div>
+              </DrawerHeader>
+              <div className="text-center">
+                {/* <Image
+                  src={selectedSkin.image}
+                  alt={selectedSkin.name}
+                  width={100}
+                  height={100}
+                  className="mx-auto mb-4"
+                /> */}
+                <h2 className="text-2xl font-medium text-white mb-2">
+                  {/* {selectedSkin.name} */}
+                  Comming Soon
+                </h2>
+                {/* <p className="text-white">
+                  {selectedSkin.league !== levelNames[levelIndex] && (
+                    <span className="text-custom-orange">
+                      You need to be at {selectedSkin.league}
+                    </span>
+                  )}
+                </p>
+                <p className="text-white">
+                  <br />
+                  <span className="text-white  flex max-w-fit mx-auto gap-2">
+                    <Image src={dollarCoin} alt="coin" width={20} height={20} />
+                    +{selectedSkin.cost}
+                  </span>
+                </p>
+                    */}
+              </div>
+
+              <DrawerFooter>
+                <Button
+                  // disabled={
+                  //   points < selectedSkin.cost ||
+                  //   // selectedSkin.league !== levelNames[levelIndex]
+                  //   !canBuySkin(selectedSkin, userInfo, levelNames)
+                  // }
+                  // onClick={() => handleBuySkin(userId!, selectedSkin)}
+                  className="w-full py-8 bg-custom-orange text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
+                >
+                  { "Go head"}
+                </Button>
+              </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
+    </>
+  );
+};
 
 const AirDrop = () => {
-  
-  const {currentTapsLeft, increaseTapsLeft} = usePointsStore()
-  const {multiClickLevel} = useBoostersStore()
+  const tasks = [
+    {
+      iconSrc: "/icons/passive-income.png",
+      title: "Passive Income",
+      buttonText: "Get Airdrop",
+    },
+    {
+      iconSrc: "/icons/earn-task.png",
+      title: "Earn Task",
+      buttonText: "Get Airdrop",
+    },
+    {
+      iconSrc: "/icons/friends.png",
+      title: "Friends",
+      buttonText: "Get Airdrop",
+    },
+    {
+      iconSrc: "/icons/achivements.png",
+      title: "Achievement",
+      buttonText: "Get Airdrop",
+    },
+    {
+      iconSrc: "/icons/telegram.png",
+      title: "Telegram Subscription",
+      buttonText: "Get Airdrop",
+    },
+    { iconSrc: "/icons/key.png", title: "Keys", buttonText: "Get Airdrop" },
+  ];
+
+  const { currentTapsLeft, increaseTapsLeft } = usePointsStore();
+  const { multiClickLevel } = useBoostersStore();
   useEffect(() => {
     const intervalId = setInterval(() => {
-    
-        increaseTapsLeft();
-        let time = Date.now();
-        window.localStorage.setItem("lastLoginTime", time.toString() );
-        const local = parseInt(
-          window.localStorage.getItem("currentTapsLeft") ?? "0"
-        );
+      increaseTapsLeft();
+      let time = Date.now();
+      window.localStorage.setItem("lastLoginTime", time.toString());
+      const local = parseInt(
+        window.localStorage.getItem("currentTapsLeft") ?? "0"
+      );
 
-        if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
-          window.localStorage.setItem(
-            "currentTapsLeft",
-            (currentTapsLeft + multiClickLevel).toString()
-          );
-        }
-      
+      if (local < currentTapsLeft && !isNaN(currentTapsLeft)) {
+        window.localStorage.setItem(
+          "currentTapsLeft",
+          (currentTapsLeft + multiClickLevel).toString()
+        );
+      }
     }, 1000); // Adjust interval as needed
 
     return () => clearInterval(intervalId);
-  }, [ currentTapsLeft]);
-  
+  }, [currentTapsLeft]);
+
   return (
-    <div className="p-4 flex-grow bg-black bg-opacity-60 backdrop-blur-none rounded-t-3xl top-glow border-t-4 border-[#f3ba2f]   max-w-xl mx-auto text-white ">
-      <div className="flex flex-col items-center mb-6">
-        <div className="glowing-coin my-4">
-            <Image src={SponsorImage} alt="TON Wallet" width={150} height={150} />
-        </div>
-        <h1 className="text-2xl font-bold mt-4">Airdrop tasks</h1>
-        <p className="text-center mt-2">
-          Listing is on its way. Tasks will appear below. Complete them to
-          participate in the Airdrop
-        </p>
-      </div>
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold mb-4">Tasks list</h2>
-        <div className="bg-[#1d2025] shadow-xl border border-yellow-400 bg-opacity-85 backdrop-blur-none p-4 rounded-lg flex items-center justify-between">
-          <div className="flex items-center">
-            <Image
-              src={tonWallet}
-              alt="TON Wallet"
-              width={48}
-              height={48}
-              className="mr-4"
-            />
-            <p className="font-semibold">Wallet Connect Coming Soon</p>
-          </div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </div>
+    <div className="w-full mx-auto text-white ">
+      <SectionBanner
+        mainText="Get Airdrop"
+        subText="Make our tasks to get more coins"
+        leftIcon="/newImages/bee.png"
+        rightIcon="/newImages/bee-right.png"
+      />
+      <CurrentPoints />
+      <div className="flex flex-col gap-2 mt-3">
+        {tasks.map((task, index) => (
+          <TaskItem
+            key={index}
+            iconSrc={task.iconSrc}
+            title={task.title}
+            buttonText={task.buttonText}
+          />
+        ))}
       </div>
     </div>
   );

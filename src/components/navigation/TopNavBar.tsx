@@ -2,16 +2,18 @@
 import React, { use, useCallback, useEffect, useMemo, useState } from "react";
 import { beeAvatar } from "../../../public/newImages";
 import Image from "next/image";
-import { IoSettings } from "react-icons/io5";
-import { FaCartShopping } from "react-icons/fa6";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { usePointsStore } from "@/store/PointsStore";
 import useExchangeStore from "@/store/useExchangeStore";
 import { useUserStore } from "@/store/userUserStore";
 import { getUserConfig } from "@/actions/user.actions";
 import { setTimeout } from "timers";
+import { Button } from "../ui/button";
 
 const TopNavBar = () => {
+  const pathname = usePathname();
+
+
   const levelNames = useMemo(
     () => [
       "Bronze", // From 0 to 4999 coins
@@ -50,14 +52,10 @@ const TopNavBar = () => {
   const { exchange } = useExchangeStore();
   const [levelIndex, setLevelIndex] = useState(0);
 
-  interface User {
-    league: string;
-    // Add other properties as needed
-  }
 
   const { user, setUser } = useUserStore();
 
-  const [progess , setProgress] = useState(0)
+  const [progess, setProgress] = useState(0);
 
   const calculateProgress = useCallback(() => {
     if (levelIndex >= levelNames.length - 1) {
@@ -69,19 +67,17 @@ const TopNavBar = () => {
       );
       const currentLevelMin = levelMinPoints[leagueIndex];
       const nextLevelMin = levelMinPoints[leagueIndex + 1];
-      const progress =  ((points) / (nextLevelMin)) * 100;
+      const progress = (points / nextLevelMin) * 100;
 
       const clampedProgress = Math.max(Math.min(progress, 100), 0);
       return clampedProgress;
     }
     return 0;
-  },[levelIndex, levelMinPoints, levelNames, points, user]);
-
+  }, [levelIndex, levelMinPoints, levelNames, points, user]);
 
   useEffect(() => {
     setProgress(calculateProgress());
-  },[points, calculateProgress])
-
+  }, [points, calculateProgress]);
 
   const updateLevelInDB = async (newLevel: string) => {
     console.log("🚀 ~ updateLevelInDB ~ newLevel:", newLevel);
@@ -108,24 +104,20 @@ const TopNavBar = () => {
     }
   };
 
-
-
   useEffect(() => {
     const update = async () => {
-
       const userId = window.localStorage.getItem("authToken");
       let userInfo = user;
-      let userInfoFromDB 
-      if(!user){
-        
-               userInfoFromDB = await getUserConfig(userId!);
-               userInfo = userInfoFromDB?.userDetails;
+      let userInfoFromDB;
+      if (!user) {
+        userInfoFromDB = await getUserConfig(userId!);
+        userInfo = userInfoFromDB?.userDetails;
       }
-  
+
       // Retry mechanism if userInfo is null
       const maxRetries = 3;
       let retries = 0;
-  
+
       while (!userInfo && retries < maxRetries) {
         // console.log(`Retrying to fetch user info... Attempt ${retries + 1}`);
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
@@ -133,7 +125,7 @@ const TopNavBar = () => {
         userInfo = userInfoFromDB?.userDetails;
         retries++;
       }
-      
+
       // console.log("🚀 ~ update ~ userInfo:", userInfo);
       const leagueIndex = levelNames.findIndex(
         (level) => level === userInfo?.league
@@ -166,7 +158,7 @@ const TopNavBar = () => {
         setTimeout(retryUpdate, 10); // Retry after 1 second
       }
     };
-  
+
     retryUpdate();
   }, [points]);
 
@@ -181,13 +173,15 @@ const TopNavBar = () => {
     route.push(linkWithId);
   };
 
-  const leagueIndex = levelNames.findIndex(
-    (level) => level === user?.league
-  );
+  const leagueIndex = levelNames.findIndex((level) => level === user?.league);
+
+
+  
+
 
   return (
     <div className="w-full">
-      <div className="flex justify-between p-2 bg-black bg-opacity-60 border border-yellow-500 backdrop-blur-lg rounded-xl m-2">
+      <div className="flex justify-between p-2 bg-[#252423]  rounded-xl  mb-2 xs:m-2 ">
         <div className="flex gap-2 items-center  ">
           <Image
             src={beeAvatar}
@@ -198,7 +192,7 @@ const TopNavBar = () => {
           />
           <div>
             <p className="text-white capitalize text-sm font-medium min-w-16   truncate max-w-40 ">
-              {userName ? userName : "Anonymous"} 
+              {userName ? userName : "Anonymous"}
             </p>
             <div className="flex items-center justify-between space-x-4">
               <div className="flex items-center w-full">
@@ -230,19 +224,10 @@ const TopNavBar = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between gap-2 ">
-          <div
-            onClick={() => handleRoute("/skin")}
-            className="flex items-center h-full  gap-2 text-white bg-orange-700 px-2 py-1 rounded-xl text-xs"
-          >
-            <FaCartShopping className="w-4 h-4" />
-            <span>Buy Skin</span>
-          </div>
-          <IoSettings
-            onClick={() => handleRoute("/settings")}
-            className="w-8 h-8 text-white px-2 py-1 bg-zinc-700 rounded-xl"
-          />
-        </div>
+
+        <Button onClick={() => handleRoute("/skin")} className=" flex items-center gap-2 text-sm">
+          Skin
+        </Button>
       </div>
     </div>
   );

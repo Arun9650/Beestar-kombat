@@ -14,11 +14,20 @@ const config = {
       center: true,
       padding: "2rem",
       screens: {
+        'xs': '400px',
         "2xl": "1400px",
       },
     },
     extend: {
+      screens: {
+        'xs': '400px',
+      },
       colors: {
+        'custom-orange': '#FFA41C', 
+        'custom-radial': 'radial-gradient(circle, #FFA41C 0%, #FF7B00 100%)',
+        backgroundImage: {
+          'custom-button': 'radial-gradient(circle, #FF7B00 100%, #FF7B00 100%)',
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

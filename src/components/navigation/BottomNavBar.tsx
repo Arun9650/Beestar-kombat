@@ -1,38 +1,38 @@
 'use client';
 import React from "react";
-import Mine from "../../../public/icons/Mine";
-import Friends from "../../../public/icons/Friends";
 import Image from "next/image";
-import { FaGamepad } from "react-icons/fa6";
-import Coins from "../../../public/icons/Coins";
-import { BeeCoin, SponsorImage } from "../../../public/newImages";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const BottomNavBar = () => {
   const NavigationItems = [
     {
       name: "Mine",
-      icon: <Mine className="w-6 h-6 mx-auto" />,
+      icon: <Image src="/newImages/mine.png"  width={24} height={24} className="w-6 h-6 mx-auto" alt="Mine" />,
+      selectedIcon: <Image src="/newImages/mine-selected.png"  width={24} height={24} className="w-6 h-6 mx-auto" alt="Mine" />,
       link: "/tasks",
     },
-    {
+    { 
       name: "Friends",
-      icon: <Friends className="w-6 h-6 mx-auto" />,
+      icon: <Image src="/newImages/playgame.png"  width={24} height={24} className="w-6 h-6 mx-auto"  alt='Friends'/>,
+      selectedIcon: <Image src="/newImages/playgame-selected.png"  width={24} height={24} className="w-6 h-6 mx-auto" alt="Mine" />,
       link: "/referrals",
     },
     {
-      name: "Exchange",
-      icon: <FaGamepad className="w-6 h-6 mx-auto" />,
+      name: "Home",
+      icon: <Image src="/newImages/home.png" width={24} height={24}  className="w-6 h-6 mx-auto" alt="Home" />,
+      selectedIcon: <Image src="/newImages/home-selected.png"  width={24} height={24} className="w-6 h-6 mx-auto" alt="Mine" />,
       link: "/",
     },
     {
       name: "Earn",
-      icon: <Coins className="w-6 h-6 mx-auto" />,
-      link: "/market",
+      icon: <Image src="/newImages/earn.png" width={24} height={24}  className="w-6 h-6 mx-auto" alt="Earn" />,
+      selectedIcon: <Image src="/newImages/earn-selected.png"  width={24} height={24} className="w-6 h-6 mx-auto" alt="Mine" />,
+      link: "/earn",
     },
     {
       name: "AirDrop",
-      icon: <Image src={SponsorImage} width={24} height={24} alt="AirDrop" />,
+      icon: <Image src="/newImages/airdrop.png" width={24} height={24} alt="AirDrop" />,
+      selectedIcon: <Image src="/newImages/airdrop-selected.png"  width={24} height={24} className="w-6 h-6 mx-auto" alt="Mine" />,
       link: "/airdrop",
     },
   ];
@@ -52,33 +52,33 @@ const BottomNavBar = () => {
 
   return (
     <div
-      className="fixed bottom-3 p-2 h-fit left-1/2 transform -translate-x-1/2 
-      w-[95%] max-w-xl bg-black bg-opacity-60  backdrop-blur-lg rounded-3xl flex justify-around items-center  text-xs"
+      className="sticky bottom-0 xs:bottom-10 max-w-[370px] w-full px-6 pt-3 pb-1 mx-auto  flex  justify-around items-center  text-xs 
+      bg-[url('/newImages/bottom-navbar.png')] bg-contain bg-center bg-no-repeat z-50 h-20"
     >
       {NavigationItems.map((item, index) => {
         return (
           <div
-            key={index}
+            key={index} 
+            className="flex flex-col items-center justify-center gap-1 "
           >
             <button
               onClick={() => handleRoute(item.link)}
-              className={`  flex items-center justify-center flex-col  text-[#85827d] `}
+              className={`  flex items-center justify-center flex-col`}
             >
               <div
                 className={`${
-                  pathname === item.link ? " text-white" : ""
-                } mx-auto  `}
+                  pathname === item.link ? " text-custom-orange mb-1" : ""
+                } mx-auto  flex items-center justify-center flex-col gap-2`}
               >
-                {item.icon}
-              </div>
-              <p
-                className={` text-[10px] ${
-                  pathname === item.link ? " text-white" : ""
-                }  `}
-              >
+                {pathname === item.link ? item.selectedIcon :  item.icon}
+              
                 {item.name}
-              </p>
+             
+
+              </div>
+              
             </button>
+            <div className={` ${ pathname === item.link && "w-0 h-0 rounded-3xl border-l-[10px] border-r-[10px] border-b-[12px] border-l-transparent border-r-transparent border-custom-orange rounded-triangle"}`}></div>
           </div>
         );
       })}

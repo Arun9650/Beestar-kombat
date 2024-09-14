@@ -3,9 +3,12 @@
 import { usePointsStore } from "@/store/PointsStore";
 import Image from "next/image";
 import React, { useEffect } from "react";
-import { formatNumber, formatNumberWithCommas } from "../../../utils/formatNumber";
 
-const PointsTracker = () => {
+interface PointsTrackerProps {
+  formatNumber: (num: number) => string;
+}
+
+const PointsTracker: React.FC<PointsTrackerProps> = ({ formatNumber }) => {
   const { points, PPH, setPoints } = usePointsStore();
 
   useEffect(() => {
@@ -17,19 +20,19 @@ const PointsTracker = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [PPH, points]);
+  }, [PPH, points, setPoints]);
 
   return (
-    <div className="font-bold text-3xl flex items-center gap-2 text-white">
-      <span className="text-6xl">
+    <div className="font-bold text-xl mx-auto  flex items-center xs:justify-center gap-2 text-white">
+      <span className="text-6xl ">
         <Image
-          src="/assets/images/dollar-coin.png"
+          src="/newImages/Bee-coin.png"
           height={40}
           width={40}
-          alt=""
+          alt="Bee coin"
         />
       </span>
-      {formatNumberWithCommas(points)}
+      {formatNumber(points)}
     </div>
   );
 };

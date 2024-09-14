@@ -17,8 +17,7 @@ import exchange from './exchange.png'
 import invite from './invitation.png'
 import approved from './approved.png'
 import CEO from './ceo.png'
-import QuestionMark from './question_mark.png'
-import beeAvatar from './bee_image.png'
+import beeAvatar from './bee_avatars/4.png'
 import card1 from './card1.png'
 import card2 from './card2.png'
 import card3 from './card3.png'
@@ -47,6 +46,8 @@ import coolBee from './cool_bee.png'
 import SponsorImage from './sponsorImage.png'
 import Tab from './tap.jpg'
 import Click from './clicks.png'
+import huobi from './huobi.png'
+import coinbase from './coinbase.png'
 export {
     binanceLogo,
     dollarCoin,
@@ -67,7 +68,6 @@ export {
     invite,
     approved,
     CEO,
-    QuestionMark,
     beeAvatar,
      card1,
      card2,
@@ -96,5 +96,7 @@ export {
      coolBee,
      SponsorImage,
      Tab,
-     Click
+     Click,
+     huobi,
+     coinbase
 };

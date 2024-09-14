@@ -12,7 +12,6 @@ import useExchangeStore from "@/store/useExchangeStore";
 import Link from "next/link";
 import { usePointsStore } from "@/store/PointsStore";
 import Info from "../../public/icons/Info";
-import Settings from "../../public/icons/Settings";
 import { useRouter } from "next/navigation";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { formatNumber } from "../../utils/formatNumber";
