@@ -7,6 +7,7 @@ import { useBoostersStore } from "@/store/useBoostrsStore";
 import SectionBanner from "@/components/sectionBanner";
 import CurrentPoints from "@/components/tasks/CurrentPoints";
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from "@/components/ui/drawer";
 
 interface TaskItemProps {
   iconSrc: string;
@@ -15,14 +16,70 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ iconSrc, title, buttonText }) => {
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   return (
+    <>
     <div className="flex justify-between items-center p-2 rounded-lg border border-[#504949]">
       <div className="flex items-center gap-4">
         <Image src={iconSrc} alt={title} width={20} height={20} />
         <span className="text-white text-xs">{title}</span>
       </div>
-      <Button className="text-xs">{buttonText}</Button>
+      <Button onClick={() => setIsDrawerOpen(true)} className="text-xs">{buttonText}</Button>
     </div>
+    <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+          
+            <DrawerContent className="bg-[#14161a] border-none ">
+              <DrawerHeader
+                onClick={() => setIsDrawerOpen(false)}
+                className="flex text-white rounded-full justify-end  mr-0  w-full  items-center"
+              >
+                <div className="p-3 px-5 bg-[#252423] rounded-full">x</div>
+              </DrawerHeader>
+              <div className="text-center">
+                {/* <Image
+                  src={selectedSkin.image}
+                  alt={selectedSkin.name}
+                  width={100}
+                  height={100}
+                  className="mx-auto mb-4"
+                /> */}
+                <h2 className="text-2xl font-medium text-white mb-2">
+                  {/* {selectedSkin.name} */}
+                  Comming Soon
+                </h2>
+                {/* <p className="text-white">
+                  {selectedSkin.league !== levelNames[levelIndex] && (
+                    <span className="text-custom-orange">
+                      You need to be at {selectedSkin.league}
+                    </span>
+                  )}
+                </p>
+                <p className="text-white">
+                  <br />
+                  <span className="text-white  flex max-w-fit mx-auto gap-2">
+                    <Image src={dollarCoin} alt="coin" width={20} height={20} />
+                    +{selectedSkin.cost}
+                  </span>
+                </p>
+                    */}
+              </div>
+
+              <DrawerFooter>
+                <Button
+                  // disabled={
+                  //   points < selectedSkin.cost ||
+                  //   // selectedSkin.league !== levelNames[levelIndex]
+                  //   !canBuySkin(selectedSkin, userInfo, levelNames)
+                  // }
+                  // onClick={() => handleBuySkin(userId!, selectedSkin)}
+                  className="w-full py-8 bg-custom-orange text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
+                >
+                  { "Go head"}
+                </Button>
+              </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
+    </>
   );
 };
 
