@@ -21,6 +21,13 @@ import { ChevronRight, Trash } from "lucide-react";
 import useLanguageStore from "@/store/uselanguageStore";
 import { CircleFlag } from "react-circle-flags";
 import WebApp from "@twa-dev/sdk"
+import { initClosingBehavior } from '@telegram-apps/sdk';
+
+declare global {
+  interface Window {
+    Telegram: any;
+  }
+}
 
 const Settings = () => {
   const { exchange } = useExchangeStore();
@@ -102,7 +109,10 @@ const Settings = () => {
     setCurrentTapsLeft(500);
     if (result.success) {
       setButtonLoading(false);
-      WebApp.close();
+      // WebApp.close();
+      if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.close();  // Close using Telegram WebApp API
+      }
       route.push("/");
     }
   };
