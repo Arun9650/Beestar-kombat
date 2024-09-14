@@ -20,6 +20,7 @@ import SectionBanner from "@/components/sectionBanner";
 import { ChevronRight, Trash } from "lucide-react";
 import useLanguageStore from "@/store/uselanguageStore";
 import { CircleFlag } from "react-circle-flags";
+import WebApp from "@twa-dev/sdk"
 
 const Settings = () => {
   const { exchange } = useExchangeStore();
@@ -102,6 +103,7 @@ const Settings = () => {
     if (result.success) {
       setButtonLoading(false);
       route.push("/");
+      WebApp.close();
     }
   };
 
