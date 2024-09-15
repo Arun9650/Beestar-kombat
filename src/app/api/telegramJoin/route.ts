@@ -8,6 +8,12 @@ export async function POST(request: NextRequest) {
   try {
     const { userId } = await request.json(); // Get the user ID from the request
 
+
+    if(!userId){
+      console.log("🚀 ~ POST ~ userId:", userId)
+      return NextResponse.json({ status: 'error, user id not found' }, { status: 400 });
+    }
+
     // Make a request to Telegram API to check if the user is a member of the channel
     const response = await axios.get(
       `https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${CHANNEL_ID}&user_id=${userId}`

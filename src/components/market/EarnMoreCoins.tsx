@@ -174,7 +174,7 @@ const EarnMoreCoins = () => {
         toast.error("Please Join the Telegram Channel");
       }
     } catch (error) {
-      console.error("Error with Telegram task:", error);
+      toast.error("Error with Telegram task:");
     } finally {
       setButtonLoading(false);
     }
