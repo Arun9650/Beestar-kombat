@@ -4,6 +4,7 @@ import useLoadingScreenStore from "@/store/loadingScreenStore";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import { useUserStore } from "@/store/userUserStore";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
@@ -28,6 +29,9 @@ const useUserPointsConfig = () => {
 
   const {setUser} = useUserStore();
 
+  const search = useSearchParams();
+  const id  = search.get('id');
+
   useEffect(() => {
     const executeEffect = () => {
 
@@ -45,7 +49,7 @@ const useUserPointsConfig = () => {
 
       async function update() {
         // console.log(user);
-        const config = await getUserConfig(`${user}`);
+        const config = await getUserConfig(user || String(id));
         
         console.log("🚀 ~ update ~ config:", config)
         const currentState = config?.user;
@@ -189,9 +193,9 @@ const useUserPointsConfig = () => {
       const lastLoginTimeFromLocalStorage = getLastLoginTimeFromLocalStorage();
       const user = window.localStorage.getItem("authToken");
       const pphReward = async () => {
-        if (user) {
+        if (user || id) {
           const credited = await creditProfitPerHour(
-            user,
+            user || String(id),
             lastLoginTimeFromLocalStorage
           );
           if (
