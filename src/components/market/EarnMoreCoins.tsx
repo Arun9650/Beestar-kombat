@@ -163,18 +163,19 @@ const EarnMoreCoins = () => {
 
   const handleTelegramTask = async (task: Task) => {
     if (!userId) return;
-
     setButtonLoading(true);
-    const result = await axios.post("/api/telegramJoin", { userId });
-    console.log("🚀 ~ handleTelegramTask ~ result:", result.data.status);
 
-    if (result.data.status === "joined") {
-      handleCompleteTask(task);
-
-      setIsTelegramDrawerOpen(false);
-      setButtonLoading(false);
-    } else {
-      toast.error("Please Join the Telegram Channel");
+    try {
+      const result = await axios.post("/api/telegramJoin", { userId });
+      if (result.data.status === "joined") {
+        handleCompleteTask(task);
+        setIsTelegramDrawerOpen(false);
+      } else {
+        toast.error("Please Join the Telegram Channel");
+      }
+    } catch (error) {
+      console.error("Error with Telegram task:", error);
+    } finally {
       setButtonLoading(false);
     }
   };
