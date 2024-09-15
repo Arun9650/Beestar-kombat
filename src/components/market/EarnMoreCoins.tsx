@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   approved,
   Calendar,
@@ -31,6 +31,7 @@ import { useFetchTasks } from "@/hooks/query/useFetchTask";
 import { useTasksMutation } from "@/hooks/mutation/useTasksMutation";
 import { ChevronRight } from "lucide-react";
 import SectionBanner from "../sectionBanner";
+import axios from "axios";
 
 interface Reward {
   id?: string;
@@ -51,7 +52,7 @@ type Task = {
 };
 
 const EarnMoreCoins = () => {
-  const dailyRewards = [
+  const dailyRewards = useMemo(() => [
     { day: 1, reward: 500 },
     { day: 2, reward: 1000 },
     { day: 3, reward: 2500 },
@@ -62,9 +63,10 @@ const EarnMoreCoins = () => {
     { day: 8, reward: 250000 },
     { day: 9, reward: 500000 },
     { day: 10, reward: 1000000 },
-  ];
+  ], []);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isTelegramDrawerOpen, setIsTelegramDrawerOpen] = useState(false);
 
   const [rewards, setReward] = useState<Reward | null>(null);
   const [nextRewardAvailable, setNextRewardAvailable] = useState(false);
@@ -159,6 +161,23 @@ const EarnMoreCoins = () => {
 
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
+  const handleTelegramTask = async (task: Task) => {
+    if (!userId) return;
+
+    setButtonLoading(true);
+    const result = await axios.post("/api/telegramJoin", { userId });
+    console.log("🚀 ~ handleTelegramTask ~ result:", result.data.status);
+
+    if (result.data.status === "joined") {
+      handleCompleteTask(task);
+
+      setIsTelegramDrawerOpen(false);
+      setButtonLoading(false);
+    } else {
+      toast.error("Please Join the Telegram Channel");
+      setButtonLoading(false);
+    }
+  };
   const handleCompleteTask = async (task: Task) => {
     if (!userId) return;
 
@@ -209,12 +228,14 @@ const EarnMoreCoins = () => {
 
   return (
     <>
-    <SectionBanner
-      mainText="Earn more coins"
-      subText="Make our tasks to get more coins"
-      leftIcon="/newImages/bee.png"
-      rightIcon="/newImages/bee-right.png"
-    />
+      <SectionBanner
+        mainText="Earn more coins"
+        subText="Make our tasks to get more coins"
+        leftIcon="/newImages/bee.png"
+        rightIcon="/newImages/bee-right.png"
+      />
+
+      {/* youtube task start here */}
       <div className="space-y-4 mt-10 divide-y divide-custom-orange">
         <div>
           {isYouTubeTaskLoading && (
@@ -226,8 +247,8 @@ const EarnMoreCoins = () => {
           {YoutubeTask?.tasks.map((task) => (
             <>
               <button
-                disabled={task.isUserTask || isYouTubeTaskProcessing}
-                onClick={() => handleCompleteYoutube(task)}
+             
+              
                 className="flex items-center justify-between  w-full gap-2"
               >
                 <Link href={task.link} target="_blank">
@@ -247,57 +268,72 @@ const EarnMoreCoins = () => {
                         {task.name}
                       </p>
                       <p className="text-yellow-400  text-[0.5rem] flex items-center justify-start  gap-1 ">
-                          Get reward <ChevronRight size={10} />{" "}
+                        Get reward <ChevronRight size={10} />{" "}
                       </p>
                     </div>
                   </div>
                 </Link>
 
-                {task.isUserTask && (
+                {task.isUserTask ? (
                   <Button
                     className="bg-green-600 text-white font-semibold"
                     disabled
                   >
                     Redeem
                   </Button>
+                ) : (
+                  <Link href={task.link} target="_blank">
+                  <Button     disabled={task.isUserTask || isYouTubeTaskProcessing}  onClick={() => {
+                    
+                    handleCompleteYoutube(task)
+                  }
+                } className="bg-green-600 text-white font-semibold">
+                    Redeem
+                  </Button>
+                    </Link>
                 )}
               </button>
             </>
           ))}
         </div>
+{/* youtube task end here */}
+
         <div>
           {/* <h2 className="text-lg font-semibold mb-2">Daily tasks</h2> */}
           <div className="px-0 pt-2 flex items-center justify-between">
             <div className="w-full">
-              <div className="flex items-center justify-between w-full " onClick={() => setIsOpen(true)}>
+              <div
+                className="flex items-center justify-between w-full "
+                onClick={() => setIsOpen(true)}
+              >
                 <div className="flex w-full  items-center">
-                <Image
-                  src={Calendar}
-                  alt="Daily Reward"
-                  className="mr-4 border-2 border-white border-opacity-10 bg-white bg-opacity-10 p-2.5 rounded-xl"
-                  width={50}
-                  height={50}
-                />
-                <span className="text-sm">
-                  <div className=" flex flex-col  justify-between py-1">
+                  <Image
+                    src={Calendar}
+                    alt="Daily Reward"
+                    className="mr-4 border-2 border-white border-opacity-10 bg-white bg-opacity-10 p-2.5 rounded-xl"
+                    width={50}
+                    height={50}
+                  />
+                  <span className="text-sm">
+                    <div className=" flex flex-col  justify-between py-1">
                       <p className="text-[#B7B5B5] text-[0.5rem] text-start">
                         5000 Points
                       </p>
                       <p className="font-normal text-start text-xs">
-                      Daily reward
+                        Daily reward
                       </p>
                       <p className="text-yellow-400  text-[0.5rem] flex items-center justify-start  gap-1 ">
-                          Get reward <ChevronRight size={10} />{" "}
+                        Get reward <ChevronRight size={10} />{" "}
                       </p>
                     </div>
-                </span>
+                  </span>
                 </div>
                 <Button
-                      onClick={() => setIsOpen(true)}
-                      disabled={!nextRewardAvailable || buttonLoading}
-                    >
-                      Redeem
-                    </Button>
+                  onClick={() => setIsOpen(true)}
+                  disabled={!nextRewardAvailable || buttonLoading}
+                >
+                  Redeem
+                </Button>
               </div>
               <Drawer open={isOpen}>
                 {/* <DrawerOverlay className=""  /> */}
@@ -366,6 +402,9 @@ const EarnMoreCoins = () => {
             </div>
           </div>
         </div>
+
+
+
         <div>
           {/* <h2 className="text-lg font-semibold mb-2">Tasks list</h2> */}
           {isLoading ? (
@@ -375,9 +414,9 @@ const EarnMoreCoins = () => {
             taskList &&
             taskList.length > 0 &&
             taskList.map((task: Task, index) => (
-              <button
-                disabled={task.isUserTask || isYouTubeTaskProcessing}
-                onClick={() => handleCompleteTask(task)}
+              <div
+                // disabled={task.isUserTask || isYouTubeTaskProcessing}
+                // onClick={() => handleCompleteTask(task)}
                 key={index}
                 className="mt-2 flex items-center justify-between w-full"
               >
@@ -390,28 +429,87 @@ const EarnMoreCoins = () => {
                     height={50}
                   />
                   <Link href={task.link} target="_blank">
-                  <div className=" flex flex-col  justify-between py-1">
+                    <div className=" flex flex-col  justify-between py-1">
                       <p className="text-[#B7B5B5] text-[0.5rem] text-start">
                         5000 Points
                       </p>
                       <p className="font-normal text-start text-sm">
-                       {task.name}
+                        {task.name}
                       </p>
                       <p className="text-yellow-400  text-[0.5rem] flex items-center justify-start  gap-1 ">
-                          Get reward <ChevronRight size={10} />{" "}
+                        Get reward <ChevronRight size={10} />{" "}
                       </p>
                     </div>
                   </Link>
                 </div>
-                {task.isUserTask && (
+                {task.isUserTask ? (
                   <Button
                     className="bg-green-600 text-white font-semibold"
                     disabled
                   >
                     Redeem
                   </Button>
+                ) : (
+                  <Button
+                    className="bg-green-600 text-white font-semibold"
+                    onClick={() => setIsTelegramDrawerOpen(true)}
+                  >
+                    Redeem
+                  </Button>
                 )}
-              </button>
+                <Drawer open={isTelegramDrawerOpen}>
+                  {/* <DrawerOverlay className=""  /> */}
+                  <DrawerContent className="bg-[#14161a]  border-none px-2 ">
+                    <DrawerHeader className="flex items-center justify-end  mt-4 ">
+                      <div
+                        onClick={() => setIsTelegramDrawerOpen(false)}
+                        className="z-[100] absolute p-3 px-5 text-white bg-[#1C1F23] rounded-full"
+                      >
+                        x
+                      </div>
+                    </DrawerHeader>
+
+                    <div className="text-center h-full flex flex-col">
+                      <div>
+
+                      <Image
+                        src={task.icon}
+                        alt="Daily Reward"
+                        className="mx-auto w-12 h-12 mb-4"
+                        width={40}
+                        height={40}
+                        />
+                      <div className="flex justify-between items-center ">
+                        <span className="  mx-auto text-white text-xl font-semibold">
+                          Join our Telegram Channel
+                        </span>
+                      </div>
+                        </div>
+                      <Link
+                        target="_blank"
+                        href={task.link}
+                        className="text-white text-xs bg-custom-orange  p-3  rounded-xl mt-4 max-w-64 mx-auto my-4"
+                      >
+                        Join
+                      </Link>
+                    </div>
+
+                    <DrawerFooter className=" p-0">
+                      <Button
+                        onClick={() => handleTelegramTask(task)}
+                        disabled={buttonLoading}
+                        className="w-full p-7 my-4  text-white text-lg font-semibold rounded-xl "
+                      >
+                        {buttonLoading ? (
+                          <div className="loader"></div>
+                        ) : (
+                          "Check"
+                        )}
+                      </Button>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+              </div>
             ))
           )}
         </div>
