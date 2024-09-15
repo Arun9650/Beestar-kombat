@@ -14,7 +14,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const id = params.get("id") ?? initData?.user?.id;
   // console.log("🚀 ~ AuthProvider ~ id:", id)
   let userName;
-  const user = params.get("userName") ?? initData?.user?.username;
+  const user = params.get("userName") ?? initData?.user?.firstName;
   // toast.success(`startParam: ${startParam}`)
   const referredByUser = params.get("referredByUser") ?? startParam;
   // toast.success(`referredByUser: ${referredByUser}`)
@@ -31,7 +31,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       currentUrl.searchParams.set("id", String(id));
       window.history.pushState({}, "", currentUrl.toString());
     }
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     const authToken = window.localStorage.getItem("authToken");
