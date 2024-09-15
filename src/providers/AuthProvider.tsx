@@ -5,11 +5,13 @@ import { useSearchParams } from 'next/navigation'
 import React, { Suspense, useEffect } from 'react'
 import randomName from '@scaleway/random-name'
 import { usePointsStore } from '@/store/PointsStore'
+import toast from 'react-hot-toast'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const params = useSearchParams()
     const id = params.get('id')
+    toast.success(`id ${id}`);
     // console.log("🚀 ~ AuthProvider ~ id:", id)
     let userName;
     const user = params.get('userName');
@@ -74,7 +76,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         authentication()
-    }, [])
+    }, [id])
 
     return (
         <div>
