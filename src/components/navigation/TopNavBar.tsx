@@ -184,24 +184,24 @@ const TopNavBar = () => {
 
 
 
-  // useEffect(() => {
-  //   function initTg() {
-  //     if (typeof window !== 'undefined') {
+  useEffect(() => {
+    function initTg() {
+      if (typeof window !== 'undefined') {
        
 
-  //       if(user){
-  //         const { initDataRaw, initData } = retrieveLaunchParams();
-  //         const isPremium = initData?.user?.isPremium;
-  //         setIsUserPremium(isPremium);
-  //       }
+        if(user){
+          const { initDataRaw, initData } = retrieveLaunchParams();
+          const isPremium = initData?.user?.isPremium;
+          setIsUserPremium(isPremium);
+        }
 
-  // } else {
-  //   console.log('Telegram WebApp is undefined, retrying…');
-  //   setTimeout(initTg, 500);
-  //   }
-  //   }
-  //   initTg();
-  // }, []);
+  } else {
+    console.log('Telegram WebApp is undefined, retrying…');
+    setTimeout(initTg, 500);
+    }
+    }
+    initTg();
+  }, []);
 
   return (
     <div className="w-full">
@@ -218,7 +218,7 @@ const TopNavBar = () => {
             <p className="text-white capitalize text-sm font-medium min-w-16 truncate max-w-40 flex items-center gap-1">
               {userName ? userName : "Anonymous"} 
               {
-                <Image src="/newImages/approved.png" width={16} height={16} alt="approved" />
+              isUserPremium &&  <Image src="/newImages/approved.png" width={16} height={16} alt="approved" />
               }
             </p>
             <div className="flex items-center justify-between space-x-4">
