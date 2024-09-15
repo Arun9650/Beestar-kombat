@@ -15,7 +15,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const id = params.get('id') ?? initData?.user?.id;
     // console.log("🚀 ~ AuthProvider ~ id:", id)
     let userName;
-    const user = params.get('userName');
+    const user = params.get('userName') ?? initData?.user?.username ;
     // toast.success(`startParam: ${startParam}`)
     const referredByUser = params.get('referredByUser') ?? startParam;
     // toast.success(`referredByUser: ${referredByUser}`)
