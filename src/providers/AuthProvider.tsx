@@ -25,13 +25,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const { setUserId, setCurrentTapsLeft, addPoints } = usePointsStore();
-  useEffect(() => {
-    const currentUrl = new URL(window.location.href);
-    if (!currentUrl.searchParams.get("id") && id) {
-      currentUrl.searchParams.set("id", String(id));
-      window.history.pushState({}, "", currentUrl.toString());
+   // Ensure that the ID is appended to the URL without triggering re-rendering
+   useEffect(() => {
+    if (id) {
+      const currentUrl = new URL(window.location.href);
+      if (!currentUrl.searchParams.get("id")) {
+        currentUrl.searchParams.set("id", String(id));
+        window.history.replaceState({}, "", currentUrl.toString()); // Use replaceState to avoid re-rendering
+      }
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const authToken = window.localStorage.getItem("authToken");
