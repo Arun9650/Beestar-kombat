@@ -31,7 +31,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const currentUrl = new URL(window.location.href);
       if (!currentUrl.searchParams.get("id")) {
         currentUrl.searchParams.set("id", String(id));
-        window.history.replaceState({}, "", currentUrl.toString()); // Use replaceState to avoid re-rendering
       }
     }
   }, [id]);
