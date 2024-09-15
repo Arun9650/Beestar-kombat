@@ -11,7 +11,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const params = useSearchParams()
     const id = params.get('id')
-    toast.success(`id ${id}`);
     // console.log("🚀 ~ AuthProvider ~ id:", id)
     let userName;
     const user = params.get('userName');
@@ -76,7 +75,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         authentication()
-    }, [id])
+    }, [])
 
     return (
         <div>
