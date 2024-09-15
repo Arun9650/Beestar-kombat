@@ -52,6 +52,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                         setUserId(String(id));
 
+                        toast.success(`Welcome ${userName}! You have been referred by ${referredByUserValue}`)
 
                     case 'createdNewAccount':
                         console.log("Account created successfully");
@@ -61,6 +62,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         setCurrentTapsLeft(500);
 
                         setUserId(String(id));
+
+                        toast.success(`Welcome ${userName}!`)
                         break;
                     case 'userAlreadyExists':
                         console.log("User already exists, authenticated successfully");
