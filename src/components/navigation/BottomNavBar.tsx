@@ -1,7 +1,8 @@
 'use client';
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { initBackButton } from "@telegram-apps/sdk";
 
 const BottomNavBar = () => {
   const NavigationItems = [
@@ -48,6 +49,30 @@ const BottomNavBar = () => {
     const linkWithId = id ? `${link}?id=${id}` : link;
     route.push(linkWithId);
   };
+ 
+  useEffect(() => {
+    function initTg() {
+      if (typeof window !== 'undefined') {
+        
+    const [backButton] = initBackButton();
+  backButton.show();
+  // Conditionally show or hide the back button based on the current route
+  if (pathname === "/") {
+    // If on home screen, hide the back button
+    backButton.hide();
+  } else {
+    // Otherwise, show the back button and set up its behavior
+    backButton.show();
+    backButton.on("click", () => window.history.back());
+  }
+
+  } else {
+    console.log('Telegram WebApp is undefined, retrying…');
+    setTimeout(initTg, 500);
+    }
+    }
+    initTg();
+  }, [pathname]);
 
 
   return (
