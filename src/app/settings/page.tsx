@@ -51,7 +51,7 @@ const Settings = () => {
     usePointsStore();
   const { multiClickLevel } = useBoostersStore();
   const { language, languageCode} = useLanguageStore();
-   const INVITE_URL = "https://t.me/BeestarKombat_bot/start"
+   const INVITE_URL = "https://t.me/BeestarKombat_bot/beestarkombat"
   const handleInviteFriend = () => {
     const utils = initUtils()
     const inviteLink = `${INVITE_URL}?startapp=${id}`

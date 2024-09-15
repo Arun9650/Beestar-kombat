@@ -49,10 +49,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         window.localStorage.setItem("points", "5000");
                         setCurrentTapsLeft(500);
                         addPoints(5000);
-
+                        toast.success(`Welcome ${userName}! You have been referred by ${referredByUserValue}`)
                         setUserId(String(id));
 
-                        toast.success(`Welcome ${userName}! You have been referred by ${referredByUserValue}`)
 
                     case 'createdNewAccount':
                         console.log("Account created successfully");
@@ -60,10 +59,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         window.localStorage.setItem('userName', `${userName}`);
                         window.localStorage.setItem("currentTapsLeft", '500');
                         setCurrentTapsLeft(500);
-
+                        toast.success(`Welcome ${userName}!`)
                         setUserId(String(id));
 
-                        toast.success(`Welcome ${userName}!`)
                         break;
                     case 'userAlreadyExists':
                         console.log("User already exists, authenticated successfully");
