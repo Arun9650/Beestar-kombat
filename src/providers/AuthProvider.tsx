@@ -11,14 +11,14 @@ import {retrieveLaunchParams} from '@telegram-apps/sdk'
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const params = useSearchParams()
-    const id = params.get('id')
+    const {startParam, initData} = retrieveLaunchParams();
+    const id = params.get('id') ?? initData?.user?.id;
     // console.log("🚀 ~ AuthProvider ~ id:", id)
     let userName;
     const user = params.get('userName');
-    const {startParam} = retrieveLaunchParams();
-    toast.success(`startParam: ${startParam}`)
+    // toast.success(`startParam: ${startParam}`)
     const referredByUser = params.get('referredByUser') ?? startParam;
-    toast.success(`referredByUser: ${referredByUser}`)
+    // toast.success(`referredByUser: ${referredByUser}`)
     if(user){
         userName = user;
     }else {
@@ -36,7 +36,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if (!authToken && authToken != id) {
                 const referredByUserValue = referredByUser ?? undefined; 
 
-                const authenticate = await authenticateUserOrCreateAccount({ chatId: id!, userName: userName!, referredByUser: referredByUserValue })
+                const authenticate = await authenticateUserOrCreateAccount({ chatId: String(id), userName: userName!, referredByUser: referredByUserValue })
                 console.log("🚀 ~ authentication ~ authenticate:", authenticate)
                 
                 switch (authenticate) {
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         setCurrentTapsLeft(500);
                         addPoints(5000);
 
-                        setUserId(id!);
+                        setUserId(String(id));
 
 
                     case 'createdNewAccount':
@@ -60,22 +60,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         window.localStorage.setItem("currentTapsLeft", '500');
                         setCurrentTapsLeft(500);
 
-                        setUserId(id!);
+                        setUserId(String(id));
                         break;
                     case 'userAlreadyExists':
                         console.log("User already exists, authenticated successfully");
                         window.localStorage.setItem('authToken', `${id}`);
                         window.localStorage.setItem('userName', `${userName}`);
-                        setUserId(id!);
+                        setUserId(String(id));
                         break;
                     case 'unknownError':
                     default:
                         alert("Could not authenticate you");
                         break;
                 }
+                 // After authentication, append the `id` to the URL without reloading the page
+                 const currentUrl = new URL(window.location.href);
+                 if (!currentUrl.searchParams.get('id') && id) {
+                     currentUrl.searchParams.set('id', String(id));
+                     window.history.pushState({}, '', currentUrl.toString());
+                 }
             } else { 
                 console.log("Already authenticated", authToken);
-                setUserId(id!); // Ensure the user ID is set even if already authenticated
+                setUserId(String(id)); // Ensure the user ID is set even if already authenticated
             }
         }
 
