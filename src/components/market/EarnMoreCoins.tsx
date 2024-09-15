@@ -166,7 +166,7 @@ const EarnMoreCoins = () => {
     setButtonLoading(true);
 
     try {
-      const result = await axios.post("/api/telegramJoin", { userId });
+      const result = await axios.post("/api/telegramJoin", { userId:id });
       if (result.data.status === "joined") {
         handleCompleteTask(task);
         setIsTelegramDrawerOpen(false);
