@@ -9,23 +9,25 @@ import MenuGrid from "./MenuGrid";
 import { usePointsStore } from "@/store/PointsStore";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { useBoostersStore } from "@/store/useBoostrsStore";
 
 const HeroSection = () => {
 
   const {PPH} = usePointsStore();
  
+  const {multiClickLevel} = useBoostersStore()
   return (
     <div className="flex flex-col justify-between">
       
         <MenuGrid/>
         <div className="flex justify-between items-center my-2 text-[0.5rem]">
-        <Button className="text-[0.5rem] px-3 py-4 h-5 ">
+        <div className="text-[0.5rem] p-2  font-bold bg-[#252423] rounded-md">
        Profit per hour: {PPH}
-        </Button>
-         <Button className='flex items-center gap-2 text-[0.5rem] px-3 py-4 h-5'> 
+        </div>
+         <div className='flex items-center gap-2 text-[0.5rem] p-2 bg-[#252423] rounded-md'> 
         <Image src="/newImages/tap.png" alt="" width={20} height={20} className="" /> 
             
-        Earn per tab: 1</Button>
+        Earn per tab: {multiClickLevel}</div>
       
       </div>
       <div className="flex items-center justify-center  my-2">
