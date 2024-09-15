@@ -16,8 +16,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let userName;
     const user = params.get('userName');
     const {startParam} = retrieveLaunchParams();
+    toast.success(`startParam: ${startParam}`)
     const referredByUser = params.get('referredByUser') ?? startParam;
-
+    toast.success(`referredByUser: ${referredByUser}`)
     if(user){
         userName = user;
     }else {
