@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { usePointsStore } from '@/store/PointsStore';
 import { DateTime } from 'luxon'; // Importing Luxon
+import { useUserStore } from '@/store/userUserStore';
 
 interface MenuItemProps {
   iconSrc: string;
@@ -43,8 +44,10 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
 const MenuGrid = () => {
   const { addPoints } = usePointsStore();
+  const {user} = useUserStore();
   const search = useSearchParams();
-  const id = search.get("id");
+
+  const id = search.get("id") ?? user?.chatId ;
 
   const [adViews, setAdViews] = useState<number>(20); // Default value of 20
 
@@ -77,7 +80,7 @@ const MenuGrid = () => {
 
   const onReward = useCallback(() => {
     toast.loading('Claiming reward...');
-    axios.get(`https://beestar-kombat-omega.vercel.app//api/reward?userid=${id}`)
+    axios.get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`)
       .then((response) => {
         toast.dismiss();
         toast.success(response.data.message || "Reward claimed successfully");
