@@ -85,6 +85,7 @@ const MenuGrid = () => {
         decrementAdViews(); // Decrement ad view count on reward
       })
       .catch((error) => {
+        toast.dismiss();
         toast.error(error.response?.data?.message || 'Error claiming reward');
       });
   }, [addPoints, id, adViews]);
