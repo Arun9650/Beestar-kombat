@@ -6,6 +6,7 @@ import React, { Suspense, useEffect } from 'react'
 import randomName from '@scaleway/random-name'
 import { usePointsStore } from '@/store/PointsStore'
 import toast from 'react-hot-toast'
+import {retrieveLaunchParams} from '@telegram-apps/sdk'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
@@ -14,13 +15,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // console.log("🚀 ~ AuthProvider ~ id:", id)
     let userName;
     const user = params.get('userName');
-    const referredByUser = params.get('referredByUser');
+    const {startParam} = retrieveLaunchParams();
+    const referredByUser = params.get('referredByUser') ?? startParam;
 
     if(user){
         userName = user;
     }else {
         userName = randomName()
     }
+
+
 
     const { setUserId, setCurrentTapsLeft , addPoints} = usePointsStore();
 
