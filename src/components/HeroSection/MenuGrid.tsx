@@ -77,7 +77,7 @@ const MenuGrid = () => {
 
   const onReward = useCallback(() => {
     toast.loading('Claiming reward...');
-    axios.get(`https://beestar-kombat-git-ui-change-arun9650s-projects.vercel.app/api/reward?userid=${id}`)
+    axios.get(`https://beestar-kombat-omega.vercel.app//api/reward?userid=${id}`)
       .then((response) => {
         toast.dismiss();
         toast.success(response.data.message || "Reward claimed successfully");
@@ -91,7 +91,7 @@ const MenuGrid = () => {
   }, [addPoints, id, adViews]);
 
   const onError = useCallback((result: any) => {
-    toast.error('An error occurred while showing the ad');
+    toast.error('An error occurred while showing the ad',result.data);
     console.error("Ad error:", result);
   }, []);
 
