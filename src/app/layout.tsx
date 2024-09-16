@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import LoadingScreenProvider from "@/providers/LoadingScreenProvider";
-import BottomMenus from "@/components/layouts/BottomMenus";
 
 import AuthProviderWithSuspense from "@/providers/AuthProvider";
 import toast, { Toaster } from "react-hot-toast";
-import TopNavBar from "@/components/navigation/TopNavBar";
 import BottomNavBar from "@/components/navigation/BottomNavBar";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import Head from "next/head";
 import Script from "next/script";
+import ParentComponent from "@/components/preventZoomParent";
 
 
 const montserrat = Poppins({ weight: ['100',"200",'300',"400","500","600","700","800","900"], subsets: ["latin"] });
@@ -43,12 +42,14 @@ export default function RootLayout({
           <ReactQueryProvider>
 
           <LoadingScreenProvider>
-
+    <ParentComponent>
+      
             <main className="min-h-screen relative h-full p-4 xs:p-8 flex flex-col justify-between text-white/80">
       
               {children}
               <BottomNavBar/>
             </main>
+    </ParentComponent>
           </LoadingScreenProvider>
           </ReactQueryProvider>
         </AuthProviderWithSuspense>
