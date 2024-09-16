@@ -20,6 +20,21 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ status: 'userNotExist', message: 'User not found' }, { status: 404 });
     }
+   // Check if the user has already completed the task
+   const existingCompletion = await prisma.youTubeCompletion.findFirst({
+    where: {
+      userId: userId,
+      taskId: taskId,
+    },
+  });
+
+  if (existingCompletion) {
+    return NextResponse.json(
+      { status: 'alreadyCompleted', message: 'Task has already been completed by the user' },
+      { status: 409 }
+    );
+  }
+  
 
     await prisma.youTubeCompletion.create({
       data: {
