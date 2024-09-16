@@ -21,7 +21,7 @@ const HeroSection = () => {
       
         <MenuGrid/>
         <div className="flex justify-between items-center my-2 text-[0.5rem]">
-        <div className="text-[0.5rem] p-2  font-bold bg-[#252423] rounded-md">
+        <div className="text-[0.5rem] p-2   bg-[#252423] rounded-md">
        Profit per hour: {PPH}
         </div>
          <div className='flex items-center gap-2 text-[0.5rem] p-2 bg-[#252423] rounded-md'> 
