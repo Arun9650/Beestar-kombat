@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN; // Your bot token
-const CHANNEL_ID =  '-1002252478157'; // Your channel username or ID (use the format @channel_username)
+const CHANNEL_ID =  '-1001558850604'; // Your channel username or ID (use the format @channel_username)
 
 export async function POST(request: NextRequest) {
   try {
