@@ -37,6 +37,19 @@ export async function completeTask({
     const user = await prisma.user.findUnique({ where: { chatId: userId } });
     if (!user) return "userNotExist";
 
+
+    // Check if the user has already completed the task
+    const existingCompletion = await prisma.tasksCompletion.findFirst({
+      where: {
+        userId: userId,
+        taskId: taskId,
+      },
+    });
+
+    if (existingCompletion) {
+      return 'invalidTask'
+    }
+
     await prisma.tasksCompletion.create({
       data: {
         points: task.points,
