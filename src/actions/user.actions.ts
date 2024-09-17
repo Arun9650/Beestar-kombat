@@ -112,6 +112,11 @@ export async function updateProfitPerHour(id: string, selectedTeam: Team) {
     const purchaseCard = await prisma.userCard.findUnique({
       where: { id: selectedTeam.id },
     });
+       // Ensure the user has enough points to proceed
+       if (user.points < selectedTeam.baseCost) {
+        return { success: false, message: 'Insufficient points to purchase the card' };
+      }
+      
     const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2);
     const increasedBasePPH = Math.floor(selectedTeam.basePPH * 1.05);
     const remainingPoints = Math.max(user.points - selectedTeam.baseCost, 0);

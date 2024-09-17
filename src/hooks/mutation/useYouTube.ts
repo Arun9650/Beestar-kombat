@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-
 interface CompleteTaskParams {
     userId: string;
     taskId: string;
@@ -31,8 +30,9 @@ export const useYouTubeMutation =  () => {
 
           }
         },
-        onError: (error) => {
-          console.error('Error completing task:', error);
+        onError: (error: any) => {
+          console.error('Error completing task:', error.response.data.message);
+          toast.error(`${error.response.data.message}`);
         },
       }
     );

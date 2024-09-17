@@ -164,7 +164,7 @@ const EarnMoreCoins = () => {
   const handleTelegramTask = async (task: Task) => {
     if (!userId) return;
     setButtonLoading(true);
-
+    
     try {
       const result = await axios.post("/api/telegramJoin", { userId:id || userId });
       if (result.data.status === "joined") {
@@ -278,7 +278,7 @@ const EarnMoreCoins = () => {
                 {task.isUserTask ? (
                   <Button
                     className="bg-green-600 text-white font-semibold"
-                    disabled
+                   disabled
                   >
                     Redeem
                   </Button>
@@ -498,7 +498,7 @@ const EarnMoreCoins = () => {
                     <DrawerFooter className=" p-0">
                       <Button
                         onClick={() => handleTelegramTask(task)}
-                        disabled={buttonLoading}
+                        disabled={buttonLoading || isYouTubeTaskLoading}
                         className="w-full p-7 my-4  text-white text-lg font-semibold rounded-xl "
                       >
                         {buttonLoading ? (
