@@ -108,7 +108,7 @@ const Boosters = () => {
               points: points,
               id: userId!,
             });
-            const result = await creditEnergy(userId!, energyCost);
+            const result = await creditEnergy(userId!, energyCost, points);
             if (!result.success) {
               throw new Error(result.message || "Credit failed");
             }
@@ -163,20 +163,6 @@ const Boosters = () => {
 
     return () => clearInterval(intervalId);
   }, [currentTapsLeft]);
-
-  // const handleFuelRefill = () => {
-  //   if (refill > 0) {
-  //     const tapsToAdd = energyCapacity - currentTapsLeft;
-  //     increaseTapsLeft(tapsToAdd);
-  //     decreaseRefill();
-  //     const newRefillValue = refill - 1;
-  //     setRefill(newRefillValue);
-  //     window.localStorage.setItem("refill", newRefillValue.toString());
-  //     // window.localStorage.setItem("currentTapsLeft", (currentTapsLeft + tapsToAdd).toString());
-  //     setIsDrawerOpen(false);
-  //     toast.success("Taps refilled " + energyCapacity);
-  //   }
-  // };
 
   const handleFuelRefill = async () => {
     try {

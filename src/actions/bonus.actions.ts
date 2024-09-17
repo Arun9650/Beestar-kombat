@@ -286,7 +286,7 @@ export const getAchievementsWithStatus = async (userId: string) => {
 	}
 };
 
-export const creditEnergy = async (userId: string, amount: number) => {
+export const creditEnergy = async (userId: string, amount: number, points: number) => {
 	console.log('🚀 ~ creditEnergy ~ userId:', userId);
 
 	try {
@@ -297,7 +297,7 @@ export const creditEnergy = async (userId: string, amount: number) => {
 		}
 
 		// Check if the user has enough points before decrementing
-		if (user.points < amount) {
+		if (user.points < amount || points < amount) {
 			return {
 				success: false,
 				message: 'Insufficient points to credit energy',
