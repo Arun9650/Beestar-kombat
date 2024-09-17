@@ -265,3 +265,43 @@ body {
 .rounded-triangle {
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
+
+/* CoinAnimation.css */
+.coin-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: transparent;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.coin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover; /* Ensure the background image covers the entire div */
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  top: -50px; /* Start above the screen */
+  animation-name: drop;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards; /* Ensure coin stays at bottom */
+}
+
+/* Keyframe animation for falling coins */
+@keyframes drop {
+  0% {
+    top: -50px;
+    opacity: 1;
+  }
+
+  100% {
+    top: 110vh; /* Moves the coin beyond the viewport */
+    opacity: 0.5; /* Coin fades out */
+  }
+}
