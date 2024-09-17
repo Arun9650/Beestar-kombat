@@ -182,17 +182,27 @@ export const getLeaderboard = async ({
   league,
   page = 1,
   limit = 100,
+  points
 }: {
   league: string;
   page?: number;
   limit?: number;
+  points:number
 }) => {
   try {
+    console.log(points);
     const offset = (page - 1) * limit;
+
+        // Define the points filter conditionally based on the points value
+        const pointsFilter = points < 1000000000
+        ? { lt: points, gte: 0 } // Points should be less than the provided value and greater than or equal to 0
+        : { gte: 0 };            // No upper limit, but ensure points are >= 0
+  
 
     const leaderboard = await prisma.user.findMany({
       where: {
         league: league, // Filter users by league
+        ...(pointsFilter && { points: pointsFilter }), // Conditionally include points filter
       },
       orderBy: {
         points: 'desc',

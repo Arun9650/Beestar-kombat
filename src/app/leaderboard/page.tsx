@@ -27,7 +27,22 @@ const Leaderboard = () => {
   const [currentIndex, setCurrentIndex] = useState(initialLeagueIndex);
   const [league, setLeague] = useState(levelNames[initialLeagueIndex]);
 
-  const { data, isLoading, error } = useLeaderboard(league, page);
+
+  const getNextLevelMinPoints = (currentIndex: number, levelMinPoints: number[]): number => {
+    if (currentIndex + 1 >= levelMinPoints.length) {
+      return levelMinPoints[levelMinPoints.length - 1];
+    }
+    return levelMinPoints[currentIndex + 1];
+  };
+  
+  const nextLevelMinPoints = getNextLevelMinPoints(currentIndex, levelMinPoints);
+  console.log("🚀 ~ Leaderboard ~ nextLevelMinPoints:", nextLevelMinPoints)
+
+
+  const { data, isLoading, error } = useLeaderboard(league, page, 100,nextLevelMinPoints);
+  console.log("🚀 ~ Leaderboard ~ data:", data)
+
+
 
 const formatNumber = (num: number): string => {
   if (num >= 1_000_000_000) {
@@ -46,14 +61,7 @@ const formatNumber = (num: number): string => {
   return result;
 };
 
-const getNextLevelMinPoints = (currentIndex: number, levelMinPoints: number[]): number => {
-  if (currentIndex + 1 >= levelMinPoints.length) {
-    return levelMinPoints[levelMinPoints.length - 1];
-  }
-  return levelMinPoints[currentIndex + 1];
-};
 
-const nextLevelMinPoints = getNextLevelMinPoints(currentIndex, levelMinPoints);
 
 
   const calculateProgress = () => {
