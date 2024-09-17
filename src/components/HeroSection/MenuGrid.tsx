@@ -44,12 +44,13 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
 const MenuGrid = () => {
   const { addPoints } = usePointsStore();
-  const {user} = useUserStore();
+  const { user } = useUserStore();
   const search = useSearchParams();
 
-  const id = search.get("id") ?? user?.chatId ;
+  const id = search.get("id") ?? user?.chatId;
 
   const [adViews, setAdViews] = useState<number>(20); // Default value of 20
+  const [adsWatched, setAdsWatched] = useState<number>(0); // Track the number of ads watched
 
   // Function to get current local date in 'YYYY-MM-DD' format using Luxon
   const getCurrentDate = () => {
@@ -58,16 +59,20 @@ const MenuGrid = () => {
 
   // Check local storage for the current day's ad views
   useEffect(() => {
-    const savedDate = localStorage.getItem('adViewDate');
-    const savedViews = localStorage.getItem('adViews');
+    const savedDate = window.localStorage.getItem('adViewDate');
+    const savedViews = window.localStorage.getItem('adViews');
+    const savedAdsWatched = window.localStorage.getItem('adsWatched') || '0'; // Get number of ads watched
 
     // Reset ad views if the date has changed
     if (savedDate !== getCurrentDate()) {
-      localStorage.setItem('adViewDate', getCurrentDate());
-      localStorage.setItem('adViews', '20');
+      window.localStorage.setItem('adViewDate', getCurrentDate());
+      window.localStorage.setItem('adViews', '20');
+      window.localStorage.setItem('adsWatched', '0');
       setAdViews(20); // Reset adViews to 20
+      setAdsWatched(0); // Reset adsWatched to 0
     } else if (savedViews) {
       setAdViews(Number(savedViews));
+      setAdsWatched(Number(savedAdsWatched));
     }
   }, []);
 
@@ -76,25 +81,29 @@ const MenuGrid = () => {
     const newViews = adViews - 1;
     setAdViews(newViews);
     localStorage.setItem('adViews', newViews.toString());
+    const newAdsWatched = adsWatched + 1;
+    setAdsWatched(newAdsWatched); // Update ads watched count
+    localStorage.setItem('adsWatched', newAdsWatched.toString());
   };
 
   const onReward = useCallback(() => {
+    const reward = 5000 * (adsWatched + 1); // Reward increases by 5000 with each ad
     toast.loading('Claiming reward...');
     axios.get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`)
       .then((response) => {
         toast.dismiss();
-        toast.success(response.data.message || "Reward claimed successfully");
-        addPoints(5000);
+        toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
+        addPoints(reward); // Add reward points
         decrementAdViews(); // Decrement ad view count on reward
       })
       .catch((error) => {
         toast.dismiss();
         toast.error(error.response?.data?.message || 'Error claiming reward');
       });
-  }, [addPoints, id, adViews]);
+  }, [addPoints, id, adViews, adsWatched]);
 
   const onError = useCallback((result: any) => {
-    toast.error('An error occurred while showing the ad',result.data);
+    toast.error('An error occurred while showing the ad', result.data);
     console.error("Ad error:", result);
   }, []);
 
