@@ -190,7 +190,6 @@ export const getLeaderboard = async ({
   points:number
 }) => {
   try {
-    console.log(points);
     const offset = (page - 1) * limit;
 
         // Define the points filter conditionally based on the points value

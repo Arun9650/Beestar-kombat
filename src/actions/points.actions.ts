@@ -17,38 +17,7 @@ export async function leagueData(): Promise<{
   return { level: 1200, current: "pilot" };
 }
 
-export async function allLeagues(): Promise<League[]> {
-  const leaguesList: League[] = [
-    {
-      name: "Pilot",
-      minEntry: 0,
-      pointLimit: 1000,
-      trophy: "/assets/images/trophy-bronze.png",
-      entryReward: 10000,
-    },
 
-    {
-      name: "Explorer",
-      minEntry: 1001,
-      pointLimit: 5000,
-      trophy: "/assets/images/trophy-silver.png",
-      entryReward: 20000,
-    },
-
-    {
-      name: "Voyager",
-      minEntry: 5001,
-      pointLimit: 10000,
-      trophy: "/assets/images/trophy-gold.webp",
-      entryReward: 40000,
-    },
-  ];
-
-  // const leaguesList = await prisma.leagues.findMany();
-  // if (!leaguesList) return "noRecordFound";
-
-  return leaguesList;
-}
 
 export async function updatePointsInDB({
   points,
