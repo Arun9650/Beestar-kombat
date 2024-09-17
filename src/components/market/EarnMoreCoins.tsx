@@ -395,7 +395,7 @@ const EarnMoreCoins = () => {
                       disabled={!nextRewardAvailable || buttonLoading}
                       className="w-full p-7 my-4  text-white text-lg font-semibold rounded-xl "
                     >
-                      {buttonLoading ? <div className="loader"></div> : "Claim"}
+                      {buttonLoading ? <div className="loader"></div> : (nextRewardAvailable ? "Claim" : "Come back tomorrow")}
                     </Button>
                   </DrawerFooter>
                 </DrawerContent>
