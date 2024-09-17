@@ -108,19 +108,18 @@ const Boosters = () => {
               points: points,
               id: userId!,
             });
-
-            reducePoints(energyCost * 2);
-            const newEnergyCapacity = energyCapacity + 500;
-            setEnergyCapacity(newEnergyCapacity);
-
-            const newMultiClickCost = energyCost *2;
-      setEnergyCost(newMultiClickCost);
-      const newMultiClickLevel = energyLevel + 1;
-      setEnergyLevel(newMultiClickLevel);
             const result = await creditEnergy(userId!, energyCost);
             if (!result.success) {
               throw new Error(result.message || "Credit failed");
             }
+                        reducePoints(energyCost * 2);
+                        const newEnergyCapacity = energyCapacity + 500;
+                        setEnergyCapacity(newEnergyCapacity);
+            
+                        const newMultiClickCost = energyCost *2;
+                  setEnergyCost(newMultiClickCost);
+                  const newMultiClickLevel = energyLevel + 1;
+                  setEnergyLevel(newMultiClickLevel);
 
             window.localStorage.setItem("points", points.toString());
             window.localStorage.setItem(
@@ -295,30 +294,59 @@ const Boosters = () => {
 
   const handleMultiTapIncrease = async () => {
     const userId = window.localStorage.getItem("authToken");
-    if (multiClickCost * 2 <= points) {
+    
+    // Early return if no userId is found
+    if (!userId) {
+      toast.error("User ID not found");
+      return;
+    }
+  
+    const requiredPoints = multiClickCost * 2;
+  
+    // Early return if there are not enough points
+    if (requiredPoints > points) {
+      toast.error("Not enough points");
+      return;
+    }
+  
+    try {
       setButtonLoading(true);
-      await updatePointsInDB({ points: points, id: userId! });
-
-      reducePoints(multiClickCost * 2);
-      const newMultiClickCost = multiClickCost *2;
-      setMultiClickCost(newMultiClickCost);
-      const newMultiClickLevel = multiClickLevel + 1;
-      setMultiClickLevel(newMultiClickLevel);
-      const result = await creditMultiClickLevel(userId!, multiClickCost);
+  
+      // Update points in the database
+      await updatePointsInDB({ points: points, id: userId });
+      // Credit the multi-click level in the backend
+      const result = await creditMultiClickLevel(userId, multiClickCost);
+  
       if (result.success) {
+          // Calculate new multi-click cost and level
+      const newMultiClickCost = multiClickCost * 2;
+      const newMultiClickLevel = multiClickLevel + 1;
+  
+      // Update the user's points and multi-click level in local state
+      reducePoints(requiredPoints);
+      setMultiClickCost(newMultiClickCost);
+      setMultiClickLevel(newMultiClickLevel);
+        // Update localStorage with new points
         window.localStorage.setItem(
           "points",
-          (points - multiClickCost * 2).toString()
+          (points - requiredPoints).toString()
         );
-        setButtonLoading(false);
-        setIsDrawerOpen(false);
+  
+        // Success message and UI changes
         toast.success("Multiplier increased to " + newMultiClickLevel);
+      } else {
+        toast.error("Failed to increase multiplier");
       }
-    } else {
-      toast.error("Not enough points");
+    } catch (error) {
+      console.error("Error in increasing multi-tap:", error);
+      toast.error("An error occurred while increasing multiplier");
+    } finally {
+      // Ensure UI state is reset whether success or failure occurs
       setButtonLoading(false);
+      setIsDrawerOpen(false);
     }
   };
+  
 
   const handleBoosterSelection = (id: number) => {
     if (id === 1) {
