@@ -22,6 +22,7 @@ import useLanguageStore from "@/store/uselanguageStore";
 import { CircleFlag } from "react-circle-flags";
 import WebApp from "@twa-dev/sdk"
 import { initClosingBehavior, initUtils } from '@telegram-apps/sdk';
+import AdInfoMessage from "@/components/AdsInfoMessage";
 
 declare global {
   interface Window {
@@ -279,11 +280,7 @@ const Settings = () => {
             </Drawer>
           }
         </div>
-        <div className="mt-8 text-center">
-          <Link href="#">
-            <p className="text-gray-400">Privacy policy</p>
-          </Link>
-        </div>
+        <AdInfoMessage/>
       </main>
     </div>
   );
