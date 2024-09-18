@@ -33,7 +33,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
         <Image src={iconSrc} alt={label} width={20} height={20} />
       </div>
       <span className="text-white text-[0.5rem] mt-2">{label}</span>
-      {label === 'Daily reward' && (
+      {label === 'Daily earn' && (
         <div className='absolute -top-2 -right-2 rounded-full text-[0.6rem] w-6 h-6 bg-white bg-opacity-10 flex items-center justify-center'>
           {adViews}
         </div>
@@ -131,7 +131,7 @@ const MenuGrid = () => {
   return (
     <div className="grid grid-cols-5 gap-4">
       {menuItems.map((item, index) => (
-        <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={item.label === 'Daily reward' ? adViews : undefined} />
+        <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={item.label === 'Daily earn' ? adViews : undefined} />
       ))}
     </div>
   );
