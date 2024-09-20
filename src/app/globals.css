@@ -273,7 +273,7 @@ body {
   height: 100vh;
   overflow: hidden;
   background-color: transparent;
-  z-index: 100;
+  z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -291,6 +291,33 @@ body {
   animation-name: drop;
   animation-timing-function: ease-in;
   animation-fill-mode: forwards; /* Ensure coin stays at bottom */
+}
+
+.buy-coin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover; /* Ensure the background image covers the entire div */
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  bottom: -50px; /* Start above the screen */
+  animation-name: rise;
+  animation-timing-function: ease-in;
+  z-index: 1000;
+  animation-fill-mode: forwards; /* Ensure coin stays at bottom */
+}
+/* Keyframe animation for falling coins */
+@keyframes rise {
+  0% {
+    bottom: -50px;
+    opacity: 1;
+  }
+
+  100% {
+    bottom: 110vh; /* Moves the coin beyond the viewport */
+    opacity: 0.5; /* Coin fades out */
+  }
 }
 
 /* Keyframe animation for falling coins */

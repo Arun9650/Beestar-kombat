@@ -22,6 +22,8 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useFetchAllCards } from "@/hooks/query/useFetchAllCards";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import BuyCoinAnimation from "../coinanimation/BuyCoinAnimation";
+import useAnimationStore from "@/store/useAnimationStore";
 
 export interface Team {
   id: string;
@@ -55,7 +57,7 @@ const TaskList = () => {
 
   const search = useSearchParams();
   const id = search.get("id");
-
+const {setPurchaseCompleteAnimation} = useAnimationStore();
   const { data, isLoading } = useFetchAllCards(id ?? userInfo?.chatId ?? user!);
 
   useEffect(() => {
@@ -182,6 +184,7 @@ const TaskList = () => {
           setButtonLoading(false);
           toast.success("Card purchased successfully");
           setIsDrawerOpen(false);
+          setPurchaseCompleteAnimation(true);
         },
       }
     );
@@ -192,7 +195,7 @@ const TaskList = () => {
   };
 
   return (
-    <div className="flex flex-col items-center  pt-4 w-full">
+    <div className="flex flex-col items-center  pt-4 w-full z-0">
       <div className=" flex flex-col items-center w-full">
         {/* cards start from here  */}
         <div className="flex flex-col  items-center w-full">

@@ -7,6 +7,8 @@ import axios from 'axios';
 import { usePointsStore } from '@/store/PointsStore';
 import { DateTime } from 'luxon'; // Importing Luxon
 import { useUserStore } from '@/store/userUserStore';
+import BuyCoinAnimation from '../coinanimation/BuyCoinAnimation';
+import useAnimationStore from '@/store/useAnimationStore';
 
 interface MenuItemProps {
   iconSrc: string;
@@ -45,6 +47,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 const MenuGrid = () => {
   const { addPoints } = usePointsStore();
   const { user } = useUserStore();
+  const {setPurchaseCompleteAnimation} = useAnimationStore()
   const search = useSearchParams();
 
   const id = search.get("id") ?? user?.chatId;
@@ -95,6 +98,7 @@ const MenuGrid = () => {
         toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
         addPoints(reward); // Add reward points
         decrementAdViews(); // Decrement ad view count on reward
+        setPurchaseCompleteAnimation(true);
       })
       .catch((error) => {
         toast.dismiss();
@@ -130,6 +134,7 @@ const MenuGrid = () => {
 
   return (
     <div className="grid grid-cols-5 gap-4">
+      <BuyCoinAnimation/>
       {menuItems.map((item, index) => (
         <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={item.label === 'Daily earn' ? adViews : undefined} />
       ))}

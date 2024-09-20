@@ -32,6 +32,8 @@ import { getUserConfig } from "@/actions/user.actions";
 import { useFreeEnergy } from "@/store/useFreeEnergy";
 import { DateTime } from "luxon";
 import SectionBanner from "@/components/sectionBanner";
+import BuyCoinAnimation from "@/components/coinanimation/BuyCoinAnimation";
+import useAnimationStore from "@/store/useAnimationStore";
 
 interface Booster {
   id: number;
@@ -64,6 +66,7 @@ const Boosters = () => {
     usePointsStore();
 
   const { decreaseFreeEnergy, freeEnergy, setFreeEnergy } = useFreeEnergy();
+  const {setPurchaseCompleteAnimation} = useAnimationStore();
 
   const freeBoosters = [
     {
@@ -127,6 +130,7 @@ const Boosters = () => {
               newEnergyCapacity.toString()
             );
             setIsDrawerOpen(false);
+            setPurchaseCompleteAnimation(true)
 
             return `Energy Capacity credited ${500}`;
           })(),
@@ -320,6 +324,7 @@ const Boosters = () => {
   
         // Success message and UI changes
         toast.success("Multiplier increased to " + newMultiClickLevel);
+        setPurchaseCompleteAnimation(true);
       } else {
         toast.error("Failed to increase multiplier");
       }
@@ -352,14 +357,15 @@ const Boosters = () => {
   };
 
   return (
-    <div className="">
+    < >
+       <BuyCoinAnimation />
       <SectionBanner
         mainText="Boosters"
         subText="Upgrade your energy"
         leftIcon="/newImages/bee.png"
         rightIcon="/newImages/bee-right.png"
       />
-      <div className="">
+      <div className="z-0">
         <div className="text-center mb-8">
           <p className="text-gray-400">Your balance</p>
           <div className="flex justify-center items-center">
@@ -493,7 +499,10 @@ const Boosters = () => {
           </Drawer>
         )}
       </div>
-    </div>
+     
+     
+    
+    </>
   );
 };
 

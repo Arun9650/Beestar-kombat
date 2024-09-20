@@ -9,10 +9,14 @@ import Info from "../../../public/icons/Info";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import SectionBanner from "@/components/sectionBanner";
+import useAnimationStore from "@/store/useAnimationStore";
+import BuyCoinAnimation from "@/components/coinanimation/BuyCoinAnimation";
 
 const TasksPage =  () => {
   const { PPH, currentTapsLeft, increaseTapsLeft } = usePointsStore();
   const { multiClickLevel } = useBoostersStore();
+
+  const {purchaseCompleteAnimation} =  useAnimationStore();
 
 
   useEffect(() => {
@@ -39,16 +43,19 @@ const TasksPage =  () => {
 
 
   return (
-    <section >
+    <div className="flex items-center flex-col w-full">
+    <>
       <SectionBanner
         mainText="Do Mine"
         subText="Make our tasks to get more coins"
         leftIcon="/newImages/bee.png"
         rightIcon="/newImages/bee-right.png"
-      />
+        />
       <CurrentPoints />
       <TaskList />
-    </section>
+        </>
+      <BuyCoinAnimation />
+    </div>
   );
 };
 

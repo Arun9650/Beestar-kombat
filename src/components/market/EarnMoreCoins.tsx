@@ -32,6 +32,8 @@ import { useTasksMutation } from "@/hooks/mutation/useTasksMutation";
 import { ChevronRight } from "lucide-react";
 import SectionBanner from "../sectionBanner";
 import axios from "axios";
+import BuyCoinAnimation from "../coinanimation/BuyCoinAnimation";
+import useAnimationStore from "@/store/useAnimationStore";
 
 interface Reward {
   id?: string;
@@ -83,6 +85,7 @@ const EarnMoreCoins = () => {
   } = usePointsStore();
 
   const { multiClickLevel } = useBoostersStore();
+  const {setPurchaseCompleteAnimation} = useAnimationStore();
 
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -96,7 +99,6 @@ const EarnMoreCoins = () => {
     useFetchYoutubeTasks(id ?? userId ?? "");
   const { data: taskList, isLoading } = useFetchTasks(id ?? userId ?? "");
 
-  console.log("🚀 ~ EarnMoreCoins ~ YoutubeTask:", YoutubeTask?.tasks);
 
   const [isYouTubeTaskProcessing, setIsYouTubeTaskProcessing] = useState(false);
 
@@ -146,8 +148,10 @@ const EarnMoreCoins = () => {
       }));
 
       addPoints(data.reward);
+      
 
       toast.success(`Reward claimed successfully! ${data.reward}`);
+      setPurchaseCompleteAnimation(true)
     } else {
       console.log(data.error);
       toast.error("Something went wrong!");
@@ -170,6 +174,7 @@ const EarnMoreCoins = () => {
       if (result.data.status === "joined") {
         handleCompleteTask(task);
         setIsTelegramDrawerOpen(false);
+        setPurchaseCompleteAnimation(true)
       } else {
         toast.error("Please Join the Telegram Channel");
       }
@@ -198,6 +203,7 @@ const EarnMoreCoins = () => {
               }`
             );
             setIsYouTubeTaskProcessing(false);
+            setPurchaseCompleteAnimation(true)
           },
         }
       );
@@ -221,6 +227,8 @@ const EarnMoreCoins = () => {
               }`
             );
             setIsYouTubeTaskProcessing(false);
+            setPurchaseCompleteAnimation(true)
+            
           },
         }
       );
@@ -229,6 +237,7 @@ const EarnMoreCoins = () => {
 
   return (
     <>
+    <BuyCoinAnimation/>
       <SectionBanner
         mainText="Earn more coins"
         subText="Make our tasks to get more coins"

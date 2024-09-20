@@ -15,7 +15,7 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
   rightIcon,
 }) => {
   return (
-    <div className="flex flex-col items-center mb-4 relative ">
+    <div className="flex flex-col items-center mb-4 relative w-full">
        {leftIcon &&  <Image
           src="/newImages/bee.png"
           alt="bee"
