@@ -39,7 +39,7 @@ export interface Team {
   category: string;
 }
 
-const TaskList = () => {
+const TaskList = ({userId}: {userId:string}) => {
   const { points, setPoints, setPPH } = usePointsStore();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);

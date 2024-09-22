@@ -22,8 +22,8 @@ export const useTasksMutation =  () => {
           }
         },
         onError: (error:any) => {
-          console.error('Error completing task:', error);
-          toast.error(`${error.response.data.message}`);
+          console.error('Error completing task:', error.response.data.status);
+          toast.error(`${error.response.data.status}`);
         },
       }
     );
