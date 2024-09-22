@@ -65,9 +65,11 @@ const DailyRewards: React.FC<Props> = ({ userId }) => {
         coins: data.reward || 0,
       }));
       addPoints(data.reward);
+      toast.dismiss();
       toast.success(`Reward claimed successfully! ${data.reward}`);
       setPurchaseCompleteAnimation(true)
     } else {
+      toast.dismiss();
       toast.error("Something went wrong!");
     }
     setButtonLoading(false);
