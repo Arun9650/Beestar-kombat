@@ -2,7 +2,7 @@
 import CurrentPoints from "@/components/tasks/CurrentPoints";
 import TaskList from "@/components/tasks/TaskList";
 import Image from "next/image";
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { dollarCoin } from "../../../public/newImages";
 import { formatNumber } from "../../../utils/formatNumber";
 import Info from "../../../public/icons/Info";
@@ -18,6 +18,15 @@ const TasksPage =  () => {
 
   const {purchaseCompleteAnimation} =  useAnimationStore();
 
+  const [userId, setUserId] = useState('');
+
+
+  useEffect(() => {
+    const userId = window.localStorage.getItem("userId");
+    if(userId){
+      setUserId(userId);
+    }
+  },[])
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -52,7 +61,7 @@ const TasksPage =  () => {
         rightIcon="/newImages/bee-right.png"
         />
       <CurrentPoints />
-      <TaskList />
+      <TaskList userId={userId} />
         </>
       <BuyCoinAnimation />
     </div>
