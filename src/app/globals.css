@@ -71,6 +71,11 @@
     @apply bg-background text-foreground;
   }
 }
+html, body {
+  touch-action: manipulation;
+  -webkit-user-select: none; /* Prevent text selection */
+  -webkit-touch-callout: none; /* Prevent touch and hold callout */
+}
 
 
 body {
