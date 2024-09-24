@@ -142,7 +142,7 @@ const ReferralPage = () => {
             {data?.length === 0 ? (
               <p className="my-20">No referrals found</p>
             ) : (
-              data?.map((item: any, index) => (
+              data?.map((item: any, index: number) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between p-4 border rounded-2xl  w-full"
