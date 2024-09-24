@@ -86,7 +86,7 @@ const ReferralPage = () => {
   }, [currentTapsLeft]);
 
   return (
-    <div className="px-4 text-white flex flex-col gap-16">
+    <div className="px-4 text-white flex flex-col ">
 
         <SectionBanner
         mainText="Invite friends"
@@ -95,7 +95,7 @@ const ReferralPage = () => {
         rightIcon="/newImages/bee-right.png"
         />
 
-      <div className="flex justify-center flex-col gap-6">
+      <div className="flex justify-center flex-col gap-6 mt-2">
         <div className="flex items-center gap-5 px-3 py-2 bg-[#1d2025] rounded-2xl">
           {/* card1 */}
           <Image src={Gift} alt="Gift"  width={24} height={24} />
@@ -105,7 +105,7 @@ const ReferralPage = () => {
           </div>
         </div>
       </div>
-      <div className="flex  gap-3 mb-24">
+      <div className="flex gap-3 my-4">
         {/* button */}
         <Button className="bg-black/80 shadow-2xl border-yellow-400 border p-1 rounded-2xl justify-center gap-2 flex w-full py-4 px-4  semi-bold text-sm ">
           {id ? (
@@ -140,18 +140,19 @@ const ReferralPage = () => {
         ) : (
           <>
             {data?.length === 0 ? (
-              <p>No referrals found</p>
+              <p className="my-20">No referrals found</p>
             ) : (
-              data?.map((item: any) => (
+              data?.map((item: any, index) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between p-4 border rounded-2xl  w-full"
                 >
-                  <p>{item.name}</p>
+                    <p><span className="text-gray-400">#{index +1}</span> {item.name}</p>
                   <p className="flex items-center gap-3">
                     <Image src={dollarCoin} width={20} height={20} alt="coin" />
                     {item.points}
                   </p>
+                
                 </div>
               ))
             )}
