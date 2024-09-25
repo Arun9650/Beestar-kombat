@@ -136,7 +136,7 @@ const MenuGrid = () => {
   return (
     <div className="grid grid-cols-5 gap-4">
       <BuyCoinAnimation/>
-      <AlertBox showAd={showAd} />
+      <AlertBox showAd={handleAdClick} />
       {menuItems.map((item, index) => (
         <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={item.label === 'Daily earn' ? adViews : undefined} />
       ))}
