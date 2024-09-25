@@ -9,7 +9,7 @@ import { DateTime } from 'luxon'; // Importing Luxon
 import { useUserStore } from '@/store/userUserStore';
 import BuyCoinAnimation from '../coinanimation/BuyCoinAnimation';
 import useAnimationStore from '@/store/useAnimationStore';
-import { initPopup } from '@telegram-apps/sdk';
+import AlertBox from '../alertBox/AlertBox';
 
 interface MenuItemProps {
   iconSrc: string;
@@ -46,9 +46,6 @@ const MenuItem: React.FC<MenuItemProps> = ({
 };
 
 const MenuGrid = () => {
-  const popup = initPopup();
-
-
   const { addPoints } = usePointsStore();
   const { user } = useUserStore();
   const {setPurchaseCompleteAnimation} = useAnimationStore()
@@ -122,22 +119,7 @@ const MenuGrid = () => {
   // Function to check if the user has reached the ad view limit
   const handleAdClick = () => {
     if (adViews > 0) {
-      popup
-      .open({
-        title: 'Ads Watched',
-        message: 'Watch more ads to earn more points.',
-        buttons: [{ id: "1", type: 'default', text: 'Watch Ads' }, { id: '2', type: 'cancel' }],
-      })
-      .then(buttonId => {
-        console.log(
-          buttonId === null 
-            ? 'User did not click any button'
-            : `User clicked a button with ID "${buttonId}"`
-        );
-      {buttonId === "1" &&  showAd();}
-      });
-
-     
+      showAd(); // Show ad if views are remaining
     } else {
       toast.error("You have reached the daily limit of 20 ads.");
     }
@@ -154,6 +136,7 @@ const MenuGrid = () => {
   return (
     <div className="grid grid-cols-5 gap-4">
       <BuyCoinAnimation/>
+      <AlertBox showAd={showAd} />
       {menuItems.map((item, index) => (
         <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={item.label === 'Daily earn' ? adViews : undefined} />
       ))}
