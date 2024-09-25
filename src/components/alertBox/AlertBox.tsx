@@ -10,6 +10,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import useAnimationStore from "@/store/useAnimationStore";
+import { Button } from "../ui/button";
 
 interface AlertBoxProps {
   showAd: () => void;
@@ -21,7 +22,7 @@ export default function AlertBox({ showAd }: AlertBoxProps) {
 
   return (
     <AlertDialog  open={animationAlert} onOpenChange={setAnimationAlert}>
-      <AlertDialogContent className="bg-white/90">
+      <AlertDialogContent className="bg-white/90 max-w-80">
       <div className="balloons">
           <div className="balloon"></div>
           <div className="balloon"></div>
@@ -35,19 +36,20 @@ export default function AlertBox({ showAd }: AlertBoxProps) {
             Watch ads to earn more points and enhance your experience.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex flex-row  justify-end">
           {/* <AlertDialogCancel className="bg-transparent">Cancel</AlertDialogCancel> */}
-          <button className="mr-3" onClick={() => setAnimationAlert(false)}>
+          <button className="mr-3 w-fit" onClick={() => setAnimationAlert(false)}>
             Cancel
           </button>
-          <AlertDialogAction
+          <Button
+          className="border w-fit"
             onClick={() => {
                 setAnimationAlert(false);
               showAd();
             }}
           >
             Continue
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
