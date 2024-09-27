@@ -35,10 +35,12 @@ export async function createAccount(
         });
         // await prisma.bonuster.create({ data: { chatId: referredByUser, energy: 500 } });
         await prisma.user.create({ data: { chatId, points: 5000, name , referredById: referrer.id, } });
+        console.log ("🚀 user gets only 5000");
         await prisma.bonuster.create({ data: { chatId, energy: 500, energyCost: 500, energylevel: 1 } });
         return "createdByReferral";
       } else {
         await prisma.user.create({ data: { chatId, points: 5000, name } });
+        console.log ("🚀 user gets only 5000");
         await prisma.bonuster.create({ data: { chatId, energy: 500, energyCost: 500, energylevel: 1 } });
         return "created";
       }
