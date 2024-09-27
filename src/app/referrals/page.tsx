@@ -148,7 +148,7 @@ const ReferralPage = () => {
                   key={item.id}
                   className="flex items-center justify-between p-4 border rounded-2xl  w-full"
                 >
-                    <p className="truncate  w-20 "><span className="text-gray-400">#{index +1}</span> {item.name}</p>
+                    <p className="truncate  w-40 "><span className="text-gray-400">#{index +1}</span> {item.name}</p>
                   <p className="flex items-center gap-3">
                     <Image src={dollarCoin} width={20} height={20} alt="coin" />
                     {formatNumber(item.points)}
