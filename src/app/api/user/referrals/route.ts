@@ -12,11 +12,13 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const userWithReferrals = await prisma.user.findUnique({
+    const userWithReferrals = await prisma.user.findFirst({
       where: { chatId: userId },
+      take: 50,
       include: {
         referrals: true, // Include the referred users
       },
+      
     });
     console.log("🚀 ~ GET ~ userWithReferrals:", userWithReferrals)
 

@@ -15,6 +15,7 @@ import SectionBanner from "@/components/sectionBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { initUtils } from '@telegram-apps/sdk'
 import Link from "next/link";
+import { formatNumber } from "../../../utils/formatNumber";
 const ReferralPage = () => {
   const [isTapped, setIsTapped] = useState(false);
   const [id, setId] = useState("");
@@ -147,10 +148,10 @@ const ReferralPage = () => {
                   key={item.id}
                   className="flex items-center justify-between p-4 border rounded-2xl  w-full"
                 >
-                    <p><span className="text-gray-400">#{index +1}</span> {item.name}</p>
+                    <p className="truncate  w-20 "><span className="text-gray-400">#{index +1}</span> {item.name}</p>
                   <p className="flex items-center gap-3">
                     <Image src={dollarCoin} width={20} height={20} alt="coin" />
-                    {item.points}
+                    {formatNumber(item.points)}
                   </p>
                 
                 </div>
