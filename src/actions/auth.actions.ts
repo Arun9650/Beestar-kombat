@@ -124,15 +124,19 @@ export async function updateProfile(
 
 export async function fixAuthPointsIfGettingUnnecessary(id: string) {
   const user = await prisma.user.findUnique({ where: { chatId: id } });
+  console.log("🚀 ~ fixAuthPointsIfGettingUnnecessary ~ user:", user?.chatId)
 
   if (!user) {
     return { success: false, message: 'User not found' };
   }
 
-  await prisma.user.update({
+const updatedUser =  await prisma.user.update({
     where: { chatId: id },
     data: {
       points: 5000,
     },
   });
+console.log("🚀 ~ fixAuthPointsIfGettingUnnecessary ~ updatedUser:", updatedUser.points)
+
+
 }
