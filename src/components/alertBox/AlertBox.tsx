@@ -23,13 +23,13 @@ export default function AlertBox({ showAd }: AlertBoxProps) {
   return (
     <AlertDialog  open={animationAlert} onOpenChange={setAnimationAlert}>
       <AlertDialogContent className="bg-white/90 max-w-80">
-      <div className="balloons">
+      {/* <div className="balloons">
           <div className="balloon"></div>
           <div className="balloon"></div>
           <div className="balloon"></div>
           <div className="balloon"></div>
           <div className="balloon"></div>
-        </div>  
+        </div>   */}
         <AlertDialogHeader>
           <AlertDialogTitle>Earn More Points!</AlertDialogTitle>
           <AlertDialogDescription>
