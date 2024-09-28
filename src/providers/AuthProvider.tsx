@@ -56,6 +56,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userName: userName!,
           referredByUser: referredByUserValue,
         });
+        if(authenticate === "createdByReferral" || authenticate === "createdNewAccount"){ setIsAccountCreated(true);}
         console.log("🚀 ~ authentication ~ authenticate:", authenticate);
         console.log("window points 1277432329", window.localStorage.getItem("points"));
 
@@ -73,7 +74,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               `Welcome ${userName}! You have been referred by ${referredByUserValue}`
             );
             setUserId(String(id));
-            setIsAccountCreated(true);
+          
             
 
           case "createdNewAccount":
@@ -86,7 +87,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             toast.success(`Welcome ${userName}!`);
             setUserId(String(id));
             console.log("window points 1277432329", window.localStorage.getItem("points"))
-            setIsAccountCreated(true);
+        
 
             break;
           case "userAlreadyExists":
@@ -94,7 +95,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             window.localStorage.setItem("authToken", `${id}`);
             window.localStorage.setItem("userName", `${userName}`);
             setUserId(String(id));
-            setIsAccountCreated(false);
+         
             break;
           case "unknownError":
           default:
