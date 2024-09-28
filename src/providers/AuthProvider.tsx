@@ -7,7 +7,6 @@ import randomName from "@scaleway/random-name";
 import { usePointsStore } from "@/store/PointsStore";
 import toast from "react-hot-toast";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
-import eruda from 'eruda'
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
