@@ -34,19 +34,22 @@ export async function createAccount(
           }
         });
         // await prisma.bonuster.create({ data: { chatId: referredByUser, energy: 500 } });
-        await prisma.user.create({ data: { chatId, points: 5000, name , referredById: referrer.id, } });
+     const user =    await prisma.user.create({ data: { chatId, points: 5000, name , referredById: referrer.id, } });
+        console.log("🚀 ~ user:", user)
         console.log ("🚀 user gets only 5000");
         await prisma.bonuster.create({ data: { chatId, energy: 500, energyCost: 500, energylevel: 1 } });
         return "createdByReferral";
       } else {
-        await prisma.user.create({ data: { chatId, points: 5000, name } });
+     const user  =    await prisma.user.create({ data: { chatId, points: 5000, name } });
+        console.log("🚀 ~ user:", user)
         console.log ("🚀 user gets only 5000");
         await prisma.bonuster.create({ data: { chatId, energy: 500, energyCost: 500, energylevel: 1 } });
         return "created";
       }
       
     } else {
-      await prisma.user.create({ data: { chatId, points: 0, name } });
+   const usr=    await prisma.user.create({ data: { chatId, points: 0, name } });
+      console.log("🚀 ~ usr:", usr)
       await prisma.bonuster.create({ data: { chatId, energy: 500, energyCost: 500, energylevel: 1 } });
     }
 
@@ -84,6 +87,7 @@ export async function authenticateUserOrCreateAccount({
     const userAuth = await authenticateUser({ chatId });
     if (userAuth === "userNotFound") {
       const accountCreation = await createAccount(chatId, userName, referredByUser);
+      console.log("🚀 ~ accountCreation:", accountCreation)
       if (accountCreation === "created") return "createdNewAccount";
       if (accountCreation === "createdByReferral") return "createdByReferral";
       return "unknownError";

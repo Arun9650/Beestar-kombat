@@ -7,8 +7,10 @@ import randomName from "@scaleway/random-name";
 import { usePointsStore } from "@/store/PointsStore";
 import toast from "react-hot-toast";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
-
+import eruda from 'eruda'
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+
+
   const params = useSearchParams();
   const { startParam, initData } = retrieveLaunchParams();
   const id = params.get("id") ?? initData?.user?.id;
@@ -24,9 +26,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     userName = randomName();
   }
 
-  const { setUserId, setCurrentTapsLeft, addPoints } = usePointsStore();
-   // Ensure that the ID is appended to the URL without triggering re-rendering
-   useEffect(() => {
+  console.log("window points", window.localStorage.getItem("points")) 
+
+  const { setUserId, setCurrentTapsLeft, addPoints, points } = usePointsStore();
+  console.log("🚀 ~ AuthProvider ~ points:", points)
+  // Ensure that the ID is appended to the URL without triggering re-rendering
+  useEffect(() => {
+     console.log("🚀 ~ AuthProvider ~ points:", points)
+    console.log("window points", window.localStorage.getItem("points"))
+    
     if (id) {
       const currentUrl = new URL(window.location.href);
       if (!currentUrl.searchParams.get("id")) {
@@ -48,6 +56,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           referredByUser: referredByUserValue,
         });
         console.log("🚀 ~ authentication ~ authenticate:", authenticate);
+        console.log("window points", window.localStorage.getItem("points"));
 
         switch (authenticate) {
           case "createdByReferral":
@@ -56,6 +65,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             window.localStorage.setItem("userName", `${userName}`);
             window.localStorage.setItem("currentTapsLeft", "500");
             window.localStorage.setItem("points", "5000");
+            console.log("window points", window.localStorage.getItem("points"));
             setCurrentTapsLeft(500);
             addPoints(5000);
             toast.success(
@@ -68,9 +78,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             window.localStorage.setItem("authToken", `${id}`);
             window.localStorage.setItem("userName", `${userName}`);
             window.localStorage.setItem("currentTapsLeft", "500");
+         
             setCurrentTapsLeft(500);
             toast.success(`Welcome ${userName}!`);
             setUserId(String(id));
+            console.log("window points", window.localStorage.getItem("points"))
+
 
             break;
           case "userAlreadyExists":
