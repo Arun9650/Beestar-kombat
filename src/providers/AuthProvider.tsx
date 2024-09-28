@@ -56,7 +56,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           referredByUser: referredByUserValue,
         });
         console.log("🚀 ~ authentication ~ authenticate:", authenticate);
-        console.log("window points", window.localStorage.getItem("points"));
+        console.log("window points 1277432329", window.localStorage.getItem("points"));
 
         switch (authenticate) {
           case "createdByReferral":
@@ -65,7 +65,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             window.localStorage.setItem("userName", `${userName}`);
             window.localStorage.setItem("currentTapsLeft", "500");
             window.localStorage.setItem("points", "5000");
-            console.log("window points", window.localStorage.getItem("points"));
+            console.log("window points 1277432329", window.localStorage.getItem("points"));
             setCurrentTapsLeft(500);
             addPoints(5000);
             toast.success(
@@ -82,7 +82,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setCurrentTapsLeft(500);
             toast.success(`Welcome ${userName}!`);
             setUserId(String(id));
-            console.log("window points", window.localStorage.getItem("points"))
+            console.log("window points 1277432329", window.localStorage.getItem("points"))
 
 
             break;
