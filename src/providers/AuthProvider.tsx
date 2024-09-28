@@ -59,6 +59,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if(authenticate === "createdByReferral" || authenticate === "createdNewAccount"){ 
          
             await fixAuthPointsIfGettingUnnecessary(user || String(id));
+            window.localStorage.setItem("points","0")
               setIsAccountCreated(false);
         }
         console.log("🚀 ~ authentication ~ authenticate:", authenticate);
