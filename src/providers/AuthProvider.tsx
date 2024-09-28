@@ -1,6 +1,6 @@
 "use client";
 
-import { authenticateUserOrCreateAccount } from "@/actions/auth.actions";
+import { authenticateUserOrCreateAccount, fixAuthPointsIfGettingUnnecessary } from "@/actions/auth.actions";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect } from "react";
 import randomName from "@scaleway/random-name";
@@ -56,7 +56,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userName: userName!,
           referredByUser: referredByUserValue,
         });
-        if(authenticate === "createdByReferral" || authenticate === "createdNewAccount"){ setIsAccountCreated(true);}
+        if(authenticate === "createdByReferral" || authenticate === "createdNewAccount"){ 
+         
+            await fixAuthPointsIfGettingUnnecessary(user || String(id));
+              setIsAccountCreated(false);
+        }
         console.log("🚀 ~ authentication ~ authenticate:", authenticate);
         console.log("window points 1277432329", window.localStorage.getItem("points"));
 
