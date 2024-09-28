@@ -93,7 +93,7 @@ export async function authenticateUserOrCreateAccount({
       return "unknownError";
     } else if (userAuth !== "unknownError") {
       return "userAlreadyExists";
-    }
+    } 
 
     return "unknownError";
   } catch (e) {
@@ -118,4 +118,21 @@ export async function updateProfile(
     console.log(e);
     return "unknownError";
   }
+}
+
+
+
+export async function fixAuthPointsIfGettingUnnecessary(id: string) {
+  const user = await prisma.user.findUnique({ where: { chatId: id } });
+
+  if (!user) {
+    return { success: false, message: 'User not found' };
+  }
+
+  await prisma.user.update({
+    where: { chatId: id },
+    data: {
+      points: 5000,
+    },
+  });
 }

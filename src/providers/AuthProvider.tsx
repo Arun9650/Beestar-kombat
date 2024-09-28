@@ -7,6 +7,7 @@ import randomName from "@scaleway/random-name";
 import { usePointsStore } from "@/store/PointsStore";
 import toast from "react-hot-toast";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
+import useAuthFix from "@/store/useFixAuth";
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
@@ -26,6 +27,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   console.log("window points", window.localStorage.getItem("points")) 
+  const { isAccountCreated, setIsAccountCreated } = useAuthFix();
 
   const { setUserId, setCurrentTapsLeft, addPoints, points } = usePointsStore();
   console.log("🚀 ~ AuthProvider ~ points:", points)
@@ -71,6 +73,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               `Welcome ${userName}! You have been referred by ${referredByUserValue}`
             );
             setUserId(String(id));
+            setIsAccountCreated(true);
+            
 
           case "createdNewAccount":
             console.log("Account created successfully");
@@ -82,7 +86,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             toast.success(`Welcome ${userName}!`);
             setUserId(String(id));
             console.log("window points 1277432329", window.localStorage.getItem("points"))
-
+            setIsAccountCreated(true);
 
             break;
           case "userAlreadyExists":
@@ -90,6 +94,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             window.localStorage.setItem("authToken", `${id}`);
             window.localStorage.setItem("userName", `${userName}`);
             setUserId(String(id));
+            setIsAccountCreated(false);
             break;
           case "unknownError":
           default:

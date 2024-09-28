@@ -1,8 +1,10 @@
 "use client";
+import { fixAuthPointsIfGettingUnnecessary } from "@/actions/auth.actions";
 import { creditProfitPerHour, getUserConfig } from "@/actions/user.actions";
 import useLoadingScreenStore from "@/store/loadingScreenStore";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
+import useAuthFix from "@/store/useFixAuth";
 import { useUserStore } from "@/store/userUserStore";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -28,6 +30,7 @@ const useUserPointsConfig = () => {
   const { isLoading , setIsLoading } = useLoadingScreenStore();
 
   const {setUser} = useUserStore();
+  const {isAccountCreated, setIsAccountCreated} = useAuthFix();
 
   const search = useSearchParams();
   const id  = search.get('id');
@@ -51,7 +54,12 @@ const useUserPointsConfig = () => {
         // console.log(user);
         const config = await getUserConfig(user || String(id));
         
-        console.log("🚀 ~ update ~ config:", config)
+      
+        if(isAccountCreated){
+          await fixAuthPointsIfGettingUnnecessary(user || String(id));
+            setIsAccountCreated(false);
+        }
+        
         const currentState = config?.user;
         if (config?.userDetails && config ) {
           setUser(config.userDetails);
