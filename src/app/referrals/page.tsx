@@ -14,20 +14,19 @@ import useFetchUserReferred from "@/hooks/query/useFetchUserReferred";
 import SectionBanner from "@/components/sectionBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { initUtils } from '@telegram-apps/sdk'
-import Link from "next/link";
 import { formatNumber } from "../../../utils/formatNumber";
 const ReferralPage = () => {
   const [isTapped, setIsTapped] = useState(false);
   const [id, setId] = useState("");
 
-   const INVITE_URL = "https://t.me/BeestarKombat_bot/beestarkombat"
+  //  const INVITE_URL = "https://t.me/BeestarKombat_bot/beestarkombat"
   //  const INVITE_URL = 'https://t.me/beestar_devbot/start'
 
   const handleTap = () => {
     setIsTapped(true);
-    navigator.clipboard.writeText(
-      `http://t.me/BeestarKombat_bot/beestarkombat?startapp=${id}`
-    );
+    // navigator.clipboard.writeText(
+    //   `http://t.me/BeestarKombat_bot/beestarkombat?startapp=${id}`
+    // );
     setTimeout(() => setIsTapped(false), 2000); // Reset the tap animation after 200ms
   };
 
@@ -43,11 +42,11 @@ const ReferralPage = () => {
   }
 
   const handleInviteFriend = () => {
-    const utils = initUtils()
-    const inviteLink = `${INVITE_URL}?startapp=${id}`
-    const shareText = `Join me on this awesome Telegram mini app!`
-    const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`
-    utils.openTelegramLink(fullUrl)
+    // const utils = initUtils()
+    // const inviteLink = `${INVITE_URL}?startapp=${id}`
+    // const shareText = `Join me on this awesome Telegram mini app!`
+    // const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`
+    // utils.openTelegramLink(fullUrl)
   }
 
 
