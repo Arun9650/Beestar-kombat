@@ -33,16 +33,13 @@ export async function createAccount(
             referralCount: { increment: 1 }
           }
         });
-        // await prisma.bonuster.create({ data: { chatId: referredByUser, energy: 500 } });
-     const user =    await prisma.user.create({ data: { chatId, points: 5000, name , referredById: referrer.id, } });
-        console.log("🚀 ~ user:1277432329", user)
-        console.log ("🚀 user gets only 5000");
+        
+        await prisma.user.create({ data: { chatId, points: 0, name , referredById: referrer.id, } });
         await prisma.bonuster.create({ data: { chatId, energy: 500, energyCost: 500, energylevel: 1 } });
         return "createdByReferral";
       } else {
-     const user  =    await prisma.user.create({ data: { chatId, points: 5000, name } });
-        console.log("🚀 ~ user: 1277432329", user)
-        console.log ("🚀 user gets only 5000");
+      await prisma.user.create({ data: { chatId, points: 0, name } });
+ 
         await prisma.bonuster.create({ data: { chatId, energy: 500, energyCost: 500, energylevel: 1 } });
         return "created";
       }
@@ -102,23 +99,7 @@ export async function authenticateUserOrCreateAccount({
   }
 }
 
-export async function updateProfile(
-  data: User2
-): Promise<"success" | "unknownError" | "userNotExist"> {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { chatId: data.chatId },
-    });
-    if (!user) return "userNotExist";
 
-    await prisma.user.update({ where: { chatId: data.chatId }, data });
-
-    return "success";
-  } catch (e) {
-    console.log(e);
-    return "unknownError";
-  }
-}
 
 
 
@@ -133,10 +114,8 @@ export async function fixAuthPointsIfGettingUnnecessary(id: string) {
 const updatedUser =  await prisma.user.update({
     where: { chatId: id },
     data: {
-      points: 5000,
+      points: 0,
     },
   });
 console.log("🚀 ~ fixAuthPointsIfGettingUnnecessary ~ updatedUser:", updatedUser.points)
-
-
 }
