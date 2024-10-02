@@ -10,9 +10,9 @@ import { usePointsStore } from "@/store/PointsStore";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { useBoostersStore } from "@/store/useBoostrsStore";
-
+import eruda from 'eruda'
 const HeroSection = () => {
-
+  eruda.init()
   const {PPH} = usePointsStore();
  
   const {multiClickLevel} = useBoostersStore()
