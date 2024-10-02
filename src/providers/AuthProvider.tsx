@@ -56,12 +56,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userName: userName!,
           referredByUser: referredByUserValue,
         });
-        if(authenticate === "createdByReferral" || authenticate === "createdNewAccount"){ 
+        // if(authenticate === "createdByReferral" || authenticate === "createdNewAccount"){ 
          
-            await fixAuthPointsIfGettingUnnecessary(user || String(id));
-            window.localStorage.setItem("points","0")
-              setIsAccountCreated(false);
-        }
+        //     await fixAuthPointsIfGettingUnnecessary(user || String(id));
+        //     window.localStorage.setItem("points","0")
+        //     setIsAccountCreated(false);
+        //     console.log("🚀 ~ authentication ~ fixAuthPointsIfGettingUnnecessary:")
+        //   }
         console.log("🚀 ~ authentication ~ authenticate:", authenticate);
         console.log("window points 1277432329", window.localStorage.getItem("points"));
 
