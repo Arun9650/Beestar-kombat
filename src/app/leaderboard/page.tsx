@@ -88,11 +88,9 @@ const formatNumber = (num: number): string => {
     }
   };
 
-  const adjustedUserIndex = useMemo(() => {
-    const userLeagueIndex = data?.leaderboard?.findIndex((level) => level.league === user?.league) ?? -1;
-    const userChatIdIndex = data?.leaderboard?.findIndex((level) => level.chatId === user?.chatId) ?? -1;
-    return userLeagueIndex === -1 ? `${Math.floor(Math.random() * 9000) + 1001}+` : userChatIdIndex + 1;
-  }, [data?.leaderboard, user?.league, user?.chatId]);
+  const userLeagueIndex = data?.leaderboard?.findIndex((level) => level.league === user?.league) ?? -1;
+  const userChatIdIndex = data?.leaderboard?.findIndex((level) => level.chatId === user?.chatId) ?? -1;
+  const adjustedUserIndex = userLeagueIndex === -1 ? `${Math.floor(Math.random() * 9000) + 1001}+` : userChatIdIndex + 1;
 
   return (
     <div className="">
