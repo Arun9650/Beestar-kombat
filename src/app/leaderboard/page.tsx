@@ -89,10 +89,17 @@ const formatNumber = (num: number): string => {
   };
 
   const adjustedUserIndex = useMemo(() => {
-    const userLeagueIndex = data?.leaderboard?.findIndex((level) => level.league === user?.league) ?? -1;
     const userChatIdIndex = data?.leaderboard?.findIndex((level) => level.chatId === user?.chatId) ?? -1;
-    return userLeagueIndex === -1 ? `${Math.floor(Math.random() * 9000) + 1001}+` : userChatIdIndex + 1;
-  }, [data?.leaderboard, user?.league, user?.chatId, points]);
+  
+    // If user is found in the leaderboard, return the index + 1 (as index is 0-based)
+    if (userChatIdIndex !== -1) {
+      return userChatIdIndex + 1;
+    }
+  
+    // If the user is not in the leaderboard, return a random number between 1001 and 9999
+    return `${Math.floor(Math.random() * 9000) + 1001}+`;
+  }, [data?.leaderboard, user?.chatId]);
+  
 
   return (
     <div className="">
