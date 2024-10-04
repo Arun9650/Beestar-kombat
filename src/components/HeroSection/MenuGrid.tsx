@@ -10,6 +10,8 @@ import { useUserStore } from '@/store/userUserStore';
 import BuyCoinAnimation from '../coinanimation/BuyCoinAnimation';
 import useAnimationStore from '@/store/useAnimationStore';
 import AlertBox from '../alertBox/AlertBox';
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTrigger } from '../ui/drawer';
+import { Button } from '../ui/button';
 
 interface MenuItemProps {
   iconSrc: string;
@@ -55,6 +57,8 @@ const MenuGrid = () => {
 
   const [adViews, setAdViews] = useState<number>(20); // Default value of 20
   const [adsWatched, setAdsWatched] = useState<number>(0); // Track the number of ads watched
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false); // Drawer state
+  const [drawerMessage, setDrawerMessage] = useState<string>(''); // Drawer message
 
   // Function to get current local date in 'YYYY-MM-DD' format using Luxon
   const getCurrentDate = () => {
@@ -124,13 +128,17 @@ const MenuGrid = () => {
       toast.error("You have reached the daily limit of 20 ads.");
     }
   };
+  const handleComingSoon = (message: string) => {
+    setDrawerMessage(message); // Set drawer message
+    setIsDrawerOpen(true); // Open the drawer
+  };
 
   const menuItems = [
     { iconSrc: '/icons/daily-gift.png', label: 'Daily earn', onClick: handleAdClick },
     { iconSrc: '/icons/daily-ciper.png', label: 'Daily Task', route: '/earn', onClick: () => router.push(`/earn?${id}`) },
-    { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo' },
+    { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo', onClick: () => handleComingSoon('Coming Soon!')   },
     { iconSrc: '/icons/Settings.png', label: 'Settings', route: '/settings', onClick: () => router.push(`/settings?${id}`) },
-    { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys' },
+    { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys', onClick: () => handleComingSoon('Coming Soon!')  },
   ];
 
   return (
@@ -142,6 +150,59 @@ const MenuGrid = () => {
       {menuItems.map((item, index) => (
         <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={item.label === 'Daily earn' ? adViews : undefined} />
       ))}
+       <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+          
+          <DrawerContent className="bg-[#14161a] border-none ">
+            <DrawerHeader 
+              onClick={() => setIsDrawerOpen(false)}
+              className="flex text-white rounded-full justify-end  mr-0  w-full  items-center"
+            >
+              <div className="p-3 px-5 bg-[#252423] rounded-full">x</div>
+            </DrawerHeader>
+            <div className="text-center">
+              {/* <Image
+                src={selectedSkin.image}
+                alt={selectedSkin.name}
+                width={100}
+                height={100}
+                className="mx-auto mb-4"
+              /> */}
+              <h2 className="text-2xl font-medium text-white mb-2">
+                {/* {selectedSkin.name} */}
+                Comming Soon
+              </h2>
+              {/* <p className="text-white">
+                {selectedSkin.league !== levelNames[levelIndex] && (
+                  <span className="text-custom-orange">
+                    You need to be at {selectedSkin.league}
+                  </span>
+                )}
+              </p>
+              <p className="text-white">
+                <br />
+                <span className="text-white  flex max-w-fit mx-auto gap-2">
+                  <Image src={dollarCoin} alt="coin" width={20} height={20} />
+                  +{selectedSkin.cost}
+                </span>
+              </p>
+                  */}
+            </div>
+
+            <DrawerFooter>
+              <Button
+                // disabled={
+                //   points < selectedSkin.cost ||
+                //   // selectedSkin.league !== levelNames[levelIndex]
+                //   !canBuySkin(selectedSkin, userInfo, levelNames)
+                // }
+                // onClick={() => handleBuySkin(userId!, selectedSkin)}
+                className="w-full py-8 bg-custom-orange text-zinc-700 text-xl rounded-lg hover:bg-yellow-700"
+              >
+                { "Go head"}
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+      </Drawer>
     </div>
   );
 };
