@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     }
 
     const cacheKey = 'allCards';
-    let allCards;
+    let allCards; 
 
     // Attempt to retrieve from Redis
     const cachedData = await redis.get(cacheKey);
