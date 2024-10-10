@@ -32,7 +32,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Insufficient points to complete the transaction' }, { status: 400 });
     }
 
+    console.log("🚀 ~ POST ~ purchaseCard:", purchaseCard)
     if (purchaseCard) {
+      console.log("🚀 ~ POST ~ purchaseCard:", purchaseCard)
       // Update the user's card and points
       const updatedUser = await prisma.$transaction([
         prisma.user.update({
@@ -85,6 +87,8 @@ export async function POST(request: Request) {
           },
         }),
       ]);
+
+      console.log("🚀 ~ POST ~ updatedUser:", updatedUser)
 
       return NextResponse.json({
         success: true,
