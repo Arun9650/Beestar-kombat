@@ -41,19 +41,12 @@ export async function GET(request: NextRequest) {
       await redis.set(userCardsCacheKey, JSON.stringify(userCards), 'EX', 86400); // Cache for 1 day
     }
 
-    // Update user information
-    const user = await prisma.user.update({
-      where: { chatId: userId },
-      data: {
-        lastLogin: new Date(),
-      },
-    });
-
+    
     // Combine allCards and userCards
     const userCardsMap = new Map(userCards.map((card:any) => [card.cardId, card]));
     const combinedCards = allCards.map((card: any) => userCardsMap.get(card.id) || card);
 
-    return NextResponse.json({ status: 'success', combinedCards, user }, { status: 200 });
+    return NextResponse.json({ status: 'success', combinedCards }, { status: 200 });
   } catch (error) {
     console.error('Error fetching cards:', error);
     return NextResponse.json({ status: 'error', message: 'Could not fetch cards' }, { status: 500 });

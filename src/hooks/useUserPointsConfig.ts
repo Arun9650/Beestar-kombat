@@ -52,13 +52,21 @@ const useUserPointsConfig = () => {
 
       async function update() {
         // console.log(user);
-        const config = await getUserConfig(user || String(id));
-        
-      
-        if(isAccountCreated){
-          await fixAuthPointsIfGettingUnnecessary(user || String(id));
-            setIsAccountCreated(false);
+        let config = await getUserConfig(user || String(id));
+
+
+        let retries = 0;
+        const maxRetries = 3;
+    
+        // Retry mechanism if user is null
+        while (!config && retries < maxRetries) {
+          console.log(`Retrying to fetch user info... Attempt ${retries + 1}`);
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
+          config = await getUserConfig(`${user}`);
+          retries++;
         }
+
+        
         
         const currentState = config?.user;
         if (config?.userDetails && config ) {
