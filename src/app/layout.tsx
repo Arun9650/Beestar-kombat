@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import LoadingScreenProvider from '@/providers/LoadingScreenProvider';
-import '../../mocke'
+
 
 import AuthProviderWithSuspense from '@/providers/AuthProvider';
 import toast, { Toaster } from 'react-hot-toast';
