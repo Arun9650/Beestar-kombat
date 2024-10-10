@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Adjust the path to your Prisma setup
+import prisma from '@/lib/prisma';
+import redis from '@/lib/redis';
 import { Team } from '@/components/tasks/TaskList';
 
 export async function POST(request: Request) {
@@ -21,28 +22,23 @@ export async function POST(request: Request) {
     }
 
     // Calculate new values
-    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2.5);
+    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 1.1);
     const increasedBasePPH = Math.ceil(selectedTeam.basePPH * 1.05);
     const remainingPoints = points - selectedTeam.baseCost;
-    console.log('🚀 ~ POST ~ selectedTeam.baseCost:', selectedTeam.baseCost);
-    console.log('🚀 ~ POST ~ user.points:', user.points);
 
-    // Ensure the user's points do not go below zero
     if (remainingPoints < 0) {
-      return NextResponse.json({ success: false, message: 'Insufficient points to complete the transaction' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Insufficient points' }, { status: 400 });
     }
 
-    console.log("🚀 ~ POST ~ purchaseCard:", purchaseCard)
+    let transactionResults;
     if (purchaseCard) {
-      console.log("🚀 ~ POST ~ purchaseCard:", purchaseCard)
-      // Update the user's card and points
-      const updatedUser = await prisma.$transaction([
+      // Update existing user card and user points
+      transactionResults = await prisma.$transaction([
         prisma.user.update({
           where: { chatId: id },
           data: {
             profitPerHour: { increment: selectedTeam.basePPH },
             points: remainingPoints,
-            lastProfitDate: Math.floor(Date.now() / 1000),
             lastLogin: new Date(),
           },
         }),
@@ -55,16 +51,9 @@ export async function POST(request: Request) {
           },
         }),
       ]);
-
-      return NextResponse.json({
-        success: true,
-        message: 'Card updated successfully',
-        user: updatedUser[0],
-        userCard: updatedUser[1],
-      });
     } else {
-      // Create a new card and update the user
-      const updatedUser = await prisma.$transaction([
+      // Create a new user card and update user points
+      transactionResults = await prisma.$transaction([
         prisma.userCard.create({
           data: {
             cardId: selectedTeam.id,
@@ -82,23 +71,24 @@ export async function POST(request: Request) {
           data: {
             profitPerHour: { increment: selectedTeam.basePPH },
             points: remainingPoints,
-            lastProfitDate: Math.floor(Date.now() / 1000),
             lastLogin: new Date(),
           },
         }),
       ]);
-
-      console.log("🚀 ~ POST ~ updatedUser:", updatedUser)
-
-      return NextResponse.json({
-        success: true,
-        message: 'Card created and user updated successfully',
-        user: updatedUser[1],
-        userCard: updatedUser[0],
-      });
     }
-  } catch (e) {
-    console.error('Error updating profit per hour:', e);
+
+    // Invalidate relevant Redis caches
+    await redis.del(`userCards:${id}`); // Invalidate user's card cache
+    await redis.del('allCards'); // Invalidate the allCards cache
+
+    return NextResponse.json({
+      success: true,
+      message: purchaseCard ? 'Card updated successfully' : 'Card created and user updated successfully',
+      user: transactionResults[0],
+      userCard: transactionResults[1],
+    });
+  } catch (error) {
+    console.error('Error updating profit per hour:', error);
     return NextResponse.json(
       { success: false, message: 'An error occurred while updating the profit per hour' },
       { status: 500 }
