@@ -77,9 +77,17 @@ export async function POST(request: Request) {
       ]);
     }
 
-    // Invalidate relevant Redis caches
-    await redis.del(`userCards:${id}`); // Invalidate user's card cache
-    await redis.del('allCards'); // Invalidate the allCards cache
+    // Check if the userCards key exists
+const userCardsKey = `userCards:${id}`;
+const userCardsExists = await redis.exists(userCardsKey);
+
+if (userCardsExists) {
+  // Invalidate relevant Redis caches
+  await redis.del(userCardsKey); // Invalidate user's card cache
+}
+
+await redis.del('allCards'); // Invalidate the allCards cache
+
 
     return NextResponse.json({
       success: true,
