@@ -122,14 +122,16 @@ const {setPurchaseCompleteAnimation} = useAnimationStore();
       selectedTeam,
       points: points,
     });
+    console.log("🚀 ~ handleCardPurchase ~ result:", result)
 
     if (!result.data.success) {
       throw new Error(result.data.message || "something went wrong");
     }
 
-    setPoints(result.data.user.points);
-    window.localStorage.setItem("points", result.data.user.points.toString());
-    setPPH(result?.data.user.profitPerHour);
+    
+      setPoints(result.data.user.points );
+      window.localStorage.setItem("points", result.data.user.points.toString() );
+      setPPH(result?.data.user.profitPerHour);
 
     return result.data;
   };
@@ -147,6 +149,7 @@ const {setPurchaseCompleteAnimation} = useAnimationStore();
       { id: user!, selectedTeam: selectedTeam! },
       {
         onError: (error) => {
+          console.log("🚀 ~ TaskList ~ error:", error)
           setButtonLoading(false);
           toast.dismiss();
           setIsDrawerOpen(false);

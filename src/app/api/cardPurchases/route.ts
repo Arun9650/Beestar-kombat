@@ -34,14 +34,6 @@ export async function POST(request: Request) {
     if (purchaseCard) {
       // Update existing user card and user points
       transactionResults = await prisma.$transaction([
-        prisma.user.update({
-          where: { chatId: id },
-          data: {
-            profitPerHour: { increment: selectedTeam.basePPH },
-            points: remainingPoints,
-            lastLogin: new Date(),
-          },
-        }),
         prisma.userCard.update({
           where: { id: selectedTeam.id },
           data: {
@@ -50,6 +42,15 @@ export async function POST(request: Request) {
             baseCost: increasedBaseCost,
           },
         }),
+        prisma.user.update({
+          where: { chatId: id },
+          data: {
+            profitPerHour: { increment: selectedTeam.basePPH },
+            points: remainingPoints,
+            lastLogin: new Date(),
+          },
+        }),
+       
       ]);
     } else {
       // Create a new user card and update user points
@@ -76,7 +77,8 @@ export async function POST(request: Request) {
         }),
       ]);
     }
-
+    
+    console.log("🚀 ~ POST ~ transactionResults:", transactionResults)
     // Check if the userCards key exists
 const userCardsKey = `userCards:${id}`;
 const userCardsExists = await redis.exists(userCardsKey);
@@ -84,16 +86,16 @@ const userCardsExists = await redis.exists(userCardsKey);
 if (userCardsExists) {
   // Invalidate relevant Redis caches
   await redis.del(userCardsKey); // Invalidate user's card cache
+  await redis.del('allCards'); // Invalidate the allCards cache
 }
 
-await redis.del('allCards'); // Invalidate the allCards cache
 
 
     return NextResponse.json({
       success: true,
       message: purchaseCard ? 'Card updated successfully' : 'Card created and user updated successfully',
-      user: transactionResults[0],
-      userCard: transactionResults[1],
+      user: transactionResults[1],
+      userCard: transactionResults[0],
     });
   } catch (error) {
     console.error('Error updating profit per hour:', error);
