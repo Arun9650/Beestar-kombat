@@ -2,7 +2,7 @@
 
 import { Team } from "@/components/tasks/TaskList";
 import prisma from "@/lib/prisma";
-
+import redis from '@/lib/redis'
 export async function getUserConfig(id: string) {
 
   const user = await prisma.user.findUnique({ where: { chatId: id } });
@@ -278,6 +278,16 @@ export const DeleteUser = async (userId:string) => {
     await prisma.youTubeCompletion.deleteMany({
       where : {userId:userId}
     })
+
+      // Invalidate relevant Redis caches
+      const userCardsKey = `userCards:${userId}`;
+      const userCardsExists = await redis.exists(userCardsKey);
+  
+      if (userCardsExists) {
+        await redis.del(userCardsKey); // Invalidate user's card cache
+      }
+  
+      await redis.del('allCards'); // I
 
      await prisma.user.delete({
       where : {chatId:userId}
