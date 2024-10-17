@@ -7,8 +7,5 @@ export const useFetchTasks = (userId: string) => {
   return useQuery({
     queryKey: ['tasks'],
     queryFn: async () => TaskToShow(userId),
-  
-    enabled: !!userId, // Only run the query if userId is provided
-
 });
 };
