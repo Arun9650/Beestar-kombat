@@ -28,6 +28,7 @@ type Task = {
 
 const TaskList: React.FC<Props> = ({ userId }) => {
   const { data: taskList, isLoading } = useFetchTasks(userId ?? "");
+  console.log("🚀 ~ taskList:", taskList)
   const TaskMutation = useTasksMutation();
   const { addPoints } = usePointsStore();
   const { setPurchaseCompleteAnimation } = useAnimationStore();
@@ -150,7 +151,7 @@ const TaskList: React.FC<Props> = ({ userId }) => {
       ) : (
         taskList &&
         taskList.length > 0 &&
-        taskList.map((task: Task, index) => (
+        taskList.map((task: Task, index:number) => (
           <div key={index} className="mt-2  flex items-center justify-between w-full">
             <div className="flex items-center">
               <Image
@@ -162,7 +163,7 @@ const TaskList: React.FC<Props> = ({ userId }) => {
               />
               <Link href={task.link} target="_blank">
                 <div className="flex flex-col justify-between py-1">
-                  <p className="text-[#B7B5B5] text-[0.5rem] text-start">5000 Points</p>
+                  <p className="text-[#B7B5B5] text-[0.5rem] text-start">{task.points} Points</p>
                   <p className="font-normal text-start text-sm">{task.name}</p>
                   <p className="text-yellow-400 text-[0.5rem] flex items-center justify-start gap-1">
                     Get reward
