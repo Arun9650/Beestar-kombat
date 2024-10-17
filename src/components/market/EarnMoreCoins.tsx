@@ -37,7 +37,7 @@ const EarnMoreCoins = () => {
 
   useEffect(() => {
     const userId = window.localStorage.getItem("authToken");
-    setUserId(userId || "");
+    setUserId(userId || id || '');
   }, []);
 
   return (
