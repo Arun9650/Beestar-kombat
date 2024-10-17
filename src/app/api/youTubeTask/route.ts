@@ -16,11 +16,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Redis cache key for all tasks
-    const cacheKey = 'allTasks';
+    const cacheKey = 'youtubetask';
     let allTasks;
 
     // Try to get tasks from Redis
     const cachedTasks = await redis.get(cacheKey);
+    console.log("🚀 ~ GET ~ cachedTasks:", cachedTasks)
     if (cachedTasks) {
       console.log('Fetching tasks from Redis cache');
       allTasks = JSON.parse(cachedTasks);
