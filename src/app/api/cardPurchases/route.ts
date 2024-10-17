@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     // Calculate new values
-    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 1.1);
+    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2);
     const increasedBasePPH = Math.ceil(selectedTeam.basePPH * 1.05);
     const remainingPoints = points - selectedTeam.baseCost;
 
