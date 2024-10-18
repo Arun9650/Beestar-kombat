@@ -49,8 +49,8 @@ const EarnMoreCoins = () => {
         leftIcon="/newImages/bee.png"
         rightIcon="/newImages/bee-right.png"
       />
-      <YouTubeTasks userId={userId!}  />
       <DailyRewards userId={userId!} />
+      <YouTubeTasks userId={userId!}  />
       <TaskList userId={userId!}  />
     </>
   );
