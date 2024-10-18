@@ -7,22 +7,26 @@ export async function POST(request: Request) {
   try {
     const { id, selectedTeam, points }: { id: string; selectedTeam: Team; points: number } = await request.json();
 
-    if (!id || !selectedTeam) {
+    if (!id || !selectedTeam )  {
       return NextResponse.json({ success: false, message: 'Invalid request data' }, { status: 400 });
     }
 
     // Fetch user and their purchased card in parallel
-    const [user, purchaseCard] = await Promise.all([
+    const [user, purchaseCard, cardPrice] = await Promise.all([
       prisma.user.findUnique({ where: { chatId: id } }),
       prisma.userCard.findUnique({ where: { id: selectedTeam.id } }),
+      prisma.cardPrice.findMany({})
     ]);
 
     if (!user) {
       return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
     }
 
+    if(!cardPrice) {
+      return NextResponse.json({ success: false, message: 'Card price not found' }, { status: 404 });
+    }
     // Calculate new values
-    const increasedBaseCost = Math.floor(selectedTeam.baseCost * 2);
+    const increasedBaseCost = Math.floor(selectedTeam.baseCost * cardPrice[0].price);
     const increasedBasePPH = Math.ceil(selectedTeam.basePPH * 1.05);
     const remainingPoints = points - selectedTeam.baseCost;
 

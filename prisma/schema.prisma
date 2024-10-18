@@ -265,3 +265,9 @@ model UserSkin {
   user   User   @relation(fields: [userId], references: [chatId])
   skin   Skins  @relation(fields: [skinId], references: [id])
 }
+
+
+model CardPrice {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  price     Float  @default(2)
+}
