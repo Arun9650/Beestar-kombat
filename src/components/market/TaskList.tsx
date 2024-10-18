@@ -37,6 +37,20 @@ const TaskList: React.FC<Props> = ({ userId }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);  // To store selected task
   const [hasJoined, setHasJoined] = useState(false);  // Track if user clicked Join
 
+  const categoryOrder = React.useMemo(() => ["Youtube", "Telegram", "X", "Facebook", "Instagram", "Other"], []);
+
+   // Sort the tasks based on the category order
+   const sortedTasks = React.useMemo(() => {
+    if (!taskList) return [];
+    return [...taskList].sort((a, b) => {
+      const indexA = categoryOrder.indexOf(a.category);
+      const indexB = categoryOrder.indexOf(b.category);
+      return indexA - indexB;
+    });
+  }, [taskList, categoryOrder]);
+
+
+
   // Retrieve 'hasJoined' state from localStorage for the selected task
   useEffect(() => {
     if (selectedTask) {
@@ -149,9 +163,9 @@ const TaskList: React.FC<Props> = ({ userId }) => {
       {isLoading ? (
         <Skeleton className="w-full h-20" />
       ) : (
-        taskList &&
-        taskList.length > 0 &&
-        taskList.map((task: Task, index:number) => (
+        sortedTasks &&
+        sortedTasks.length > 0 &&
+        sortedTasks.map((task: Task, index:number) => (
           <div key={index} className="mt-2  flex items-center justify-between w-full">
             <div className="flex items-center">
               <Image
