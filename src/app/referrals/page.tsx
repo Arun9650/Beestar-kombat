@@ -5,11 +5,9 @@ import Copy from "../../../public/icons/Copy";
 import { dollarCoin, Gift } from "../../../public/newImages";
 import Image from "next/image";``
 import React, { useEffect, useState } from "react";
-import { TelegramShareButton } from "react-share";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
-import { useQuery } from "@tanstack/react-query";
 import useFetchUserReferred from "@/hooks/query/useFetchUserReferred";
 import SectionBanner from "@/components/sectionBanner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -144,14 +142,21 @@ const ReferralPage = () => {
             ) : (
             <>
             <div>
-              total referrals: {data?.length}
+              Total Referrals: {data?.length}
             </div>
              { data?.map((item: any, index: number) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between p-4 border rounded-2xl  w-full"
                   >
+                    <div>
+
                     <p className="truncate  w-40 "><span className="text-gray-400">#{index +1}</span> {item.name}</p>
+                  <p className="ml-5 gap-3 flex items-center">
+                  {item.league}
+                  <span className="flex items-center"> <Image src={dollarCoin} width={20} height={20} alt="coin" />{item.profitPerHour} <span className="text-gray-400 text-xs"> {"  "}/hour </span> </span>
+                  </p>
+                    </div>
                   <p className="flex items-center gap-3">
                     <Image src={dollarCoin} width={20} height={20} alt="coin" />
                     {formatNumber(item.points)}
