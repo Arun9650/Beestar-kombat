@@ -26,7 +26,7 @@ type Task = {
 };
 
 const YouTubeTasks: React.FC<Props> = ({ userId }) => {
-  const { data: YoutubeTask, isLoading } = useFetchYoutubeTasks(userId ?? "");
+  const { data: YoutubeTask, isLoading } = useFetchYoutubeTasks(userId);
   const YouTubeMutation = useYouTubeMutation();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null); // Store the selected task
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Drawer open state
