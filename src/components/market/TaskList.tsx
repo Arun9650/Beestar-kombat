@@ -13,7 +13,7 @@ import axios from "axios";
 import { DateTime } from "luxon";
 
 interface Props {
-  userId: string | null;
+  userId: string;
 }
 
 type Task = {
@@ -27,7 +27,7 @@ type Task = {
 };
 
 const TaskList: React.FC<Props> = ({ userId }) => {
-  const { data: taskList, isLoading } = useFetchTasks(userId ?? "");
+  const { data: taskList, isLoading } = useFetchTasks(userId);
   console.log("🚀 ~ taskList:", taskList)
   const TaskMutation = useTasksMutation();
   const { addPoints } = usePointsStore();

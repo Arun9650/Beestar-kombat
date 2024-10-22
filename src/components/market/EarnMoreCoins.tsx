@@ -15,8 +15,8 @@ const EarnMoreCoins = () => {
   const { increaseTapsLeft,currentTapsLeft } = usePointsStore();
   const { multiClickLevel } = useBoostersStore();
   const search = useSearchParams();
-  const id = search.get("id");
-  const [userId, setUserId] = useState<string>();
+  const id:string = search.get("id") ?? '';
+  const [userId, setUserId] = useState<string>(id);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -51,7 +51,7 @@ const EarnMoreCoins = () => {
       />
       <DailyRewards userId={userId!} />
       <YouTubeTasks userId={userId!}  />
-      <TaskList userId={userId!}  />
+      <TaskList userId={userId}  />
     </>
   );
 };
