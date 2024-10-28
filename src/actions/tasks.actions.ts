@@ -76,18 +76,22 @@ export async function completeTask({
 
 
 export async function TaskToShow(userId: string){
+  console.log("🚀 ~ TaskToShow ~ userId:", userId)
   try {
       // Fetch all tasks
       const allTasks = await prisma.tasks.findMany();
+      console.log("🚀 ~ TaskToShow ~ allTasks:", allTasks)
 
       // Fetch user's tasks
       const userTasks = await prisma.tasksCompletion.findMany({
         where: { userId },
-        include: { task: true },
+        // include: { task: true },
       });
+      console.log("🚀 ~ TaskToShow ~ userTasks:", userTasks)
   
       // Create a map of user tasks for quick lookup
       const userTasksMap = new Map(userTasks.map(userTask => [userTask.taskId, userTask]));
+      console.log("🚀 ~ TaskToShow ~ userTasksMap:", userTasksMap)
   
       // Combine tasks and add a property to indicate if it belongs to the user
     const combinedTasks = allTasks.map(task => {
