@@ -17,6 +17,8 @@ const TopNavBar = () => {
 
 
   const [isUserPremium, setIsUserPremium] = useState<boolean | undefined>(false);
+  const [prevLevelIndex, setPrevLevelIndex] = useState<number | null>(null); 
+
 
   const pathname = usePathname();
 
@@ -148,6 +150,7 @@ const TopNavBar = () => {
       // console.log(points);
       if (points >= nextLevelMin && leagueIndex < levelNames.length - 1) {
         // console.log("running...");
+        setPrevLevelIndex(levelIndex);
         setLevelIndex(leagueIndex + 1);
         const res = await updateLevelInDB(levelNames[leagueIndex + 1]);
         // console.log("🚀 ~ update ~ res:", res);
@@ -169,6 +172,12 @@ const TopNavBar = () => {
     retryUpdate();
   }, [points]);
 
+  useEffect(() => {
+    if (prevLevelIndex !== null && levelIndex > prevLevelIndex) {
+      alert(`🎉 Congratulations! You unlocked the ${levelNames[levelIndex]} level!`);
+    }
+  }, [levelIndex, prevLevelIndex, levelNames]);
+  
   const route = useRouter();
 
   const search = useSearchParams();
@@ -181,8 +190,7 @@ const TopNavBar = () => {
   };
 
   const leagueIndex = levelNames.findIndex((level) => level === user?.league);
-
-
+ 
 
   useEffect(() => {
     function initTg() {
