@@ -11,6 +11,7 @@ import { usePointsStore } from "@/store/PointsStore";
 import useAnimationStore from "@/store/useAnimationStore";
 import axios from "axios";
 import { DateTime } from "luxon";
+import { useTaskStore } from "@/store/useTaskStore";
 
 interface Props {
   userId: string;
@@ -39,10 +40,11 @@ const TaskList: React.FC<Props> = ({ userId }) => {
 
   const categoryOrder = React.useMemo(() => ["Youtube", "Telegram", "X", "Facebook", "Instagram", "Other"], []);
 
+  const { setIsNewTaskAdded } = useTaskStore();
    // Sort the tasks based on the category order
    const sortedTasks = React.useMemo(() => {
     if (!taskList) return [];
-    return [...taskList].sort((a, b) => {
+    return [...taskList.tasks].sort((a, b) => {
       const indexA = categoryOrder.indexOf(a.category);
       const indexB = categoryOrder.indexOf(b.category);
       return indexA - indexB;
@@ -157,6 +159,13 @@ const TaskList: React.FC<Props> = ({ userId }) => {
     }
     return false;
   };
+
+  useEffect(() => {
+    console.log("🚀 ~ taskList:", taskList)
+    if(taskList?.isNewTask){
+      setIsNewTaskAdded(false);
+    }
+  },[taskList?.isNewTask, setIsNewTaskAdded, taskList])
 
   return (
     <div>

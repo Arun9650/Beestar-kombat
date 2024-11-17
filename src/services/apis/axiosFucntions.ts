@@ -66,6 +66,10 @@ export async function fetchYouTubeTask(userId: string){
   const { data } = await axios.get(`/api/youTubeTask?userId=${userId}`);
   return data;
 }
+export async function fetchTask(userId: string){
+  const { data } = await axios.get(`/api/task?userId=${userId}`);
+  return data;
+}
 
 export async function fetchAllCards(userId: string){
   const { data } = await axios.get(`/api/allCards?userId=${userId}`);
