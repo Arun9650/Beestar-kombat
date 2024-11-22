@@ -15,45 +15,52 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ status: 'error', message: 'Missing userId' }, { status: 400 });
     }
 
-    // Redis cache key for all tasks
+    // Redis cache keys
     const cacheKey = 'youtubetask';
-    let allTasks;
+    const previousTasksCacheKey = 'previous_youtubetask';
 
-    // Try to get tasks from Redis
+    // Retrieve cached tasks or fetch from the database
     const cachedTasks = await redis.get(cacheKey);
-    console.log("🚀 ~ GET ~ cachedTasks:", cachedTasks)
-    if (cachedTasks) {
-      console.log('Fetching tasks from Redis cache');
-      allTasks = JSON.parse(cachedTasks);
-    } else {
-      console.log('Fetching tasks from the database');
-      // Fetch all tasks from the database if not cached
-      allTasks = await prisma.youTube.findMany();
+    const allTasks = cachedTasks
+    ? JSON.parse(cachedTasks)
+    : await prisma.youTube.findMany().then(async (tasks) => {
+      await redis.set(cacheKey, JSON.stringify(tasks), 'EX', 36); // Cache for 1 hour
+      return tasks;
+    });
+    
+    console.log("🚀 ~ GET ~ allTasks:", allTasks)
 
-      // Cache the result in Redis for future requests (e.g., 1 hour)
-      await redis.set(cacheKey, JSON.stringify(allTasks), 'EX', 3600);
+    // Retrieve previous tasks to check for new entries
+    const previousTasks = JSON.parse((await redis.get(previousTasksCacheKey)) || '[]');
+    const previousTaskIds = new Set(previousTasks.map((task: any) => task.id));
+
+    const isNewTaskAdded = allTasks.some((task: any) => !previousTaskIds.has(task.id));
+    console.log("🚀 ~ GET ~ isNewTaskAdded:", isNewTaskAdded)
+
+    // Update previous tasks cache if there are new tasks
+    if (isNewTaskAdded) {
+      await redis.set(previousTasksCacheKey, JSON.stringify(allTasks), 'EX', 36);
     }
 
-    // Fetch user's tasks from the database
+    // Fetch user's tasks
     const userTasks = await prisma.youTubeCompletion.findMany({
       where: { userId },
       include: { task: true },
     });
 
-    // Create a map of user tasks for quick lookup
-    const userTasksMap = new Map(userTasks.map(userTask => [userTask.taskId, userTask]));
+    const userTaskMap = new Map(userTasks.map((userTask) => [userTask.taskId, userTask]));
 
-    // Combine tasks and add a property to indicate if it belongs to the user
-    const combinedTasks = allTasks.map((task:any) => {
-      const userTask = userTasksMap.get(task.id);
-      return {
-        ...task,
-        isUserTask: !!userTask, // Add isUserTask property
-        userTaskDetails: userTask ? userTask : null // Optionally add user task details
-      };
-    });
+    // Combine tasks with user task details
+    const combinedTasks = allTasks.map((task: any) => ({
+      ...task,
+      isUserTask: userTaskMap.has(task.id),
+      userTaskDetails: userTaskMap.get(task.id) || null,
+    }));
 
-    return NextResponse.json({ status: 'success', tasks: combinedTasks }, { status: 200 });
+    return NextResponse.json(
+      { status: 'success', tasks: combinedTasks, isNewTaskAdded },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error fetching tasks:', error);
     return NextResponse.json({ status: 'error', message: 'Could not fetch tasks' }, { status: 500 });

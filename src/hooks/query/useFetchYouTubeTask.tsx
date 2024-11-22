@@ -15,6 +15,7 @@ type Task = {
 interface FetchTasksResponse {
   status: 'success' | 'error';
   tasks: Task[];
+  isNewTaskAdded: boolean;
 }
 
 export const useFetchYoutubeTasks = (userId: string) => {

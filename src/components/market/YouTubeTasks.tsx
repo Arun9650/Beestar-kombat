@@ -6,11 +6,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from "@/components/ui/drawer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { DateTime } from "luxon";
 import { usePointsStore } from "@/store/PointsStore";
 import useAnimationStore from "@/store/useAnimationStore";
+import { useTaskStore } from "@/store/useTaskStore";
 
 interface Props {
   userId: string;
@@ -27,15 +27,16 @@ type Task = {
 
 const YouTubeTasks: React.FC<Props> = ({ userId }) => {
   const { data: YoutubeTask, isLoading } = useFetchYoutubeTasks(userId);
+  console.log("🚀 ~ YoutubeTask:", YoutubeTask)
   const YouTubeMutation = useYouTubeMutation();
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null); // Store the selected task
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Drawer open state
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
   const [hasJoined, setHasJoined] = useState(false); // Track whether user has clicked Join
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const { addPoints } = usePointsStore();
     const { setPurchaseCompleteAnimation } = useAnimationStore();
-
+    const { setIsNewTaskAdded } = useTaskStore();
   // Retrieve 'hasJoined' state from localStorage when task is selected
   useEffect(() => {
     if (selectedTask) {
@@ -102,6 +103,14 @@ const YouTubeTasks: React.FC<Props> = ({ userId }) => {
       setHasJoined(true); // Update state when user clicks Join
     }
   };
+
+
+  useEffect(() => {
+    console.log("🚀 ~ YoutubeTask:", YoutubeTask)
+    if(YoutubeTask?.isNewTaskAdded){
+      setIsNewTaskAdded(true);
+    }
+  },[YoutubeTask?.isNewTaskAdded, setIsNewTaskAdded])
 
   return (
     <div>

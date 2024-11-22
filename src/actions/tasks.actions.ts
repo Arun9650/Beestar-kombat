@@ -75,40 +75,44 @@ export async function completeTask({
 }
 
 
-export async function TaskToShow(userId: string){
-  console.log("🚀 ~ TaskToShow ~ userId:", userId)
+export async function TaskToShow(userId: string) {
+  console.log("🚀 ~ TaskToShow ~ userId:", userId);
   try {
-      // Fetch all tasks
-      const allTasks = await prisma.tasks.findMany();
-      console.log("🚀 ~ TaskToShow ~ allTasks:", allTasks)
+    // Fetch all tasks
+    const allTasks = await prisma.tasks.findMany();
+    console.log("🚀 ~ TaskToShow ~ allTasks:", allTasks);
 
-      // Fetch user's tasks
-      const userTasks = await prisma.tasksCompletion.findMany({
-        where: { userId },
-        // include: { task: true },
-      });
-      console.log("🚀 ~ TaskToShow ~ userTasks:", userTasks)
-  
-      // Create a map of user tasks for quick lookup
-      const userTasksMap = new Map(userTasks.map(userTask => [userTask.taskId, userTask]));
-      console.log("🚀 ~ TaskToShow ~ userTasksMap:", userTasksMap)
-  
-      // Combine tasks and add a property to indicate if it belongs to the user
-    const combinedTasks = allTasks.map(task => {
+    // Fetch user's tasks
+    const userTasks = await prisma.tasksCompletion.findMany({
+      where: { userId },
+    });
+    console.log("🚀 ~ TaskToShow ~ userTasks:", userTasks);
+
+    // Create a map of user tasks for quick lookup
+    const userTasksMap = new Map(userTasks.map((userTask) => [userTask.taskId, userTask]));
+    console.log("🚀 ~ TaskToShow ~ userTasksMap:", userTasksMap);
+
+    // Check if there are new tasks
+    const userTaskIds = new Set(userTasks.map((userTask) => userTask.taskId));
+    const isNewTask = allTasks.some((task) => !userTaskIds.has(task.id));
+
+    // Combine tasks and add a property to indicate if it belongs to the user
+    const combinedTasks = allTasks.map((task) => {
       const userTask = userTasksMap.get(task.id);
       return {
         ...task,
         isUserTask: !!userTask, // Add isUserTask property
-        userTaskDetails: userTask ? userTask : null // Optionally add user task details
+        userTaskDetails: userTask || null, // Optionally add user task details
       };
     });
 
-    return combinedTasks;
+    return { combinedTasks, isNewTask };
   } catch (error) {
-    console.error('Error fetching tasks:', error);
-    throw new Error('Could not fetch tasks');
+    console.error("Error fetching tasks:", error);
+    throw new Error("Could not fetch tasks");
   }
 }
+
 
 export async function checkCompletedTasks({
   userId,
