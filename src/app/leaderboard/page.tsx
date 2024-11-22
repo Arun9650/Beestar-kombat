@@ -9,10 +9,46 @@ import { useUserStore } from "@/store/userUserStore";
 import { beeAvatar } from "../../../public/newImages";
 import SectionBanner from "@/components/sectionBanner";
 
-const levelMinPoints = [0, 5000, 25000, 100000, 1000000, 2000000, 10000000, 50000000, 100000000, 1000000000];
-const levelNames = [
-  "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Epic", "Legendary", "Master", "GrandMaster", "Lord",
+const levelMinPoints = [
+  0,          // Bronze
+  5000,       // Silver
+  25000,      // Gold
+  100000,     // Platinum
+  1000000,    // Diamond
+  2000000,    // Epic
+  10000000,   // Legendary
+  50000000,   // Master
+  100000000,  // GrandMaster
+  1000000000, // Lord
+  5000000000, // Champion
+  10000000000,// Hero
+  50000000000,// Titan
+  100000000000,// Mythic
+  500000000000,// Immortal
+  1000000000000, // Eternal
+  5000000000000  // Celestial
 ];
+
+const levelNames = [
+  "Bronze",
+  "Silver",
+  "Gold",
+  "Platinum",
+  "Diamond",
+  "Epic",
+  "Legendary",
+  "Master",
+  "GrandMaster",
+  "Lord",
+  "Champion",
+  "Hero",
+  "Titan",
+  "Mythic",
+  "Immortal",
+  "Eternal",
+  "Celestial",
+];
+
 
 const Leaderboard = () => {
   const { user } = useUserStore();
