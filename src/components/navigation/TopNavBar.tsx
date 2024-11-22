@@ -10,12 +10,23 @@ import { getUserConfig } from "@/actions/user.actions";
 import { setTimeout } from "timers";
 import { Button } from "../ui/button";
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 
 const TopNavBar = () => {
 
 
 
+  const [isUserLevelUp, SetIsUserLevelUp] = useState(false);
   const [isUserPremium, setIsUserPremium] = useState<boolean | undefined>(false);
   const [prevLevelIndex, setPrevLevelIndex] = useState<number | null>(null); 
 
@@ -188,7 +199,7 @@ const TopNavBar = () => {
 
   useEffect(() => {
     if (prevLevelIndex !== null && levelIndex > prevLevelIndex) {
-      alert(`🎉 Congratulations! You unlocked the ${levelNames[levelIndex]} level!`);
+      SetIsUserLevelUp(true);
     }
   }, [levelIndex, prevLevelIndex, levelNames]);
   
@@ -227,6 +238,29 @@ const TopNavBar = () => {
 
   return (
     <div className="w-full">
+      {
+         <AlertDialog  open={isUserLevelUp} onOpenChange={SetIsUserLevelUp}>
+         <AlertDialogContent className="bg-white/90 max-w-80">
+           <AlertDialogHeader>
+             <AlertDialogTitle>🎉 Congratulations!</AlertDialogTitle>
+             <AlertDialogDescription>
+             You unlocked the {levelNames[levelIndex]} level!
+             </AlertDialogDescription>
+           </AlertDialogHeader>
+           <AlertDialogFooter className="flex flex-row  justify-end">
+             {/* <AlertDialogCancel className="bg-transparent">Cancel</AlertDialogCancel> */}
+             <Button
+             className="border w-fit"
+               onClick={() => {
+                SetIsUserLevelUp(false);
+               }}
+             >
+               Continue
+             </Button>
+           </AlertDialogFooter>
+         </AlertDialogContent>
+       </AlertDialog>
+      }
       <div className="flex justify-between p-2 bg-[#252423]  rounded-xl  mb-2 xs:m-2 ">
         <div className="flex gap-2 items-center  ">
           <Image
