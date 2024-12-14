@@ -157,10 +157,10 @@ const MenuGrid = () => {
   const handleRichAds = () => {
     if (typeof window !== 'undefined' && window.TelegramAdsController) {
       window.TelegramAdsController.triggerNativeNotification()
-        .then((result) => {
+        .then((result:any) => {
           // ad was clicked
         })
-        .catch((result) => {
+        .catch((result:any) => {
           // something went wrong or the advertisement was not found
           alert('Something went wrong or the advertisement was not found');
         });
