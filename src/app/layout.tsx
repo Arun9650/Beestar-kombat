@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import LoadingScreenProvider from '@/providers/LoadingScreenProvider';
-
+import '../../mocke'
 
 import AuthProviderWithSuspense from '@/providers/AuthProvider';
 import toast, { Toaster } from 'react-hot-toast';
@@ -36,7 +36,7 @@ export default function RootLayout({
 			<Script src="https://sad.adsgram.ai/js/sad.min.js"></Script>
 			<Script src="https://telegram.org/js/telegram-web-app.js?56"></Script>
 			<Script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></Script>
-			<Script src="https://richinfo.co/richpartners/telegram/js/rp-ob.js?pub_id=949633&widget_id=354730" async data-cfasync="false"></Script>
+			<Script src="https://richinfo.co/richpartners/telegram/js/rp-ob.js?pub_id=949633&widget_id=354734" async data-cfasync="false"></Script>
 
 			<body className={`${montserrat.className} min-h-screen h-screen`}>
 				{/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
