@@ -29,28 +29,15 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<Head>
-				<meta
-					name="viewport"
-					content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
-				/>
-				{/* Open Graph Meta Tags */}
-				<meta property="og:title" content="Beestar - Telegram Kombat" />
-				<meta
-					property="og:description"
-					content="Join the ultimate Telegram Kombat and be a part of Beestar!"
-				/>
-				<meta
-					property="og:image"
-					content="https://raw.githubusercontent.com/Arun9650/Beestar-kombat/main/public/newImages/BeeMain.png"
-				/>
-				<meta property="og:type" content="website" />
-			</Head>
 			<Script
 				async
 				src="https://telegram.org/js/telegram-widget.js?22"
 			></Script>
 			<Script src="https://sad.adsgram.ai/js/sad.min.js"></Script>
+			<Script src="https://telegram.org/js/telegram-web-app.js?56"></Script>
+			<Script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></Script>
+			<Script src="https://richinfo.co/richpartners/telegram/js/rp-ob.js?pub_id=949633&widget_id=354730" async data-cfasync="false"></Script>
+
 			<body className={`${montserrat.className} min-h-screen h-screen`}>
 				{/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
 				<AuthProviderWithSuspense>
