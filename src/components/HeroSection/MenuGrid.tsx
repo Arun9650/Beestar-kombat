@@ -1,4 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
+// Extend the Window interface to include TelegramAdsController
+declare global {
+  interface Window {
+    TelegramAdsController: any;
+  }
+}
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useAdsgram } from "@/hooks/useAdsgram";
@@ -54,7 +61,9 @@ const MenuGrid = () => {
   const search = useSearchParams();
 
 
-  window.TelegramAdsController = new TelegramAdsController(); 
+  if (typeof window !== 'undefined' && window.TelegramAdsController) {
+    window.TelegramAdsController = new window.TelegramAdsController();
+  }
   window.TelegramAdsController.initialize({ 
 
     pubId: "949633", 
