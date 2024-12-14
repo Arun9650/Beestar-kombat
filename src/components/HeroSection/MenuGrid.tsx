@@ -53,6 +53,18 @@ const MenuGrid = () => {
   const {setPurchaseCompleteAnimation} = useAnimationStore()
   const search = useSearchParams();
 
+
+  window.TelegramAdsController = new TelegramAdsController(); 
+  window.TelegramAdsController.initialize({ 
+
+    pubId: "949633", 
+   
+    appId: "1004", 
+   
+   });
+   
+
+
   const id = search.get("id") ?? user?.chatId;
 
   const [adViews, setAdViews] = useState<number>(20); // Default value of 20
@@ -133,12 +145,23 @@ const MenuGrid = () => {
     setIsDrawerOpen(true); // Open the drawer
   };
 
+  const handleRichAds = () => {
+    
+    window.TelegramAdsController.triggerNativeNotification().then((result) => {
+      // ad was clicked
+  }).catch((result) => {
+      // something went wrong or the advertisement was not found
+      alert('Something went wrong or the advertisement was not found');
+  })
+
+  }
+
   const menuItems = [
     { iconSrc: '/icons/daily-gift.png', label: 'Daily earn', onClick: handleAdClick },
     { iconSrc: '/icons/daily-ciper.png', label: 'Daily Task', route: '/earn', onClick: () => router.push(`/earn?${id}`) },
     { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo', onClick: () => handleComingSoon('Coming Soon!')   },
     { iconSrc: '/icons/Settings.png', label: 'Settings', route: '/settings', onClick: () => router.push(`/settings?${id}`) },
-    { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys', onClick: () => handleComingSoon('Coming Soon!')  },
+    { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys', onClick: () => handleRichAds()  },
   ];
 
   return (
