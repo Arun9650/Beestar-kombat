@@ -67,7 +67,7 @@ const MenuGrid = () => {
       
       pubId: "949633", 
       
-      appId: "1004", 
+      appId: "354604", 
       
     });
   }
