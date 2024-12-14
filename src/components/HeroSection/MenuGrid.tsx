@@ -63,14 +63,14 @@ const MenuGrid = () => {
 
   if (typeof window !== 'undefined' && window.TelegramAdsController) {
     window.TelegramAdsController = new window.TelegramAdsController();
+    window.TelegramAdsController.initialize({ 
+      
+      pubId: "949633", 
+      
+      appId: "1004", 
+      
+    });
   }
-  window.TelegramAdsController.initialize({ 
-
-    pubId: "949633", 
-   
-    appId: "1004", 
-   
-   });
    
 
 
@@ -155,15 +155,19 @@ const MenuGrid = () => {
   };
 
   const handleRichAds = () => {
-    
-    window.TelegramAdsController.triggerNativeNotification().then((result) => {
-      // ad was clicked
-  }).catch((result) => {
-      // something went wrong or the advertisement was not found
-      alert('Something went wrong or the advertisement was not found');
-  })
-
-  }
+    if (typeof window !== 'undefined' && window.TelegramAdsController) {
+      window.TelegramAdsController.triggerNativeNotification()
+        .then((result) => {
+          // ad was clicked
+        })
+        .catch((result) => {
+          // something went wrong or the advertisement was not found
+          alert('Something went wrong or the advertisement was not found');
+        });
+    } else {
+      console.log('Window or TelegramAdsController is not defined');
+    }
+  };
 
   const menuItems = [
     { iconSrc: '/icons/daily-gift.png', label: 'Daily earn', onClick: handleAdClick },
