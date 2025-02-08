@@ -178,32 +178,25 @@ const MenuGrid = () => {
   
   
   // New function to run ads for Daily combo
- const handleDailyCombo = () => {
-    console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
-    if (window.showGiga) {
-      window.showGiga()
-        .then(() => {
-          const reward = 5000; // adjust reward as needed
-          toast.success(`Daily combo reward claimed: ${reward} points`);
-          axios
-            .get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`)
-            .then((response) => {
-              toast.dismiss();
-              toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
-              addPoints(reward); // Add reward points
-            })
-            .catch((error) => {
-              toast.dismiss();
-              toast.error(error.response?.data?.message || 'Error claiming reward');
-            });
-        })
-        .catch((e) => {
-          toast.error('Error running daily combo ads');
-          console.error(e);
-        });
-    } else {
-      toast.error('window.showGiga is not defined');
-      console.error('window.showGiga is not defined');
+  const handleDailyCombo = async () => {
+    try {
+      console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
+      if (!window.showGiga) {
+        toast.error('window.showGiga is not defined');
+        console.error('window.showGiga is not defined');
+        return;
+      }
+      await window.showGiga();
+      const reward = 5000; // adjust reward as needed
+      toast.success(`Daily combo reward claimed: ${reward} points`);
+      const response = await axios.get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`);
+      toast.dismiss();
+      toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
+      addPoints(reward); // Add reward points
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error(error.response?.data?.message || 'Error running daily combo ads');
+      console.error(error);
     }
   };
 
