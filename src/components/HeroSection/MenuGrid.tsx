@@ -181,6 +181,7 @@ const MenuGrid = () => {
   // New function to run ads for Daily combo
   const handleDailyCombo = () => {
     if (typeof window !== 'undefined' && window.showGiga) {
+      console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
       window.showGiga()
         .then(() => {
           const reward = 5000; // adjust reward as needed
@@ -202,6 +203,7 @@ const MenuGrid = () => {
         });
     } else {
       console.log('window or showGiga is not defined');
+      toast.error('Ad service is currently unavailable. Please try again later.');
     }
   };
 
