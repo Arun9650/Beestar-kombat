@@ -4,7 +4,7 @@ import React from 'react'
 
 const Tonprovider = ({children}: { children: React.ReactNode }) => {
   return (
-    <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json">{children}</TonConnectUIProvider>
+    <TonConnectUIProvider manifestUrl="https://raw.githubusercontent.com/undefined-beep/Beestar-kombat/refs/heads/main/tonconnect-manifest.json">{children}</TonConnectUIProvider>
   )
 }
 
