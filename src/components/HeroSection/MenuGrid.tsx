@@ -180,7 +180,7 @@ const MenuGrid = () => {
   // New function to run ads for Daily combo
  const handleDailyCombo = () => {
     console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
-    if (window) {
+    if (window.showGiga) {
       window.showGiga()
         .then(() => {
           const reward = 5000; // adjust reward as needed
