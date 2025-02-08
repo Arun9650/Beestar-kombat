@@ -66,7 +66,6 @@ const MenuGrid = () => {
   const { user } = useUserStore();
   const {setPurchaseCompleteAnimation} = useAnimationStore()
   const search = useSearchParams();
-  const [isTelegramReady, setIsTelegramReady] = useState(false);
 
   if (typeof window !== 'undefined' && window.TelegramAdsController) {
     window.TelegramAdsController = new window.TelegramAdsController();
@@ -80,18 +79,7 @@ const MenuGrid = () => {
   }
    
 
-  useEffect(() => {
-    // Poll for Telegram API availability
-    const timer = setInterval(() => {
-      if (typeof window !== 'undefined' && window.showGiga) {
-        console.log('Telegram API is ready');
-        setIsTelegramReady(true);
-        clearInterval(timer);
-      }
-    }, 500);
 
-    return () => clearInterval(timer);
-  }, []);
 
 
   const id = search.get("id") ?? user?.chatId;
@@ -192,31 +180,32 @@ const MenuGrid = () => {
 
   
   // New function to run ads for Daily combo
-  const handleDailyCombo = () => {
-    if (isTelegramReady && window.showGiga) {
-      console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
+ const handleDailyCombo = () => {
+    console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
+    if (window.showGiga) {
       window.showGiga()
         .then(() => {
           const reward = 5000; // adjust reward as needed
           toast.success(`Daily combo reward claimed: ${reward} points`);
-          axios.get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`)
-          .then((response) => {
-            toast.dismiss();
-            toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
-            addPoints(reward); // Add reward points
-          })
-          .catch((error) => {
-            toast.dismiss();
-            toast.error(error.response?.data?.message || 'Error claiming reward');
-          });
+          axios
+            .get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`)
+            .then((response) => {
+              toast.dismiss();
+              toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
+              addPoints(reward); // Add reward points
+            })
+            .catch((error) => {
+              toast.dismiss();
+              toast.error(error.response?.data?.message || 'Error claiming reward');
+            });
         })
-        .catch(e => {
+        .catch((e) => {
           toast.error('Error running daily combo ads');
           console.error(e);
         });
     } else {
-      console.log('window or showGiga is not defined');
-      toast.error('Ad service is currently unavailable. Please try again later.');
+      toast.error('window.showGiga is not defined');
+      console.error('window.showGiga is not defined');
     }
   };
 
