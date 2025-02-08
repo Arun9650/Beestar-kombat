@@ -209,7 +209,7 @@ const MenuGrid = () => {
   const menuItems = [
     { iconSrc: '/icons/daily-gift.png', label: 'Daily earn', onClick: handleAdClick },
     { iconSrc: '/icons/daily-ciper.png', label: 'Daily Task', route: '/earn', onClick: () => router.push(`/earn?${id}`) },
-    { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo', onClick: () => handleDailyCombo   },
+    { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo', onClick: () => handleDailyCombo()   },
     { iconSrc: '/icons/Settings.png', label: 'Settings', route: '/settings', onClick: () => router.push(`/settings?${id}`) },
     { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys', onClick: () => handleRichAds()  },
   ];
