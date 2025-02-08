@@ -169,10 +169,40 @@ const MenuGrid = () => {
     }
   };
 
+
+  
+  // New function to run ads for Daily combo
+  const handleDailyCombo = () => {
+    if (typeof window !== 'undefined' && window.showGiga) {
+      window.showGiga()
+        .then(() => {
+          const reward = 5000; // adjust reward as needed
+          toast.success(`Daily combo reward claimed: ${reward} points`);
+          axios.get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`)
+          .then((response) => {
+            toast.dismiss();
+            toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
+            addPoints(reward); // Add reward points
+          })
+          .catch((error) => {
+            toast.dismiss();
+            toast.error(error.response?.data?.message || 'Error claiming reward');
+          });
+        })
+        .catch(e => {
+          toast.error('Error running daily combo ads');
+          console.error(e);
+        });
+    } else {
+      console.log('window or showGiga is not defined');
+    }
+  };
+
+
   const menuItems = [
     { iconSrc: '/icons/daily-gift.png', label: 'Daily earn', onClick: handleAdClick },
     { iconSrc: '/icons/daily-ciper.png', label: 'Daily Task', route: '/earn', onClick: () => router.push(`/earn?${id}`) },
-    { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo', onClick: () => handleComingSoon('Coming Soon!')   },
+    { iconSrc: '/icons/daily-combo.png', label: 'Daily combo', route: '/daily-combo', onClick: () => handleDailyCombo   },
     { iconSrc: '/icons/Settings.png', label: 'Settings', route: '/settings', onClick: () => router.push(`/settings?${id}`) },
     { iconSrc: '/icons/keys.png', label: 'Keys', route: '/keys', onClick: () => handleRichAds()  },
   ];
