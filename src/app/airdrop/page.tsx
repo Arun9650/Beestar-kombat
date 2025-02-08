@@ -145,7 +145,9 @@ const AirDrop = () => {
         rightIcon="/newImages/bee-right.png"
       />
       <CurrentPoints />
+      <div className="flex justify-center items-center w-full p-2">
       <TonConnectButton />
+      </div>
       <div className="flex flex-col gap-2 mt-3">
         {tasks.map((task, index) => (
           <TaskItem
