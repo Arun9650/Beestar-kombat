@@ -187,7 +187,7 @@ const MenuGrid = () => {
         return;
       }
       await window.showGiga();
-      const reward = 5000; // adjust reward as needed
+      const reward = 25000; // adjust reward as needed
       toast.success(`Daily combo reward claimed: ${reward} points`);
       const response = await axios.get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`);
       toast.dismiss();
