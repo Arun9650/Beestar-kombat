@@ -13,6 +13,7 @@ import Script from 'next/script';
 import ParentComponent from '@/components/preventZoomParent';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import Tonprovider from '@/providers/Tonprovider';
+import { CSPostHogProvider } from '@/providers/posthog';
 
 const montserrat = Poppins({
 	weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -31,6 +32,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+				
 			<Script
 				async
 				src="https://telegram.org/js/telegram-widget.js?22"
@@ -41,6 +43,7 @@ export default function RootLayout({
 			<Script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></Script>
 			<Script src="https://richinfo.co/richpartners/telegram/js/rp-ob.js?pub_id=949633&widget_id=354734" async data-cfasync="false"></Script>
 
+				<CSPostHogProvider>
 			<body className={`${montserrat.className} min-h-screen h-screen`}>
 				<AuthProviderWithSuspense>
 				<Tonprovider>
@@ -69,6 +72,7 @@ export default function RootLayout({
 					}}
 				/>
 			</body>
+				</CSPostHogProvider>
 		</html>
 	);
 }
