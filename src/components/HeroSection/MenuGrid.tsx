@@ -229,6 +229,7 @@ const MenuGrid = () => {
       toast.dismiss();
       toast.success(response.data.message || `Reward claimed successfully: ${reward} points`);
       addPoints(reward); // Add reward points
+      setPurchaseCompleteAnimation(true);
     } catch (error: any) {
       toast.dismiss();
       toast.error(error.response?.data?.message || 'Error running daily combo ads');
