@@ -49,11 +49,12 @@ const MenuItem: React.FC<MenuItemProps> = ({
         <Image src={iconSrc} alt={label} width={20} height={20} />
       </div>
       <span className="text-white text-[0.5rem] mt-2">{label}</span>
-      {label === 'Daily earn' && (
+      {(label === 'Daily earn' || label === 'Daily combo')  && (
         <div className='absolute -top-2 -right-2 rounded-full text-[0.6rem] w-6 h-6 bg-white bg-opacity-10 flex items-center justify-center'>
           {adViews}
         </div>
       )}
+
     </div>
   );
 };
@@ -86,6 +87,11 @@ const MenuGrid = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false); // Drawer state
   const [drawerMessage, setDrawerMessage] = useState<string>(''); // Drawer message
 
+  
+  // New state: Daily combo ad limit (1000 per day)
+  const [dailyComboViews, setDailyComboViews] = useState<number>(100);
+  const [dailyComboAdsWatched, setDailyComboAdsWatched] = useState<number>(0);
+
   // Function to get current local date in 'YYYY-MM-DD' format using Luxon
   const getCurrentDate = () => {
     return DateTime.local().toISODate(); // Returns YYYY-MM-DD in the user's local timezone
@@ -108,7 +114,35 @@ const MenuGrid = () => {
       setAdViews(Number(savedViews));
       setAdsWatched(Number(savedAdsWatched));
     }
+
+    const today = new Date().toISOString().slice(0, 10);
+    // Daily combo logic (limit 1000)
+    const comboSavedDate = localStorage.getItem('dailyComboViewDate');
+    const savedComboViews = localStorage.getItem('dailyComboViews');
+    const savedComboAdsWatched = localStorage.getItem('dailyComboAdsWatched');
+    if (comboSavedDate !== today) {
+      localStorage.setItem('dailyComboViewDate', today);
+      localStorage.setItem('dailyComboViews', '100');
+      setDailyComboViews(100);
+      setDailyComboAdsWatched(0);
+    } else if (savedComboViews) {
+      setDailyComboViews(Number(savedComboViews));
+      setDailyComboAdsWatched(Number(savedComboAdsWatched));
+    }
   }, []);
+
+
+
+  // Function to decrement Daily combo views
+  const decrementDailyComboViews = () => {
+    const newComboViews = dailyComboViews - 1;
+    setDailyComboViews(newComboViews);
+    localStorage.setItem('dailyComboViews', newComboViews.toString());
+    const newComboAdsWatched = dailyComboAdsWatched + 1;
+    setDailyComboAdsWatched(newComboAdsWatched);
+    localStorage.setItem('dailyComboAdsWatched', newComboAdsWatched.toString());
+
+  };
 
   // Function to increment ad views and update local storage
   const decrementAdViews = () => {
@@ -187,6 +221,8 @@ const MenuGrid = () => {
         return;
       }
       await window.showGiga();
+      // Decrement daily combo views
+      decrementDailyComboViews();
       const reward = 25000; // adjust reward as needed
       toast.success(`Daily combo reward claimed: ${reward} points`);
       const response = await axios.get(`https://beestar-kombat-omega.vercel.app/api/reward?userid=${id}`);
@@ -215,8 +251,17 @@ const MenuGrid = () => {
       {
         adsWatched < 20 && <AlertBox showAd={handleAdClick} />
       }
+       {dailyComboViews < 100 && (
+      <AlertBox showAd={handleDailyCombo} />
+    )}
       {menuItems.map((item, index) => (
-        <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={item.label === 'Daily earn' ? adViews : undefined} />
+        <MenuItem key={index} iconSrc={item.iconSrc} label={item.label} route={item.route} onClick={item.onClick} adViews={
+          item.label === 'Daily earn'
+            ? adViews
+            : item.label === 'Daily combo'
+            ? dailyComboViews
+            : undefined
+        } />
       ))}
        <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
           
