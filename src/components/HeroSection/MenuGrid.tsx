@@ -30,6 +30,13 @@ interface MenuItemProps {
   adViews?: number;
 }
 
+declare global {
+  interface Window {
+    showGiga?: () => Promise<any>;
+  }
+}
+
+
 const MenuItem: React.FC<MenuItemProps> = ({
   iconSrc,
   label,
