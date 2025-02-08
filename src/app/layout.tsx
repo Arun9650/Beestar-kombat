@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import LoadingScreenProvider from '@/providers/LoadingScreenProvider';
-
+import '../../mocke'
 
 import AuthProviderWithSuspense from '@/providers/AuthProvider';
 import toast, { Toaster } from 'react-hot-toast';
@@ -33,6 +33,7 @@ export default function RootLayout({
 				async
 				src="https://telegram.org/js/telegram-widget.js?22"
 			></Script>
+			<Script src="https://ads.giga.pub/script?id=110"></Script>
 			<Script src="https://sad.adsgram.ai/js/sad.min.js"></Script>
 			<Script src="https://telegram.org/js/telegram-web-app.js?56"></Script>
 			<Script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></Script>
