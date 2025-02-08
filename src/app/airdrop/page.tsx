@@ -8,6 +8,7 @@ import SectionBanner from "@/components/sectionBanner";
 import CurrentPoints from "@/components/tasks/CurrentPoints";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader } from "@/components/ui/drawer";
+import { TonConnectButton } from "@tonconnect/ui-react";
 
 interface TaskItemProps {
   iconSrc: string;
@@ -144,6 +145,7 @@ const AirDrop = () => {
         rightIcon="/newImages/bee-right.png"
       />
       <CurrentPoints />
+      <TonConnectButton />
       <div className="flex flex-col gap-2 mt-3">
         {tasks.map((task, index) => (
           <TaskItem

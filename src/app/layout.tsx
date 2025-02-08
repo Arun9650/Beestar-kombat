@@ -11,6 +11,7 @@ import ReactQueryProvider from '@/providers/react-query-provider';
 import Head from 'next/head';
 import Script from 'next/script';
 import ParentComponent from '@/components/preventZoomParent';
+import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
 const montserrat = Poppins({
 	weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -40,7 +41,7 @@ export default function RootLayout({
 			<Script src="https://richinfo.co/richpartners/telegram/js/rp-ob.js?pub_id=949633&widget_id=354734" async data-cfasync="false"></Script>
 
 			<body className={`${montserrat.className} min-h-screen h-screen`}>
-				{/* <TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json"> */}
+				<TonConnectUIProvider manifestUrl="https://beestar-kombat-ten.vercel.app/tonconnect-manifest.json">
 				<AuthProviderWithSuspense>
 					<ReactQueryProvider>
 						<ParentComponent>
@@ -65,7 +66,7 @@ export default function RootLayout({
 						},
 					}}
 				/>
-				{/* </TonConnectUIProvider> */}
+				</TonConnectUIProvider>
 			</body>
 		</html>
 	);
