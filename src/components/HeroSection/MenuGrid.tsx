@@ -4,8 +4,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 declare global {
   interface Window {
     TelegramAdsController: any;
+    showGiga?: () => Promise<any>;
   }
 }
+
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useAdsgram } from "@/hooks/useAdsgram";
@@ -30,11 +32,6 @@ interface MenuItemProps {
   adViews?: number;
 }
 
-declare global {
-  interface Window {
-    showGiga?: () => Promise<any>;
-  }
-}
 
 
 const MenuItem: React.FC<MenuItemProps> = ({
@@ -179,10 +176,11 @@ const MenuGrid = () => {
 
 
   
+  
   // New function to run ads for Daily combo
  const handleDailyCombo = () => {
     console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
-    if (window.showGiga) {
+    if (window) {
       window.showGiga()
         .then(() => {
           const reward = 5000; // adjust reward as needed
