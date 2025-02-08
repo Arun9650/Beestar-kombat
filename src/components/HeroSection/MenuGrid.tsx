@@ -66,7 +66,7 @@ const MenuGrid = () => {
   const { user } = useUserStore();
   const {setPurchaseCompleteAnimation} = useAnimationStore()
   const search = useSearchParams();
-
+  const [isTelegramReady, setIsTelegramReady] = useState(false);
 
   if (typeof window !== 'undefined' && window.TelegramAdsController) {
     window.TelegramAdsController = new window.TelegramAdsController();
@@ -79,6 +79,19 @@ const MenuGrid = () => {
     });
   }
    
+
+  useEffect(() => {
+    // Poll for Telegram API availability
+    const timer = setInterval(() => {
+      if (typeof window !== 'undefined' && window.showGiga) {
+        console.log('Telegram API is ready');
+        setIsTelegramReady(true);
+        clearInterval(timer);
+      }
+    }, 500);
+
+    return () => clearInterval(timer);
+  }, []);
 
 
   const id = search.get("id") ?? user?.chatId;
@@ -180,7 +193,7 @@ const MenuGrid = () => {
   
   // New function to run ads for Daily combo
   const handleDailyCombo = () => {
-    if (typeof window !== 'undefined' && window.showGiga) {
+    if (isTelegramReady && window.showGiga) {
       console.log('Running handleDailyCombo. window.showGiga:', window.showGiga);
       window.showGiga()
         .then(() => {
