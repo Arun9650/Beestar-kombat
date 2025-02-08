@@ -169,7 +169,7 @@ const Settings = () => {
               <ChevronRight strokeWidth={4} className="text-white" size={18} />
             </Button>
           </div>
-           <div className="flex items-center justify-between">
+           {/* <div className="flex items-center justify-between">
             <div className="flex items-center ">
               <Image
                 src={"/newImages/wallet.png"}
@@ -197,7 +197,7 @@ const Settings = () => {
               {exchange.name}
               <ChevronRight strokeWidth={4} className="text-white" size={18} />
             </Button>
-          </div>
+          </div> */}
 
           <div className="flex items-center justify-between">
             <div className="flex items-center  ">
