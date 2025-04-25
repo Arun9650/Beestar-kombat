@@ -52,7 +52,9 @@ export default function RootLayout({
 							<LoadingScreenProvider>
 								<main className="min-h-screen relative h-full p-4 xs:p-8 flex flex-col justify-between text-white/80">
 									{children}
-									<BottomNavBar />
+									<div className='-z-10'>
+									<BottomNavBar  />
+									</div>
 								</main>
 							</LoadingScreenProvider>
 						</ParentComponent>
