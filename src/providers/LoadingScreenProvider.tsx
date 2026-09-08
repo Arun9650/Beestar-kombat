@@ -17,8 +17,15 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
 
   const pathname = usePathname(); // Use usePathname to get the current path
 
-  
-  
+  // Mobile debug console — lets us read runtime errors from inside the Telegram
+  // webview. Loaded dynamically so it never runs during SSR.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    import("eruda")
+      .then((eruda) => eruda.default.init())
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     function initTg() {
       if (typeof window !== 'undefined') {
