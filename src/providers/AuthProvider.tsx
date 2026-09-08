@@ -1,122 +1,154 @@
 "use client";
 
-import { authenticateUserOrCreateAccount, fixAuthPointsIfGettingUnnecessary } from "@/actions/auth.actions";
+import { authenticateUserOrCreateAccount } from "@/actions/auth.actions";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import randomName from "@scaleway/random-name";
 import { usePointsStore } from "@/store/PointsStore";
 import toast from "react-hot-toast";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
 import useAuthFix from "@/store/useFixAuth";
+
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-
-
   const params = useSearchParams();
-  const { startParam, initData } = retrieveLaunchParams();
-  const id = params.get("id") ?? initData?.user?.id;
-  // console.log("🚀 ~ AuthProvider ~ id:", id)
-  let userName;
-  const user = params.get("userName") ?? initData?.user?.firstName;
-  // toast.success(`startParam: ${startParam}`)
-  const referredByUser = params.get("referredByUser") ?? startParam;
-  // toast.success(`referredByUser: ${referredByUser}`)
-  if (user) {
-    userName = user;
-  } else {
-    userName = randomName();
-  }
 
-  console.log("window points", window.localStorage.getItem("points")) 
-  const { isAccountCreated, setIsAccountCreated } = useAuthFix();
+  useAuthFix();
+  const { setUserId, setCurrentTapsLeft, addPoints } = usePointsStore();
 
-  const { setUserId, setCurrentTapsLeft, addPoints, points } = usePointsStore();
-  console.log("🚀 ~ AuthProvider ~ points:", points)
-  // Ensure that the ID is appended to the URL without triggering re-rendering
+  // The whole app keys off this Telegram user id. It can come from the URL
+  // (?id=) or from the Telegram launch data. We keep it in state so that, if
+  // telegram-web-app.js is not ready at first render, a short retry can still
+  // populate it instead of leaving `id` null (which crashed the app).
+  const [id, setId] = useState<string | null>(() => params.get("id"));
+  const [userName, setUserName] = useState<string>(
+    () => params.get("userName") ?? randomName()
+  );
+  const [referredByUser, setReferredByUser] = useState<string | undefined>(
+    () => params.get("referredByUser") ?? undefined
+  );
+
+  // Resolve Telegram launch data from every available source, retrying briefly
+  // because the Telegram WebApp script may load slightly after hydration.
   useEffect(() => {
-     console.log("🚀 ~ AuthProvider ~ points:", points)
-    console.log("window points", window.localStorage.getItem("points"))
-    
-    if (id) {
-      const currentUrl = new URL(window.location.href);
-      if (!currentUrl.searchParams.get("id")) {
-        currentUrl.searchParams.append("id", String(id));
+    if (id) return; // already resolved from the URL
+
+    let cancelled = false;
+    let attempts = 0;
+
+    const tryResolve = (): boolean => {
+      let tgId: string | number | undefined;
+      let firstName: string | undefined;
+      let startParam: string | undefined;
+
+      // 1) @telegram-apps/sdk — parses launch params from the URL hash.
+      try {
+        const lp = retrieveLaunchParams();
+        tgId = lp.initData?.user?.id;
+        firstName = lp.initData?.user?.firstName;
+        startParam = lp.startParam;
+      } catch {
+        // Not inside Telegram, or the launch params aren't available yet.
       }
+
+      // 2) telegram-web-app.js global — injected directly by the Telegram
+      //    client and often more reliable than the URL hash.
+      if (tgId == null && typeof window !== "undefined") {
+        const unsafe = (window as any)?.Telegram?.WebApp?.initDataUnsafe;
+        if (unsafe?.user?.id != null) {
+          tgId = unsafe.user.id;
+          firstName = firstName ?? unsafe.user.first_name;
+          startParam = startParam ?? unsafe.start_param;
+        }
+      }
+
+      if (tgId == null || cancelled) return false;
+
+      setId(String(tgId));
+      if (firstName && !params.get("userName")) setUserName(firstName);
+      setReferredByUser((prev) => prev ?? startParam);
+      return true;
+    };
+
+    if (tryResolve()) return;
+
+    // Retry for ~3s (20 x 150ms) in case the WebApp script loads late.
+    const interval = setInterval(() => {
+      attempts += 1;
+      if (tryResolve() || attempts >= 20) clearInterval(interval);
+    }, 150);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [id, params]);
+
+  // Keep the id in the URL so the rest of the app (which reads ?id=) works.
+  useEffect(() => {
+    if (!id || typeof window === "undefined") return;
+    const currentUrl = new URL(window.location.href);
+    if (!currentUrl.searchParams.get("id")) {
+      currentUrl.searchParams.set("id", id);
+      window.history.replaceState(null, "", currentUrl.toString());
     }
   }, [id]);
 
+  // Authenticate once we actually have an id — never with a null/"null" id.
   useEffect(() => {
-    const authToken = window.localStorage.getItem("authToken");
-    // console.log("🚀 ~ useEffect ~ authToken:", authToken)
+    if (!id) return;
+
     const authentication = async () => {
-      if (!authToken && authToken != id) {
-        const referredByUserValue = referredByUser ?? undefined;
+      const authToken = window.localStorage.getItem("authToken");
 
-        const authenticate = await authenticateUserOrCreateAccount({
-          chatId: String(id),
-          userName: userName!,
-          referredByUser: referredByUserValue,
-        });
-        // if(authenticate === "createdByReferral" || authenticate === "createdNewAccount"){ 
-         
-        //     await fixAuthPointsIfGettingUnnecessary(user || String(id));
-        //     window.localStorage.setItem("points","0")
-        //     setIsAccountCreated(false);
-        //     console.log("🚀 ~ authentication ~ fixAuthPointsIfGettingUnnecessary:")
-        //   }
-        console.log("🚀 ~ authentication ~ authenticate:", authenticate);
-        console.log("window points 1277432329", window.localStorage.getItem("points"));
-
-        switch (authenticate) {
-          case "createdByReferral":
-            console.log("Account by referral created successfully");
-            window.localStorage.setItem("authToken", `${id}`);
-            window.localStorage.setItem("userName", `${userName}`);
-            window.localStorage.setItem("currentTapsLeft", "500");
-            window.localStorage.setItem("points", "5000");
-            console.log("window points 1277432329", window.localStorage.getItem("points"));
-            setCurrentTapsLeft(500);
-            addPoints(5000);
-            toast.success(
-              `Welcome ${userName}! You have been referred by ${referredByUserValue}`
-            );
-            setUserId(String(id));
-          
-            
-
-          case "createdNewAccount":
-            console.log("Account created successfully");
-            window.localStorage.setItem("authToken", `${id}`);
-            window.localStorage.setItem("userName", `${userName}`);
-            window.localStorage.setItem("currentTapsLeft", "500");
-         
-            setCurrentTapsLeft(500);
-            toast.success(`Welcome ${userName}!`);
-            setUserId(String(id));
-            console.log("window points 1277432329", window.localStorage.getItem("points"))
-        
-
-            break;
-          case "userAlreadyExists":
-            console.log("User already exists, authenticated successfully");
-            window.localStorage.setItem("authToken", `${id}`);
-            window.localStorage.setItem("userName", `${userName}`);
-            setUserId(String(id));
-         
-            break;
-          case "unknownError":
-          default:
-            alert("Could not authenticate you");
-            break;
-        }
-        // After authentication, append the `id` to the URL without reloading the page
-      } else {
+      // Already authenticated as this user.
+      if (authToken === id) {
         console.log("Already authenticated", authToken);
-        setUserId(String(id)); // Ensure the user ID is set even if already authenticated
+        setUserId(id);
+        return;
+      }
+
+      const authenticate = await authenticateUserOrCreateAccount({
+        chatId: id,
+        userName,
+        referredByUser,
+      });
+      console.log("🚀 ~ authentication ~ authenticate:", authenticate);
+
+      switch (authenticate) {
+        case "createdByReferral":
+          window.localStorage.setItem("authToken", id);
+          window.localStorage.setItem("userName", userName);
+          window.localStorage.setItem("currentTapsLeft", "500");
+          window.localStorage.setItem("points", "5000");
+          setCurrentTapsLeft(500);
+          addPoints(5000);
+          toast.success(
+            `Welcome ${userName}! You have been referred by ${referredByUser}`
+          );
+          setUserId(id);
+          break;
+        case "createdNewAccount":
+          window.localStorage.setItem("authToken", id);
+          window.localStorage.setItem("userName", userName);
+          window.localStorage.setItem("currentTapsLeft", "500");
+          setCurrentTapsLeft(500);
+          toast.success(`Welcome ${userName}!`);
+          setUserId(id);
+          break;
+        case "userAlreadyExists":
+          window.localStorage.setItem("authToken", id);
+          window.localStorage.setItem("userName", userName);
+          setUserId(id);
+          break;
+        case "unknownError":
+        default:
+          alert("Could not authenticate you");
+          break;
       }
     };
 
     authentication();
-  }, []);
+  }, [id]);
 
   return <div>{children}</div>;
 };
