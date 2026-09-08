@@ -97,6 +97,12 @@ const useUserPointsConfig = () => {
           setUser(config.userDetails);
           console.log("[BEESTAR] config: setUser() called — user store populated");
         }
+
+        // Reveal the app as soon as the user is loaded. Do NOT wait for the
+        // profit-credit path (second effect) — that awaits a server action that
+        // can hang, which previously left the app stuck on the loading screen.
+        console.log("[BEESTAR] loading: dismissing loading screen after auth (first effect)");
+        setIsLoading(false);
         // console.log("🚀 ~ update ~ currentState:", currentState);
         if (currentState) {
           console.log("🚀 ~ update ~ currentState:", currentState)
