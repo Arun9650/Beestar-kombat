@@ -137,16 +137,21 @@ const BottomNavBar = () => {
 	useEffect(() => {
 		function initTg() {
 			if (typeof window !== 'undefined') {
-				const [backButton] = initBackButton();
-				backButton.show();
-				// Conditionally show or hide the back button based on the current route
-				if (pathname === '/') {
-					// If on home screen, hide the back button
-					backButton.hide();
-				} else {
-					// Otherwise, show the back button and set up its behavior
+				// Telegram SDK throws outside Telegram (e.g. local browser dev).
+				try {
+					const [backButton] = initBackButton();
 					backButton.show();
-					backButton.on('click', () => window.history.back());
+					// Conditionally show or hide the back button based on the current route
+					if (pathname === '/') {
+						// If on home screen, hide the back button
+						backButton.hide();
+					} else {
+						// Otherwise, show the back button and set up its behavior
+						backButton.show();
+						backButton.on('click', () => window.history.back());
+					}
+				} catch (err) {
+					console.warn('Telegram SDK unavailable (running outside Telegram):', err);
 				}
 			} else {
 				console.log('Telegram WebApp is undefined, retrying…');

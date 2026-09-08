@@ -6,7 +6,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import randomName from "@scaleway/random-name";
 import { usePointsStore } from "@/store/PointsStore";
 import toast from "react-hot-toast";
-import { retrieveLaunchParams } from "@telegram-apps/sdk";
+import { resolveTelegramUser } from "@/lib/telegramUser";
 import useAuthFix from "@/store/useFixAuth";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -36,36 +36,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let attempts = 0;
 
     const tryResolve = (): boolean => {
-      let tgId: string | number | undefined;
-      let firstName: string | undefined;
-      let startParam: string | undefined;
+      const tg = resolveTelegramUser();
+      if (!tg || cancelled) return false;
 
-      // 1) @telegram-apps/sdk — parses launch params from the URL hash.
-      try {
-        const lp = retrieveLaunchParams();
-        tgId = lp.initData?.user?.id;
-        firstName = lp.initData?.user?.firstName;
-        startParam = lp.startParam;
-      } catch {
-        // Not inside Telegram, or the launch params aren't available yet.
-      }
-
-      // 2) telegram-web-app.js global — injected directly by the Telegram
-      //    client and often more reliable than the URL hash.
-      if (tgId == null && typeof window !== "undefined") {
-        const unsafe = (window as any)?.Telegram?.WebApp?.initDataUnsafe;
-        if (unsafe?.user?.id != null) {
-          tgId = unsafe.user.id;
-          firstName = firstName ?? unsafe.user.first_name;
-          startParam = startParam ?? unsafe.start_param;
-        }
-      }
-
-      if (tgId == null || cancelled) return false;
-
-      setId(String(tgId));
-      if (firstName && !params.get("userName")) setUserName(firstName);
-      setReferredByUser((prev) => prev ?? startParam);
+      setId(tg.id);
+      if (tg.firstName && !params.get("userName")) setUserName(tg.firstName);
+      setReferredByUser((prev) => prev ?? tg.startParam);
       return true;
     };
 

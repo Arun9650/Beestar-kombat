@@ -65,15 +65,18 @@ const MenuGrid = () => {
   const {setPurchaseCompleteAnimation} = useAnimationStore()
   const search = useSearchParams();
 
-  if (typeof window !== 'undefined' && window.TelegramAdsController) {
-    window.TelegramAdsController = new window.TelegramAdsController();
-    window.TelegramAdsController.initialize({ 
-      
-      pubId: "949633", 
-      
-      appId: "354734", 
-      
-    });
+  if (typeof window !== 'undefined' && typeof window.TelegramAdsController === 'function') {
+    // The ads SDK is only available inside Telegram; guard against it being
+    // absent or not a constructor when running in a plain browser.
+    try {
+      window.TelegramAdsController = new window.TelegramAdsController();
+      window.TelegramAdsController.initialize({
+        pubId: "949633",
+        appId: "354734",
+      });
+    } catch (err) {
+      console.warn('TelegramAdsController unavailable (running outside Telegram):', err);
+    }
   }
    
 

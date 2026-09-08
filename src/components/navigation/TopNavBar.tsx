@@ -220,12 +220,15 @@ const TopNavBar = () => {
   useEffect(() => {
     function initTg() {
       if (typeof window !== 'undefined') {
-       
-
         if(user){
-          const { initDataRaw, initData } = retrieveLaunchParams();
-          const isPremium = initData?.user?.isPremium;
-          setIsUserPremium(isPremium);
+          // Telegram SDK throws outside Telegram (e.g. local browser dev).
+          try {
+            const { initDataRaw, initData } = retrieveLaunchParams();
+            const isPremium = initData?.user?.isPremium;
+            setIsUserPremium(isPremium);
+          } catch (err) {
+            console.warn('Telegram SDK unavailable (running outside Telegram):', err);
+          }
         }
 
   } else {

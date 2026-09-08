@@ -22,23 +22,28 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     function initTg() {
       if (typeof window !== 'undefined') {
-        WebApp.ready()
-        WebApp.expand()
-        WebApp.disableVerticalSwipes()
-        WebApp.setHeaderColor('#000000');
-        WebApp.BackButton.onClick( () => window.history.back() );
-        const [backButton] = initBackButton();
-      backButton.show();
-      // Conditionally show or hide the back button based on the current route
-      if (pathname === "/") {
-        // If on home screen, hide the back button
-        backButton.hide();
-      } else {
-        // Otherwise, show the back button and set up its behavior
-        backButton.show();
-        backButton.on("click", () => window.history.back());
-      }
-
+        // These Telegram SDK calls throw when the app is opened outside of
+        // Telegram (e.g. a normal browser during local dev). Skip them safely.
+        try {
+          WebApp.ready()
+          WebApp.expand()
+          WebApp.disableVerticalSwipes()
+          WebApp.setHeaderColor('#000000');
+          WebApp.BackButton.onClick( () => window.history.back() );
+          const [backButton] = initBackButton();
+          backButton.show();
+          // Conditionally show or hide the back button based on the current route
+          if (pathname === "/") {
+            // If on home screen, hide the back button
+            backButton.hide();
+          } else {
+            // Otherwise, show the back button and set up its behavior
+            backButton.show();
+            backButton.on("click", () => window.history.back());
+          }
+        } catch (err) {
+          console.warn('Telegram SDK unavailable (running outside Telegram):', err);
+        }
   } else {
     console.log('Telegram WebApp is undefined, retrying…');
     setTimeout(initTg, 500);
