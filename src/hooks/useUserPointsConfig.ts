@@ -6,6 +6,7 @@ import { usePointsStore } from "@/store/PointsStore";
 import { useBoostersStore } from "@/store/useBoostrsStore";
 import useAuthFix from "@/store/useFixAuth";
 import { useUserStore } from "@/store/userUserStore";
+import { getCurrentUserId } from "@/lib/telegramUser";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
@@ -51,18 +52,33 @@ const useUserPointsConfig = () => {
       const energyCapacityLocal = window.localStorage.getItem("energyCapacity");
 
       async function update() {
-        // console.log(user);
-        let config = await getUserConfig(user || String(id));
+        // Resolve a valid user id from the auth token, the URL, or the Telegram
+        // launch data. On first launch none of these may be ready yet, so wait
+        // briefly instead of fetching with a "null" id (which returns no user
+        // and leaves the store null forever).
+        let validId = getCurrentUserId(id);
+        let waited = 0;
+        while (!validId && waited < 5000) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+          waited += 200;
+          validId = getCurrentUserId(id);
+        }
+        if (!validId) {
+          console.warn("Could not resolve a user id — skipping config fetch");
+          return;
+        }
 
+        let config = await getUserConfig(validId);
 
+        // getUserConfig returns { userDetails: null } for an unknown chatId;
+        // retry a few times in case the account is still being created on the
+        // very first launch.
         let retries = 0;
-        const maxRetries = 3;
-    
-        // Retry mechanism if user is null
-        while (!config && retries < maxRetries) {
+        const maxRetries = 5;
+        while (!config?.userDetails && retries < maxRetries) {
           console.log(`Retrying to fetch user info... Attempt ${retries + 1}`);
           await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
-          config = await getUserConfig(`${user}`);
+          config = await getUserConfig(validId);
           retries++;
         }
 
@@ -209,31 +225,35 @@ const useUserPointsConfig = () => {
       const lastLoginTimeFromLocalStorage = getLastLoginTimeFromLocalStorage();
       const user = window.localStorage.getItem("authToken");
       const pphReward = async () => {
-        if (user || id) {
-          const credited = await creditProfitPerHour(
-            user || String(id),
-            lastLoginTimeFromLocalStorage
-          );
-          if (
-            credited &&
-            typeof credited === "object" &&
-            "profit" in credited &&
-            credited.success &&
-            credited.profit
-          ) {
-            toast.success("Profit Credited");
-            // if(points != 0) {
-
+        try {
+          const validId = getCurrentUserId(id);
+          if (validId) {
+            const credited = await creditProfitPerHour(
+              validId,
+              lastLoginTimeFromLocalStorage
+            );
+            if (
+              credited &&
+              typeof credited === "object" &&
+              "profit" in credited &&
+              credited.success &&
+              credited.profit
+            ) {
+              toast.success("Profit Credited");
               window.localStorage.setItem(
                 "points",
                 (points + credited?.profit).toString()
               );
               addPoints(credited.profit);
-             
-            // }
+            }
           }
+        } catch (err) {
+          console.warn("creditProfitPerHour failed:", err);
+        } finally {
+          // Always dismiss the loading screen, even if profit crediting fails —
+          // otherwise the app is stuck on the loading screen forever.
+          setIsLoading(false);
         }
-        setIsLoading(false);
       };
 
       pphReward();

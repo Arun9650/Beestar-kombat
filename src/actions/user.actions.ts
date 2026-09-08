@@ -57,9 +57,9 @@ export async function getUserConfig(id: string) {
 }
 
 export async function creditProfitPerHour(id: string, lastLoginTime: number | null) {
-  const user = await prisma.user.findUnique({ where: { chatId: id } });
-  console.log("🚀 ~ creditProfitPerHour ~ user:", user)
   try {
+    const user = await prisma.user.findUnique({ where: { chatId: id } });
+    console.log("🚀 ~ creditProfitPerHour ~ user:", user)
 
     if(!user) return;
 
