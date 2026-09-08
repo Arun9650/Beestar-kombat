@@ -15,6 +15,13 @@ const LoadingScreenProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading } = useLoadingScreenStore();
   usePointsStore();
 
+  // isLoading === false shows the LoadingScreen; true renders the app.
+  console.log(
+    "[BEESTAR] loading: LoadingScreenProvider render — isLoading =",
+    isLoading,
+    isLoading ? "(showing APP)" : "(showing LOADING screen)"
+  );
+
   const pathname = usePathname(); // Use usePathname to get the current path
 
   // Mobile debug console — lets us read runtime errors from inside the Telegram

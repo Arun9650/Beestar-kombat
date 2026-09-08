@@ -37,7 +37,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const tryResolve = (): boolean => {
       const tg = resolveTelegramUser();
-      if (!tg || cancelled) return false;
+      if (!tg || cancelled) {
+        console.log("[BEESTAR] auth: resolveTelegramUser() returned null (no Telegram id yet)");
+        return false;
+      }
+      console.log("[BEESTAR] auth: resolved Telegram id =", tg.id, "name =", tg.firstName);
 
       setId(tg.id);
       if (tg.firstName && !params.get("userName")) setUserName(tg.firstName);
@@ -75,10 +79,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const authentication = async () => {
       const authToken = window.localStorage.getItem("authToken");
+      console.log("[BEESTAR] auth: starting with id =", id, "existing authToken =", authToken);
 
       // Already authenticated as this user.
       if (authToken === id) {
-        console.log("Already authenticated", authToken);
+        console.log("[BEESTAR] auth: already authenticated (authToken === id)");
         setUserId(id);
         return;
       }
@@ -88,7 +93,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userName,
         referredByUser,
       });
-      console.log("🚀 ~ authentication ~ authenticate:", authenticate);
+      console.log("[BEESTAR] auth: authenticateUserOrCreateAccount result =", authenticate);
 
       switch (authenticate) {
         case "createdByReferral":

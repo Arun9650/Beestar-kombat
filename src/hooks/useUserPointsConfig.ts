@@ -64,9 +64,10 @@ const useUserPointsConfig = () => {
           validId = getCurrentUserId(id);
         }
         if (!validId) {
-          console.warn("Could not resolve a user id — skipping config fetch");
+          console.warn("[BEESTAR] config: could NOT resolve a user id — skipping config fetch");
           return;
         }
+        console.log("[BEESTAR] config: resolved validId =", validId);
 
         let config = await getUserConfig(validId);
 
@@ -85,8 +86,16 @@ const useUserPointsConfig = () => {
         
         
         const currentState = config?.user;
+        console.log(
+          "[BEESTAR] config: userDetails =",
+          config?.userDetails ? "FOUND (authenticated)" : "NULL (user not found)",
+          "after",
+          retries,
+          "retries"
+        );
         if (config?.userDetails && config ) {
           setUser(config.userDetails);
+          console.log("[BEESTAR] config: setUser() called — user store populated");
         }
         // console.log("🚀 ~ update ~ currentState:", currentState);
         if (currentState) {
@@ -252,6 +261,7 @@ const useUserPointsConfig = () => {
         } finally {
           // Always dismiss the loading screen, even if profit crediting fails —
           // otherwise the app is stuck on the loading screen forever.
+          console.log("[BEESTAR] loading: calling setIsLoading(false) to dismiss loading screen");
           setIsLoading(false);
         }
       };
