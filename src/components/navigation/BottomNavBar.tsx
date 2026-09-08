@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { initBackButton } from '@telegram-apps/sdk';
 import { useTaskStore } from '@/store/useTaskStore';
 import { useFetchTasks } from '@/hooks/query/useFetchTask';
+import { getCurrentUserId } from '@/lib/telegramUser';
 
 const BottomNavBar = () => {
 	const NavigationItems = [
@@ -124,7 +125,9 @@ const BottomNavBar = () => {
 
 	const search = useSearchParams();
 
-	const id: string = search.get('id') ?? '';
+	// Fall back to the auth token / Telegram id — the URL `?id=` is set via
+	// history.replaceState, which Next's useSearchParams doesn't always observe.
+	const id: string = getCurrentUserId(search.get('id')) ?? '';
 
 	const handleRoute = (link: string) => {
 		const linkWithId = id ? `${link}?id=${id}` : link;
