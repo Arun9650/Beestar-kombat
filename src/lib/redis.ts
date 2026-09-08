@@ -10,7 +10,9 @@ declare global {
 // gracefully instead of throwing or hanging the request.
 export type SafeRedis = {
   get: (key: string) => Promise<string | null>;
-  set: (...args: Parameters<Redis['set']>) => Promise<unknown>;
+  // `set` mirrors ioredis' many overloads (key, value, 'EX', seconds, ...), so
+  // accept a flexible arg list rather than pinning to a single overload.
+  set: (...args: any[]) => Promise<unknown>;
   del: (...keys: string[]) => Promise<number>;
   exists: (...keys: string[]) => Promise<number>;
 };
